@@ -50,7 +50,7 @@ const reportSectionsPrompt = ai.definePrompt({
   output: {schema: GenerateReportSectionsOutputSchema},
   model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Based on the data provided, generate both an Acknowledgment and an Abstract section.
+    Based on the data provided, generate both an Acknowledgment and an Abstract section. **Important: Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
 
     **Acknowledgement Instructions:**
     - The tone should be formal and grateful.

@@ -41,7 +41,7 @@ const skillsChapterPrompt = ai.definePrompt({
   output: {schema: GenerateSkillsChapterOutputSchema},
   model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Based on the data provided, generate the content for Chapter 3: Skills Learnt.
+    Based on the data provided, generate the content for Chapter 3: Skills Learnt. **Important: Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
 
     **Instructions:**
     - The content should be structured into two sections: "3.1 Description of Skills" and "3.2 Tools and Technologies Used".

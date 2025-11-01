@@ -40,8 +40,10 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     profile: false,
     sections: false,
     skills: false,
+    regenerate: false,
   });
   const [suggestions, setSuggestions] = useState<Suggestion>({});
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   const { toast } = useToast();
 
   const suggestionQuery = useMemo(() => ({
@@ -52,6 +54,18 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   
   const [debouncedSuggestionQuery] = useDebounce(suggestionQuery, 1000);
   const [debouncedFormData] = useDebounce(formData, 1500);
+
+  const requiredFields = useMemo(() => [
+    'placeOfAttachment', 'supervisorNames', 'departmentName', 'fieldOfStudy',
+    'attachmentLocation', 'primarySkill', 'framework', 'programmingLanguage', 'careerPath',
+    'fullName', 'universityName', 'facultyName'
+  ], []);
+
+  useEffect(() => {
+    const areAllFieldsFilled = requiredFields.every(field => !!formData[field as keyof ReportData]);
+    setAllFieldsFilled(areAllFieldsFilled);
+  }, [formData, requiredFields]);
+
 
   useEffect(() => {
     async function fetchSuggestions() {
@@ -67,50 +81,54 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     fetchSuggestions();
   }, [debouncedSuggestionQuery]);
 
+  const runAutoGeneration = async () => {
+    // Generate Ack and Abstract
+    if (!loadingStates.sections) {
+      setLoadingStates(prev => ({...prev, sections: true}));
+      try {
+          const result = await generateReportSections(debouncedFormData);
+          setFormData(prev => ({
+              ...prev,
+              acknowledgementText: result.acknowledgementText,
+              abstractText: result.abstractText,
+          }));
+          toast({ title: "Success", description: "Acknowledgement and Abstract generated." });
+      } catch (error) {
+          console.error(error);
+          toast({ variant: "destructive", title: "Error", description: "Failed to auto-generate sections." });
+      } finally {
+          setLoadingStates(prev => ({...prev, sections: false}));
+      }
+    }
+    
+    // Generate Skills Chapter
+    if (!loadingStates.skills) {
+        setLoadingStates(prev => ({...prev, skills: true}));
+        try {
+            const result = await generateSkillsChapter(debouncedFormData);
+            setFormData(prev => ({
+                ...prev,
+                skillsChapterText: result.skillsChapterText,
+            }));
+            toast({ title: "Success", description: "Chapter 3 (Skills Learnt) generated." });
+        } catch (error) {
+            console.error(error);
+            toast({ variant: "destructive", title: "Error", description: "Failed to generate Chapter 3." });
+        } finally {
+            setLoadingStates(prev => ({...prev, skills: false}));
+        }
+    }
+  };
+
+
   useEffect(() => {
     async function autoGenerateContent() {
-      const requiredFields = [
-        'placeOfAttachment', 'supervisorNames', 'departmentName', 'fieldOfStudy',
-        'attachmentLocation', 'primarySkill', 'framework', 'programmingLanguage', 'careerPath'
-      ];
-      const allFieldsFilled = requiredFields.every(field => !!debouncedFormData[field as keyof ReportData]);
+      const allRequiredFieldsFilled = requiredFields.every(field => !!debouncedFormData[field as keyof ReportData]);
 
-      if (allFieldsFilled) {
-        // Generate Ack and Abstract
-        if (!loadingStates.sections && !formData.acknowledgementText && !formData.abstractText) {
-          setLoadingStates(prev => ({...prev, sections: true}));
-          try {
-              const result = await generateReportSections(debouncedFormData);
-              setFormData(prev => ({
-                  ...prev,
-                  acknowledgementText: result.acknowledgementText,
-                  abstractText: result.abstractText,
-              }));
-              toast({ title: "Success", description: "Acknowledgement and Abstract generated." });
-          } catch (error) {
-              console.error(error);
-              toast({ variant: "destructive", title: "Error", description: "Failed to auto-generate sections." });
-          } finally {
-              setLoadingStates(prev => ({...prev, sections: false}));
-          }
-        }
-        
-        // Generate Skills Chapter
-        if (!loadingStates.skills && !formData.skillsChapterText) {
-            setLoadingStates(prev => ({...prev, skills: true}));
-            try {
-                const result = await generateSkillsChapter(debouncedFormData);
-                setFormData(prev => ({
-                    ...prev,
-                    skillsChapterText: result.skillsChapterText,
-                }));
-                toast({ title: "Success", description: "Chapter 3 (Skills Learnt) generated." });
-            } catch (error) {
-                console.error(error);
-                toast({ variant: "destructive", title: "Error", description: "Failed to generate Chapter 3." });
-            } finally {
-                setLoadingStates(prev => ({...prev, skills: false}));
-            }
+      if (allRequiredFieldsFilled) {
+        // Generate only if the text fields are empty to prevent overwriting user changes
+        if (!formData.acknowledgementText && !formData.abstractText && !formData.skillsChapterText) {
+          runAutoGeneration();
         }
       }
     }
@@ -118,7 +136,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     if (currentStep >= 4) {
         autoGenerateContent();
     }
-  }, [debouncedFormData, currentStep, formData.acknowledgementText, formData.abstractText, formData.skillsChapterText, setFormData, toast, loadingStates]);
+  }, [debouncedFormData, currentStep, requiredFields, formData.acknowledgementText, formData.abstractText, formData.skillsChapterText]);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -166,6 +184,53 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
       toast({ variant: "destructive", title: "Error", description: "Failed to generate company profile." });
     } finally {
       setLoadingStates(prev => ({ ...prev, profile: false }));
+    }
+  };
+
+  const handleRegenerate = async () => {
+    setLoadingStates(prev => ({ ...prev, regenerate: true }));
+    toast({ title: "Regenerating Content", description: "Please wait while the AI rewrites the report sections..." });
+    
+    // Clear existing text to indicate regeneration
+    setFormData(prev => ({
+        ...prev,
+        acknowledgementText: "Regenerating...",
+        abstractText: "Regenerating...",
+        skillsChapterText: "Regenerating...",
+    }));
+
+    try {
+      // We can run them in parallel
+      await Promise.all([
+        (async () => {
+          const sectionsResult = await generateReportSections(formData);
+          setFormData(prev => ({
+            ...prev,
+            acknowledgementText: sectionsResult.acknowledgementText,
+            abstractText: sectionsResult.abstractText,
+          }));
+        })(),
+        (async () => {
+          const skillsResult = await generateSkillsChapter(formData);
+          setFormData(prev => ({
+            ...prev,
+            skillsChapterText: skillsResult.skillsChapterText,
+          }));
+        })(),
+      ]);
+      toast({ title: "Success!", description: "Report sections have been regenerated." });
+    } catch (error) {
+      console.error("Regeneration Error:", error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to regenerate content." });
+       // Restore previous content on error if needed, or clear it
+       setFormData(prev => ({
+        ...prev,
+        acknowledgementText: prev.acknowledgementText === 'Regenerating...' ? '' : prev.acknowledgementText,
+        abstractText: prev.abstractText === 'Regenerating...' ? '' : prev.abstractText,
+        skillsChapterText: prev.skillsChapterText === 'Regenerating...' ? '' : prev.skillsChapterText,
+      }));
+    } finally {
+      setLoadingStates(prev => ({ ...prev, regenerate: false }));
     }
   };
   
@@ -329,8 +394,19 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                 </div>
             )}
 
-             <div className="mt-10 flex justify-between">
+             <div className="mt-10 flex justify-between items-center">
                 <Button type="button" onClick={handlePrev} variant="outline" disabled={currentStep === 1}>Previous</Button>
+                
+                {allFieldsFilled && (
+                    <AiButton
+                        onClick={handleRegenerate}
+                        loading={loadingStates.regenerate}
+                        variant="secondary"
+                    >
+                        Regenerate Report
+                    </AiButton>
+                )}
+
                 <Button type="button" onClick={handleNext} variant="default">{currentStep === TOTAL_STEPS ? 'Finish' : 'Next'}</Button>
             </div>
         </form>
