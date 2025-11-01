@@ -35,6 +35,22 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     scopeOfSpecializationHtml: formatPreviewText(formData.scopeOfSpecialization),
     challengesHtml: formatPreviewText(formData.challengesText),
     organogramAbbreviationsHtml: formatPreviewText(formData.organogramAbbreviations),
+
+    // Chapter 4
+    projectIntroHtml: formatPreviewText(formData.projectIntro),
+    project1_introHtml: formatPreviewText(formData.project1_intro),
+    project1_descHtml: formatPreviewText(formData.project1_desc),
+    project1_welcomeScreenHtml: formatPreviewText(formData.project1_welcomeScreen),
+    project1_signInScreenHtml: formatPreviewText(formData.project1_signInScreen),
+    project1_validationHtml: formatPreviewText(formData.project1_validation),
+    project1_signUpScreenHtml: formatPreviewText(formData.project1_signUpScreen),
+    project1_homeScreenHtml: formatPreviewText(formData.project1_homeScreen),
+    project1_toolsHtml: formatPreviewText(formData.project1_tools),
+    project2_introHtml: formatPreviewText(formData.project2_intro),
+    project2_structureHtml: formatPreviewText(formData.project2_structure),
+    project2_uiHtml: formatPreviewText(formData.project2_ui),
+    project2_coreHtml: formatPreviewText(formData.project2_core),
+    project2_toolsHtml: formatPreviewText(formData.project2_tools),
   };
   
   const handleAttachmentImagesChange = (images: string[]) => {
@@ -60,6 +76,24 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
   const handleOrganogramCaptionChange = (caption: string) => {
     setFormData(prev => ({ ...prev, organogramCaption: caption }));
   };
+
+  // Chapter 4 handlers
+  const createHandler = <K extends keyof ReportData>(key: K) => (value: ReportData[K]) => {
+    setFormData(prev => ({ ...prev, [key]: value }));
+  };
+  const handleProject1UseCaseDiagramChange = createHandler('project1_useCaseDiagram');
+  const handleProject1UseCaseCaptionChange = createHandler('project1_useCaseCaption');
+  const handleProject1WelcomeScreenImagesChange = createHandler('project1_welcomeScreenImages');
+  const handleProject1WelcomeScreenCaptionChange = createHandler('project1_welcomeScreenCaption');
+  const handleProject1SignInImagesChange = createHandler('project1_signInImages');
+  const handleProject1SignInCaptionChange = createHandler('project1_signInCaption');
+  const handleProject1SignUpImagesChange = createHandler('project1_signUpImages');
+  const handleProject1SignUpCaptionChange = createHandler('project1_signUpCaption');
+  const handleProject1HomeScreenImagesChange = createHandler('project1_homeScreenImages');
+  const handleProject1HomeScreenCaptionChange = createHandler('project1_homeScreenCaption');
+  const handleProject2CodeSnippetImagesChange = createHandler('project2_codeSnippetImages');
+  const handleProject2CodeSnippetCaptionChange = createHandler('project2_codeSnippetCaption');
+
 
   return (
     <Card id="preview-content" className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg">
@@ -145,9 +179,13 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             3.1 Description of Skills<br />
             3.2 Tools and Technologies used<br />
             <br />
-            <strong>Chapter Four: Challenges and Conclusions</strong><br />
-            4.1 Challenges Encountered and Solutions<br />
-            4.2 Conclusion<br />
+            <strong>Chapter Four: Project Developed</strong><br />
+            4.1 Introduction<br />
+            4.2 Calculator App<br />
+            <br />
+            <strong>Chapter Five: Conclusion</strong><br />
+            5.1 Challenges Encountered<br />
+            5.2 Conclusion<br />
         </p>
       </div>
       
@@ -228,14 +266,68 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Chapter 4 */}
       <div style={{ pageBreakBefore: 'always' }}>
-        <h2>CHAPTER 4: CHALLENGES AND CONCLUSION</h2>
-        <h3>4.1 Challenges Encountered and Solutions</h3>
+        <h2>CHAPTER 4: PROJECT DEVELOPED</h2>
+        <h3>4.1 INTRODUCTION</h3>
+        <p dangerouslySetInnerHTML={previewData.projectIntroHtml!}></p>
+        
+        <h4>4.1.1 The first project...</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_introHtml!}></p>
+        
+        <h4>4.1.2 Project Description</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_descHtml!}></p>
+        <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} />
+        
+        <h4>4.1.2.1 Welcome Screen</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml!}></p>
+        <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" />
+
+        <h4>4.1.2.2 Sign-In Screen</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_signInScreenHtml!}></p>
+        
+        <h4>4.1.2.3 Validation and Error Handling</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_validationHtml!}></p>
+        <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" />
+
+        <h4>4.1.2.4 Sign-Up Screen</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml!}></p>
+        <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" />
+        
+        <h4>4.1.2.5 Home Screen</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_homeScreenHtml!}></p>
+        <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" />
+        
+        <h4>4.1.3 Tools and Technologies Used</h4>
+        <p dangerouslySetInnerHTML={previewData.project1_toolsHtml!}></p>
+        
+        <h3>4.2 Calculator App</h3>
+        <p dangerouslySetInnerHTML={previewData.project2_introHtml!}></p>
+        
+        <h4>4.2.1 Project Description</h4>
+        <h4>4.2.1.1 Calculator Structure</h4>
+        <p dangerouslySetInnerHTML={previewData.project2_structureHtml!}></p>
+        
+        <h4>4.2.1.2 User Interface Design</h4>
+        <p dangerouslySetInnerHTML={previewData.project2_uiHtml!}></p>
+
+        <h4>4.2.1.3 Core Functionality</h4>
+        <p dangerouslySetInnerHTML={previewData.project2_coreHtml!}></p>
+        <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" />
+        
+        <h3>4.3 Tools and Technologies Used</h3>
+        <p dangerouslySetInnerHTML={previewData.project2_toolsHtml!}></p>
+      </div>
+
+
+      {/* Chapter 5 */}
+      <div style={{ pageBreakBefore: 'always' }}>
+        <h2>CHAPTER 5: CONCLUSION</h2>
+        <h3>5.1 Challenges Encountered and Solutions</h3>
          {previewData.challengesHtml ? (
              <div dangerouslySetInnerHTML={previewData.challengesHtml} className="prose"></div>
          ) : (
              <p><Placeholder>Describe the challenges you faced in Step 4.</Placeholder></p>
          )}
-        <h3>4.2 Conclusion</h3>
+        <h3>5.2 Conclusion</h3>
         <p>The Students Industrial Work Experience Scheme at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong> has been an invaluable and enlightening experience. It provided a practical dimension to my academic studies and has solidified my interest in pursuing a career in <strong>{previewData.careerPath || <Placeholder>Desired Career Path</Placeholder>}</strong>. The hands-on experience and the challenges overcome have equipped me with the confidence and skills necessary for my future professional endeavors.</p>
       </div>
 

@@ -32,4 +32,34 @@ export interface ReportData {
   attachmentCaption: string;
   profileImages: string[];
   profileCaption: string;
+
+  // Chapter 4
+  projectIntro: string;
+  project1_intro: string;
+  project1_desc: string;
+  project1_useCaseDiagram: string[];
+  project1_useCaseCaption: string;
+  project1_welcomeScreen: string;
+  project1_welcomeScreenImages: string[];
+  project1_welcomeScreenCaption: string;
+  project1_signInScreen: string;
+  project1_validation: string;
+  project1_signInImages: string[];
+  project1_signInCaption: string;
+  project1_signUpScreen: string;
+  project1_signUpImages: string[];
+  project1_signUpCaption: string;
+  project1_homeScreen: string;
+  project1_homeScreenImages: string[];
+  project1_homeScreenCaption: string;
+  project1_tools: string;
+  
+  project2_intro: string;
+  project2_desc: string;
+  project2_structure: string;
+  project2_ui: string;
+  project2_core: string;
+  project2_codeSnippetImages: string[];
+  project2_codeSnippetCaption: string;
+  project2_tools: string;
 }
