@@ -8,20 +8,20 @@ import { Input } from '@/components/ui/input';
 
 interface ImageSelectorProps {
   images: string[];
-  captions: string[];
+  caption: string;
   onImagesChange: (images: string[]) => void;
-  onCaptionsChange: (captions: string[]) => void;
+  onCaptionChange: (caption: string) => void;
   maxImages?: number;
   figurePrefix?: string;
 }
 
 export function ImageSelector({
   images,
-  captions,
+  caption,
   onImagesChange,
-  onCaptionsChange,
+  onCaptionChange,
   maxImages = 3,
-  figurePrefix = '1.',
+  figurePrefix = '1.1',
 }: ImageSelectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -41,8 +41,6 @@ export function ImageSelector({
         } else {
           // Add new image
           onImagesChange([...images, newImage]);
-          // Add a default caption
-          onCaptionsChange([...captions, '']);
         }
       };
       reader.readAsDataURL(file);
@@ -67,14 +65,6 @@ export function ImageSelector({
     e.stopPropagation(); // Prevent triggering the image click
     const updatedImages = images.filter((_, i) => i !== index);
     onImagesChange(updatedImages);
-    const updatedCaptions = captions.filter((_, i) => i !== index);
-    onCaptionsChange(updatedCaptions);
-  };
-
-  const handleCaptionChange = (index: number, value: string) => {
-    const updatedCaptions = [...captions];
-    updatedCaptions[index] = value;
-    onCaptionsChange(updatedCaptions);
   };
 
 
@@ -89,7 +79,7 @@ export function ImageSelector({
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {images.map((src, index) => (
-          <div key={index} className="group relative text-center">
+          <div key={index} className="group relative">
             <button
               onClick={() => handleImageClick(index)}
               className="w-full aspect-square border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
@@ -103,16 +93,6 @@ export function ImageSelector({
             >
                 <X className="w-4 h-4" />
             </button>
-            <div className="mt-2 text-sm">
-                <span className="font-bold">Figure {figurePrefix}{index + 1}: </span>
-                <Input 
-                    type="text"
-                    value={captions[index] || ''}
-                    onChange={(e) => handleCaptionChange(index, e.target.value)}
-                    placeholder="Enter a caption"
-                    className="mt-1 h-8 text-sm font-bold"
-                />
-            </div>
           </div>
         ))}
         {images.length < maxImages && (
@@ -128,6 +108,21 @@ export function ImageSelector({
           </div>
         )}
       </div>
+
+       {images.length > 0 && (
+         <div className="mt-4 text-center">
+            <p className="font-bold text-sm">
+                Figure {figurePrefix}:{' '}
+                <Input 
+                    type="text"
+                    value={caption}
+                    onChange={(e) => onCaptionChange(e.target.value)}
+                    placeholder="Enter caption"
+                    className="mt-1 h-8 text-sm font-bold inline-block w-auto max-w-full"
+                />
+            </p>
+        </div>
+      )}
     </div>
   );
 }

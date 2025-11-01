@@ -40,8 +40,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     setFormData(prev => ({...prev, attachmentImages: images}));
   };
 
-  const handleCaptionsChange = (captions: string[]) => {
-    setFormData(prev => ({ ...prev, attachmentImageCaptions: captions }));
+  const handleCaptionChange = (caption: string) => {
+    setFormData(prev => ({ ...prev, attachmentCaption: caption }));
   };
 
   return (
@@ -139,11 +139,11 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <p>My Industrial Training was undertaken at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong>.</p>
         <ImageSelector
           images={previewData.attachmentImages}
-          captions={previewData.attachmentImageCaptions}
+          caption={previewData.attachmentCaption}
           onImagesChange={handleImagesChange}
-          onCaptionsChange={handleCaptionsChange}
+          onCaptionChange={handleCaptionChange}
           maxImages={3}
-          figurePrefix="1."
+          figurePrefix="1.1"
         />
         <h3>1.4 BRIEF PROFILE OF PLACE OF ATTACHMENT</h3>
         {previewData.companyProfileHtml ? (

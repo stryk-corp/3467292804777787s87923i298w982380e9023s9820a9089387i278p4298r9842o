@@ -33,7 +33,7 @@ export default function Home() {
     abstractText: '',
     challengesText: 'One of the main challenges was adapting to the large, existing codebase for a production application. Initially, understanding the architecture and finding where to make changes was difficult. I overcame this by pair-programming with a senior developer and spending extra time studying the documentation.',
     attachmentImages: [],
-    attachmentImageCaptions: [],
+    attachmentCaption: 'Place of Attachment (Nanocodes Programming)',
   });
 
   return (
