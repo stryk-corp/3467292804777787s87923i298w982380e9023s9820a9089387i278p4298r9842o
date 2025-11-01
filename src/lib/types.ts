@@ -13,6 +13,12 @@ export interface ReportData {
   ceoName: string;
   companyProfile: string;
   scopeOfSpecialization: string;
+  companyVision: string;
+  companyMission: string;
+  companyValues: string;
+  organogramImage: string[];
+  organogramCaption: string;
+  organogramAbbreviations: string;
   fieldOfStudy: string;
   primarySkill: string;
   technologiesUsed: string;

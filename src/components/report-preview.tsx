@@ -34,6 +34,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     companyProfileHtml: formatPreviewText(formData.companyProfile),
     scopeOfSpecializationHtml: formatPreviewText(formData.scopeOfSpecialization),
     challengesHtml: formatPreviewText(formData.challengesText),
+    organogramAbbreviationsHtml: formatPreviewText(formData.organogramAbbreviations),
   };
   
   const handleAttachmentImagesChange = (images: string[]) => {
@@ -50,6 +51,14 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
   const handleProfileCaptionChange = (caption: string) => {
     setFormData(prev => ({ ...prev, profileCaption: caption }));
+  };
+  
+  const handleOrganogramImageChange = (images: string[]) => {
+    setFormData(prev => ({...prev, organogramImage: images}));
+  };
+
+  const handleOrganogramCaptionChange = (caption: string) => {
+    setFormData(prev => ({ ...prev, organogramCaption: caption }));
   };
 
   return (
@@ -126,13 +135,19 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             1.4 Brief Profile of Place of Attachment<br />
             1.5 Scope of Specialization<br />
             <br />
-            <strong>Chapter Two: Skills Learnt</strong><br />
-            2.1 Description of Skills<br />
-            2.2 Tools and Technologies used<br />
+            <strong>Chapter Two: Organizational Structure of Placement of Attachment</strong><br />
+            2.1 Vision<br />
+            2.2 Mission<br />
+            2.3 Value<br />
+            2.4 Organogram<br />
             <br />
-            <strong>Chapter Three: Challenges and Conclusions</strong><br />
-            3.1 Challenges Encountered and Solutions<br />
-            3.2 Conclusion<br />
+            <strong>Chapter Three: Skills Learnt</strong><br />
+            3.1 Description of Skills<br />
+            3.2 Tools and Technologies used<br />
+            <br />
+            <strong>Chapter Four: Challenges and Conclusions</strong><br />
+            4.1 Challenges Encountered and Solutions<br />
+            4.2 Conclusion<br />
         </p>
       </div>
       
@@ -176,25 +191,51 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         )}
       </div>
 
-      {/* Chapter 2 (dynamic) */}
+      {/* Chapter 2 */}
       <div style={{ pageBreakBefore: 'always' }}>
-        <h2>CHAPTER 2: SKILLS LEARNT</h2>
-        <h3>2.1 Description of Skills</h3>
+        <h2>CHAPTER 2: ORGANIZATIONAL STRUCTURE OF PLACEMENT OF ATTACHMENT</h2>
+        <h3>2.1 VISION:</h3>
+        <p>{previewData.companyVision || <Placeholder>Company vision...</Placeholder>}</p>
+        <h3>2.2 MISSION:</h3>
+        <p>{previewData.companyMission || <Placeholder>Company mission...</Placeholder>}</p>
+        <h3>2.3 VALUE:</h3>
+        <p>{previewData.companyValues || <Placeholder>Company values...</Placeholder>}</p>
+        
+        <h3>2.4 ORGANOGRAM</h3>
+        <ImageSelector
+            images={previewData.organogramImage}
+            caption={previewData.organogramCaption}
+            onImagesChange={handleOrganogramImageChange}
+            onCaptionChange={handleOrganogramCaptionChange}
+            maxImages={1}
+            figurePrefix="2.1"
+        />
+        {previewData.organogramAbbreviationsHtml ? (
+            <div dangerouslySetInnerHTML={previewData.organogramAbbreviationsHtml} className="prose"></div>
+        ) : (
+            <p><Placeholder>Organogram abbreviations...</Placeholder></p>
+        )}
+      </div>
+
+      {/* Chapter 3 */}
+      <div style={{ pageBreakBefore: 'always' }}>
+        <h2>CHAPTER 3: SKILLS LEARNT</h2>
+        <h3>3.1 Description of Skills</h3>
         <p>During my attachment, I focused on developing skills in <strong>{previewData.primarySkill || <Placeholder>Primary Skill</Placeholder>}</strong> within the broader field of <strong>{previewData.fieldOfStudy || <Placeholder>Field of Study</Placeholder>}</strong>. The training was comprehensive, covering both theoretical concepts and practical application.</p>
-        <h3>2.2 Tools and Technologies Used</h3>
+        <h3>3.2 Tools and Technologies Used</h3>
         <p>The primary tools and technologies I worked with include <strong>{previewData.technologiesUsed || <Placeholder>Technologies Used</Placeholder>}</strong>. Specifically, I used the <strong>{previewData.programmingLanguage || <Placeholder>Programming Language</Placeholder>}</strong> language and the <strong>{previewData.framework || <Placeholder>Framework</Placeholder>}</strong> framework to build and manage projects.</p>
       </div>
 
-      {/* Chapter 3 (Challenges and Conclusion) */}
+      {/* Chapter 4 */}
       <div style={{ pageBreakBefore: 'always' }}>
-        <h2>CHAPTER 3: CHALLENGES AND CONCLUSION</h2>
-        <h3>3.1 Challenges Encountered and Solutions</h3>
+        <h2>CHAPTER 4: CHALLENGES AND CONCLUSION</h2>
+        <h3>4.1 Challenges Encountered and Solutions</h3>
          {previewData.challengesHtml ? (
              <div dangerouslySetInnerHTML={previewData.challengesHtml} className="prose"></div>
          ) : (
              <p><Placeholder>Describe the challenges you faced in Step 4.</Placeholder></p>
          )}
-        <h3>3.2 Conclusion</h3>
+        <h3>4.2 Conclusion</h3>
         <p>The Students Industrial Work Experience Scheme at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong> has been an invaluable and enlightening experience. It provided a practical dimension to my academic studies and has solidified my interest in pursuing a career in <strong>{previewData.careerPath || <Placeholder>Desired Career Path</Placeholder>}</strong>. The hands-on experience and the challenges overcome have equipped me with the confidence and skills necessary for my future professional endeavors.</p>
       </div>
 
