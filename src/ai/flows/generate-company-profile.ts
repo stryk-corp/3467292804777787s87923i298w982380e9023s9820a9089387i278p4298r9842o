@@ -23,7 +23,9 @@ export type GenerateCompanyProfileInput = z.infer<
 
 const GenerateCompanyProfileOutputSchema = z.object({
   profile: z.string().describe('A concise, professional company profile.'),
-  services: z.array(z.string()).describe('A list of the company\'s main services.'),
+  services: z.array(z.string()).describe("A list of the company's main services."),
+  attachmentLocation: z.string().optional().describe("The company's physical address."),
+  ceoName: z.string().optional().describe("The name of the company's CEO or a key leader."),
 });
 export type GenerateCompanyProfileOutput = z.infer<
   typeof GenerateCompanyProfileOutputSchema
@@ -40,7 +42,18 @@ const companyProfilePrompt = ai.definePrompt({
   input: {schema: GenerateCompanyProfileInputSchema},
   output: {schema: GenerateCompanyProfileOutputSchema},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are a business analyst. Provide a concise, professional company profile and a list of their main services based on the company name provided. Return JSON only.\n\nCompany Name: "{{{placeOfAttachment}}}".`,
+  tools: ['googleSearch'],
+  prompt: `You are a business analyst. Use the search tool to research the company provided.
+    
+    Based on your research, provide the following:
+    1. A concise, professional company profile.
+    2. A list of their main services.
+    3. The full physical address of their main office (for 'attachmentLocation').
+    4. The name of the CEO or a key leader (for 'ceoName').
+    
+    Return the information in JSON format.
+
+    Company Name: "{{{placeOfAttachment}}}".`,
 });
 
 const generateCompanyProfileFlow = ai.defineFlow(

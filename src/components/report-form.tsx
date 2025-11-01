@@ -97,11 +97,13 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     }
     setLoadingStates(prev => ({ ...prev, profile: true }));
     try {
-      const { profile, services } = await generateCompanyProfile({ placeOfAttachment: formData.placeOfAttachment });
+      const { profile, services, attachmentLocation, ceoName } = await generateCompanyProfile({ placeOfAttachment: formData.placeOfAttachment });
       setFormData(prev => ({
         ...prev,
         companyProfile: profile,
         scopeOfSpecialization: services.map(s => `- ${s}`).join('\n'),
+        attachmentLocation: attachmentLocation || prev.attachmentLocation,
+        ceoName: ceoName || prev.ceoName,
       }));
       toast({ title: "Success", description: "Company profile generated." });
     } catch (error) {
