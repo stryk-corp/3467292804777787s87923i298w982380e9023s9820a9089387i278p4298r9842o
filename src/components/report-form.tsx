@@ -118,7 +118,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     if (currentStep >= 4) {
         autoGenerateContent();
     }
-  }, [debouncedFormData, currentStep, formData, setFormData, toast, loadingStates]);
+  }, [debouncedFormData, currentStep, formData.acknowledgementText, formData.abstractText, formData.skillsChapterText, setFormData, toast, loadingStates]);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -270,28 +270,28 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                 <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Projects Developed</h2>
                     <p className="text-muted-foreground -mt-4">Describe the projects you worked on during your internship.</p>
-                    <div className="space-y-4 border-l pl-4">
-                      <h3 className="text-lg font-semibold">Overall Project Intro</h3>
-                      <Textarea id="projectIntro" value={formData.projectIntro} onChange={handleInputChange} placeholder="e.g., During my SIWES training, I worked on a Multi-Screen UI design project and a basic Calculator app..." className="min-h-[100px]" />
+                    <div className="space-y-4 border-l-2 border-primary/20 pl-4">
+                      <h3 className="text-lg font-semibold">Overall Project Introduction</h3>
+                      <Textarea id="projectIntro" value={formData.projectIntro} onChange={handleInputChange} placeholder="Provide a brief introduction to the projects you worked on. E.g., 'During my SIWES training, I developed two main projects: a portfolio app and a real-time chat application...'" className="min-h-[100px]" />
                     </div>
-                    <div className="space-y-4 border-l pl-4">
-                        <h3 className="text-lg font-semibold">Project 1: Multi-Screen UI App</h3>
-                        <Textarea id="project1_intro" value={formData.project1_intro} onChange={handleInputChange} placeholder="Introduce the first project..." className="min-h-[100px]" />
-                        <Textarea id="project1_desc" value={formData.project1_desc} onChange={handleInputChange} placeholder="Describe the project..."/>
-                        <Textarea id="project1_welcomeScreen" value={formData.project1_welcomeScreen} onChange={handleInputChange} placeholder="Describe the welcome screen..."/>
-                        <Textarea id="project1_signInScreen" value={formData.project1_signInScreen} onChange={handleInputChange} placeholder="Describe the sign-in screen..."/>
-                        <Textarea id="project1_validation" value={formData.project1_validation} onChange={handleInputChange} placeholder="Describe the validation logic..."/>
-                        <Textarea id="project1_signUpScreen" value={formData.project1_signUpScreen} onChange={handleInputChange} placeholder="Describe the sign-up screen..."/>
-                        <Textarea id="project1_homeScreen" value={formData.project1_homeScreen} onChange={handleInputChange} placeholder="Describe the home screen..."/>
-                        <Textarea id="project1_tools" value={formData.project1_tools} onChange={handleInputChange} placeholder="List the tools used for project 1..."/>
+                    <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
+                        <h3 className="text-lg font-semibold">Project 1</h3>
+                        <Textarea id="project1_intro" value={formData.project1_intro} onChange={handleInputChange} placeholder="Give your first project a title and introduce it. E.g., 'Project 1: Portfolio App. This project focused on creating a personal portfolio website to showcase my skills...'" className="min-h-[100px]" />
+                        <Textarea id="project1_desc" value={formData.project1_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
+                        <Textarea id="project1_welcomeScreen" value={formData.project1_welcomeScreen} onChange={handleInputChange} placeholder="Describe the welcome/entry screen of your project..."/>
+                        <Textarea id="project1_signInScreen" value={formData.project1_signInScreen} onChange={handleInputChange} placeholder="Describe the sign-in screen and its components..."/>
+                        <Textarea id="project1_validation" value={formData.project1_validation} onChange={handleInputChange} placeholder="Explain the user input validation and error handling..."/>
+                        <Textarea id="project1_signUpScreen" value={formData.project1_signUpScreen} onChange={handleInputChange} placeholder="Describe the sign-up screen and its components..."/>
+                        <Textarea id="project1_homeScreen" value={formData.project1_homeScreen} onChange={handleInputChange} placeholder="Describe the main home screen after login..."/>
+                        <Textarea id="project1_tools" value={formData.project1_tools} onChange={handleInputChange} placeholder="List the tools and technologies used for this project..."/>
                     </div>
-                    <div className="space-y-4 border-l pl-4">
-                        <h3 className="text-lg font-semibold">Project 2: Calculator App</h3>
-                        <Textarea id="project2_intro" value={formData.project2_intro} onChange={handleInputChange} placeholder="Introduce the second project..." className="min-h-[100px]" />
-                        <Textarea id="project2_structure" value={formData.project2_structure} onChange={handleInputChange} placeholder="Describe the project structure..." />
-                        <Textarea id="project2_ui" value={formData.project2_ui} onChange={handleInputChange} placeholder="Describe the UI design..." />
-                        <Textarea id="project2_core" value={formData.project2_core} onChange={handleInputChange} placeholder="Describe the core functionality..." />
-                        <Textarea id="project2_tools" value={formData.project2_tools} onChange={handleInputChange} placeholder="List the tools used for project 2..." />
+                    <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
+                        <h3 className="text-lg font-semibold">Project 2</h3>
+                        <Textarea id="project2_intro" value={formData.project2_intro} onChange={handleInputChange} placeholder="Give your second project a title and introduce it here..." className="min-h-[100px]" />
+                        <Textarea id="project2_structure" value={formData.project2_structure} onChange={handleInputChange} placeholder="Describe the project's structure and architecture..." />
+                        <Textarea id="project2_ui" value={formData.project2_ui} onChange={handleInputChange} placeholder="Describe the User Interface design and key components..." />
+                        <Textarea id="project2_core" value={formData.project2_core} onChange={handleInputChange} placeholder="Describe the core logic and functionality of the project..." />
+                        <Textarea id="project2_tools" value={formData.project2_tools} onChange={handleInputChange} placeholder="List the tools and technologies used for this project..." />
                     </div>
                 </div>
             )}
