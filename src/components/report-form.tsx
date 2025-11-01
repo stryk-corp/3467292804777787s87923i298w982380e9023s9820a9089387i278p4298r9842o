@@ -247,6 +247,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                       <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." /></div>
                       <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." /></div>
                       <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values..." /></div>
+                      <div><Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label><Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer" className="min-h-[120px]" /></div>
                     </div>
                 </div>
             )}
