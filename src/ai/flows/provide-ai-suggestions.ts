@@ -40,6 +40,7 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   name: 'provideAISuggestionsPrompt',
   input: {schema: ProvideAISuggestionsInputSchema},
   output: {schema: ProvideAISuggestionsOutputSchema},
+  model: 'googleai/gemini-2.5-flash',
   prompt: `You are an academic assistant. Based on the user's partial input for a SIWES report, suggest related technical fields and skills.
 
   Here is the student's partial data:
