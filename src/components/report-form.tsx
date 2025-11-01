@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { generateCompanyProfile } from '@/ai/flows/generate-company-profile';
 import { generateReportSections } from '@/ai/flows/generate-report-sections';
 import { provideAISuggestions } from '@/ai/flows/provide-ai-suggestions';
+import { generateSkillsChapter } from '@/ai/flows/generate-skills-chapter';
 
 interface ReportFormProps {
   formData: ReportData;
@@ -30,7 +31,7 @@ type Suggestion = {
     careerPath?: string;
 }
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -38,6 +39,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   const [loadingStates, setLoadingStates] = useState({
     profile: false,
     sections: false,
+    skills: false,
   });
   const [suggestions, setSuggestions] = useState<Suggestion>({});
   const { toast } = useToast();
@@ -66,36 +68,57 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   }, [debouncedSuggestionQuery]);
 
   useEffect(() => {
-    async function autoGenerateSections() {
+    async function autoGenerateContent() {
       const requiredFields = [
         'placeOfAttachment', 'supervisorNames', 'departmentName', 'fieldOfStudy',
         'attachmentLocation', 'primarySkill', 'framework', 'programmingLanguage', 'careerPath'
       ];
       const allFieldsFilled = requiredFields.every(field => !!debouncedFormData[field as keyof ReportData]);
 
-      if (allFieldsFilled && !loadingStates.sections && !formData.acknowledgementText && !formData.abstractText) {
-        setLoadingStates(prev => ({...prev, sections: true}));
-        try {
-            const result = await generateReportSections(debouncedFormData);
-            setFormData(prev => ({
-                ...prev,
-                acknowledgementText: result.acknowledgementText,
-                abstractText: result.abstractText,
-            }));
-            toast({ title: "Success", description: "Acknowledgement and Abstract generated automatically." });
-        } catch (error) {
-            console.error(error);
-            toast({ variant: "destructive", title: "Error", description: "Failed to auto-generate sections." });
-        } finally {
-            setLoadingStates(prev => ({...prev, sections: false}));
+      if (allFieldsFilled) {
+        // Generate Ack and Abstract
+        if (!loadingStates.sections && !formData.acknowledgementText && !formData.abstractText) {
+          setLoadingStates(prev => ({...prev, sections: true}));
+          try {
+              const result = await generateReportSections(debouncedFormData);
+              setFormData(prev => ({
+                  ...prev,
+                  acknowledgementText: result.acknowledgementText,
+                  abstractText: result.abstractText,
+              }));
+              toast({ title: "Success", description: "Acknowledgement and Abstract generated." });
+          } catch (error) {
+              console.error(error);
+              toast({ variant: "destructive", title: "Error", description: "Failed to auto-generate sections." });
+          } finally {
+              setLoadingStates(prev => ({...prev, sections: false}));
+          }
+        }
+        
+        // Generate Skills Chapter
+        if (!loadingStates.skills && !formData.skillsChapterText) {
+            setLoadingStates(prev => ({...prev, skills: true}));
+            try {
+                const result = await generateSkillsChapter(debouncedFormData);
+                setFormData(prev => ({
+                    ...prev,
+                    skillsChapterText: result.skillsChapterText,
+                }));
+                toast({ title: "Success", description: "Chapter 3 (Skills Learnt) generated." });
+            } catch (error) {
+                console.error(error);
+                toast({ variant: "destructive", title: "Error", description: "Failed to generate Chapter 3." });
+            } finally {
+                setLoadingStates(prev => ({...prev, skills: false}));
+            }
         }
       }
     }
 
-    if (currentStep >= 3 && !formData.acknowledgementText && !formData.abstractText) {
-        autoGenerateSections();
+    if (currentStep >= 4) {
+        autoGenerateContent();
     }
-  }, [debouncedFormData, currentStep, formData.acknowledgementText, formData.abstractText, setFormData, toast, loadingStates.sections]);
+  }, [debouncedFormData, currentStep, formData, setFormData, toast, loadingStates]);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -202,7 +225,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
             
             {currentStep === 2 && (
                 <div className="space-y-6 animate-in fade-in-0 duration-300">
-                    <h2 className="text-2xl font-semibold text-foreground mb-6">Attachment Information</h2>
+                    <h2 className="text-2xl font-semibold text-foreground mb-6">Company Information</h2>
                      <div className="space-y-6">
                         <div><Label htmlFor="placeOfAttachment">Place of Attachment</Label><Input id="placeOfAttachment" value={formData.placeOfAttachment} onChange={handleInputChange} placeholder="e.g., Nanocodes Programming Limited" /></div>
                         <div><Label htmlFor="attachmentLocation">Attachment Location (Address)</Label><Input id="attachmentLocation" value={formData.attachmentLocation} onChange={handleInputChange} placeholder="e.g., 31 Enugu Road, Nsukka" /></div>
@@ -213,14 +236,22 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                             <Textarea id="companyProfile" value={formData.companyProfile} onChange={handleInputChange} placeholder="Generated by AI or enter manually..." className="min-h-[120px]" />
                         </div>
                         <div><Label htmlFor="scopeOfSpecialization">Scope of Specialization (Services)</Label><Textarea id="scopeOfSpecialization" value={formData.scopeOfSpecialization} onChange={handleInputChange} placeholder="Generated by AI or enter manually..." className="min-h-[120px]" /></div>
-                        <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." /></div>
-                        <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." /></div>
-                        <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values..." /></div>
                     </div>
                 </div>
             )}
 
             {currentStep === 3 && (
+                 <div className="space-y-6 animate-in fade-in-0 duration-300">
+                    <h2 className="text-2xl font-semibold text-foreground mb-6">Organizational Structure</h2>
+                    <div className="space-y-6">
+                      <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." /></div>
+                      <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." /></div>
+                      <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values..." /></div>
+                    </div>
+                </div>
+            )}
+
+            {currentStep === 4 && (
                 <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Technical Details</h2>
                     <p className="text-muted-foreground -mt-4">Provide these details to help the AI write a better report.</p>
@@ -235,7 +266,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                 </div>
             )}
 
-             {currentStep === 4 && (
+             {currentStep === 5 && (
                 <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Projects Developed</h2>
                     <p className="text-muted-foreground -mt-4">Describe the projects you worked on during your internship.</p>
@@ -265,11 +296,11 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                 </div>
             )}
 
-            {currentStep === 5 && (
+            {currentStep === 6 && (
                  <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Report Content</h2>
                      <div className="flex items-center text-sm text-muted-foreground mb-4">
-                        {loadingStates.sections ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span>Auto-generating sections...</span></> : <span>Acknowledgement & Abstract are auto-generated. Others are manual.</span>}
+                        {(loadingStates.sections || loadingStates.skills) && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span>Auto-generating sections...</span></>}
                      </div>
                     <div className="space-y-6">
                         <div>
@@ -279,6 +310,10 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                         <div>
                            <Label htmlFor="abstractText">Abstract</Label>
                            <Textarea id="abstractText" value={formData.abstractText} onChange={handleInputChange} placeholder="This will be generated automatically based on your inputs..." className="min-h-[150px]" />
+                        </div>
+                        <div>
+                           <Label htmlFor="skillsChapterText">Chapter 3: Skills Learnt</Label>
+                           <Textarea id="skillsChapterText" value={formData.skillsChapterText} onChange={handleInputChange} placeholder="This will be generated automatically based on your inputs..." className="min-h-[150px]" />
                         </div>
                         <div>
                             <Label htmlFor="challengesText">Challenges Encountered & Solutions</Label>

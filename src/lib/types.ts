@@ -27,6 +27,7 @@ export interface ReportData {
   careerPath: string;
   acknowledgementText: string;
   abstractText: string;
+  skillsChapterText: string;
   challengesText: string;
   conclusionText: string;
   attachmentImages: string[];
