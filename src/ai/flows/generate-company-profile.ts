@@ -40,9 +40,7 @@ const companyProfilePrompt = ai.definePrompt({
   input: {schema: GenerateCompanyProfileInputSchema},
   output: {schema: GenerateCompanyProfileOutputSchema},
   prompt: `You are a business analyst. Provide a concise, professional company profile and a list of their main services, based on the search results. Return JSON only.\n\nFind the company profile and main services for \"{{{placeOfAttachment}}}\".`,
-  tools: [{
-    name: 'google_search',
-  }]
+  tools: ['googleSearch'],
 });
 
 const generateCompanyProfileFlow = ai.defineFlow(
