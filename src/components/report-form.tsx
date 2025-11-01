@@ -146,14 +146,11 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     });
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
     } else {
-        toast({
-            title: "Report Generation Finished!",
-            description: "You can now copy or print your report from the preview.",
-        });
+        await handleRegenerate();
     }
   };
 
@@ -188,15 +185,19 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   };
 
   const handleRegenerate = async () => {
+    if (!allFieldsFilled) {
+      toast({ variant: "destructive", title: "Missing Information", description: "Please fill all required fields before generating." });
+      return;
+    }
     setLoadingStates(prev => ({ ...prev, regenerate: true }));
-    toast({ title: "Regenerating Content", description: "Please wait while the AI rewrites the report sections..." });
+    toast({ title: "Generating Report Content", description: "Please wait while the AI writes the report sections..." });
     
     // Clear existing text to indicate regeneration
     setFormData(prev => ({
         ...prev,
-        acknowledgementText: "Regenerating...",
-        abstractText: "Regenerating...",
-        skillsChapterText: "Regenerating...",
+        acknowledgementText: "Generating...",
+        abstractText: "Generating...",
+        skillsChapterText: "Generating...",
     }));
 
     try {
@@ -218,16 +219,16 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
           }));
         })(),
       ]);
-      toast({ title: "Success!", description: "Report sections have been regenerated." });
+      toast({ title: "Success!", description: "Report sections have been generated." });
     } catch (error) {
       console.error("Regeneration Error:", error);
-      toast({ variant: "destructive", title: "Error", description: "Failed to regenerate content." });
+      toast({ variant: "destructive", title: "Error", description: "Failed to generate content." });
        // Restore previous content on error if needed, or clear it
        setFormData(prev => ({
         ...prev,
-        acknowledgementText: prev.acknowledgementText === 'Regenerating...' ? '' : prev.acknowledgementText,
-        abstractText: prev.abstractText === 'Regenerating...' ? '' : prev.abstractText,
-        skillsChapterText: prev.skillsChapterText === 'Regenerating...' ? '' : prev.skillsChapterText,
+        acknowledgementText: prev.acknowledgementText === 'Generating...' ? '' : prev.acknowledgementText,
+        abstractText: prev.abstractText === 'Generating...' ? '' : prev.abstractText,
+        skillsChapterText: prev.skillsChapterText === 'Generating...' ? '' : prev.skillsChapterText,
       }));
     } finally {
       setLoadingStates(prev => ({ ...prev, regenerate: false }));
@@ -397,17 +398,17 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
              <div className="mt-10 flex justify-between items-center">
                 <Button type="button" onClick={handlePrev} variant="outline" disabled={currentStep === 1}>Previous</Button>
                 
-                {allFieldsFilled && (
-                    <AiButton
-                        onClick={handleRegenerate}
-                        loading={loadingStates.regenerate}
-                        variant="secondary"
-                    >
-                        Regenerate Report
-                    </AiButton>
-                )}
-
-                <Button type="button" onClick={handleNext} variant="default">{currentStep === TOTAL_STEPS ? 'Finish' : 'Next'}</Button>
+                <Button 
+                  type="button" 
+                  onClick={handleNext} 
+                  variant="default"
+                  disabled={loadingStates.regenerate || (currentStep === TOTAL_STEPS && !allFieldsFilled)}
+                >
+                  {loadingStates.regenerate && <Loader2 className="animate-spin" />}
+                  <span className="ml-2">
+                    {currentStep === TOTAL_STEPS ? 'Generate Report' : 'Next'}
+                  </span>
+                </Button>
             </div>
         </form>
     </div>
