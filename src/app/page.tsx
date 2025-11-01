@@ -77,11 +77,11 @@ export default function Home() {
   });
 
   return (
-    <div className="flex flex-col md:flex-row w-full min-h-screen bg-background">
-      <div className="w-full md:w-1/2 lg:w-[45%] xl:w-1/3 p-4 md:p-8 form-container md:overflow-y-auto md:h-screen">
+    <div className="flex flex-col items-center w-full min-h-screen bg-background p-4 sm:p-8">
+      <div className="w-full max-w-4xl">
         <Card className="bg-card/80 border-0 shadow-none">
-          <CardHeader className="p-2 md:p-4">
-            <div className="flex items-center gap-3 mb-2">
+          <CardHeader className="p-2 md:p-4 text-center">
+            <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
               <CardTitle className="text-3xl font-bold text-foreground">SIWES AI Pro</CardTitle>
             </div>
@@ -93,7 +93,7 @@ export default function Home() {
         <ReportForm formData={formData} setFormData={setFormData} />
       </div>
 
-      <div className="w-full md:w-1/2 lg:w-[55%] xl:w-2/3 p-4 md:p-8 preview-container bg-muted/40 md:overflow-y-auto md:h-screen">
+      <div className="w-full mt-8">
         <ReportPreview formData={formData} setFormData={setFormData} />
       </div>
     </div>
