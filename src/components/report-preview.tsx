@@ -99,6 +99,19 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
   const handleProject2CodeSnippetCaptionChange = createHandler('project2_codeSnippetCaption');
 
 
+  const figures = [
+    { images: previewData.attachmentImages, prefix: "1.1", caption: previewData.attachmentCaption },
+    { images: previewData.profileImages, prefix: "1.2", caption: previewData.profileCaption },
+    { images: previewData.organogramImage, prefix: "2.1", caption: previewData.organogramCaption },
+    { images: previewData.project1_useCaseDiagram, prefix: "4.1.1", caption: previewData.project1_useCaseCaption },
+    { images: previewData.project1_welcomeScreenImages, prefix: "4.1.2", caption: previewData.project1_welcomeScreenCaption },
+    { images: previewData.project1_signInImages, prefix: "4.1.3", caption: previewData.project1_signInCaption },
+    { images: previewData.project1_signUpImages, prefix: "4.1.4", caption: previewData.project1_signUpCaption },
+    { images: previewData.project1_homeScreenImages, prefix: "4.1.5", caption: previewData.project1_homeScreenCaption },
+    { images: previewData.project2_codeSnippetImages, prefix: "4.1.6", caption: previewData.project2_codeSnippetCaption },
+  ].filter(fig => fig.images.length > 0);
+
+
   return (
     <Card id="preview-content" className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg text-center">
       <style jsx global>{`
@@ -167,6 +180,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             Acknowledgement<br />
             Abstract<br />
             Table of Contents<br />
+            List of Figures<br />
             <br />
             <strong>Chapter One: Introduction</strong><br />
             1.1 Brief History of SIWES<br />
@@ -196,6 +210,22 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         </p>
       </div>
       
+      {/* List of Figures */}
+       <div style={{ pageBreakBefore: 'always' }} className="text-left">
+            <h2>LIST OF FIGURES</h2>
+            <div className="prose prose-sm">
+                {figures.length > 0 ? (
+                    figures.map((fig, index) => (
+                        <p key={index} className="text-sm leading-relaxed">
+                            Figure {fig.prefix}: {fig.caption}
+                        </p>
+                    ))
+                ) : (
+                    <p><Placeholder>Figures will be listed here as you add them to the report.</Placeholder></p>
+                )}
+            </div>
+        </div>
+
       {/* Chapter 1 */}
       <div style={{ pageBreakBefore: 'always' }}>
         <h2>CHAPTER 1: INTRODUCTION</h2>
@@ -360,3 +390,5 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     </Card>
   );
 }
+
+    
