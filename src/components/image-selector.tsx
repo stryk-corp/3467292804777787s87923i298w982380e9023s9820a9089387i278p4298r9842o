@@ -79,23 +79,18 @@ export function ImageSelector({
         accept="image/*"
       />
       <div className="flex justify-center">
-        <div className={cn(
-            "grid gap-4",
-            maxImages === 1
-              ? "grid-cols-1 w-full max-w-lg"
-              : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
-          )}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
             {images.map((src, index) => (
             <div key={index} className="group relative">
                 <button
                 onClick={() => handleImageClick(index)}
-                className="w-full aspect-square border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
+                className="w-full aspect-video border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
                 >
                 <Image 
                   src={src} 
                   alt={`Attachment image ${index + 1}`} 
                   fill={true} 
-                  objectFit={maxImages === 1 ? "contain" : "cover"} 
+                  objectFit="cover"
                   className="rounded-lg" 
                 />
                 </button>
@@ -112,7 +107,7 @@ export function ImageSelector({
             <div className="text-center">
                 <button
                     onClick={handleAddClick}
-                    className="w-full aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full aspect-video border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
                     aria-label="Add new image"
                 >
                     <Plus className="w-8 h-8" />
