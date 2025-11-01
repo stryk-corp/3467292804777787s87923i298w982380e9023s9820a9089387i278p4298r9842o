@@ -28,7 +28,7 @@ export default function Home() {
     companyValues: '',
     organogramImage: [],
     organogramCaption: 'Place of Attachment Organogram',
-    organogramAbbreviations: `CEO – Chief Executive Officer\nPA – Personal Assistant\nCFO – Chief Financial Officer\nCTO – Chief Technology Officer\nCOO – Chief Operating Officer\nPM – Project Manager\nAST. PM – Assistant Project Manager`,
+    organogramAbbreviations: '',
     fieldOfStudy: '',
     primarySkill: '',
     technologiesUsed: '',
