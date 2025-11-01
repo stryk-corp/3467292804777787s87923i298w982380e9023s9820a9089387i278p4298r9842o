@@ -98,15 +98,13 @@ const generateReportSectionsFlow = ai.defineFlow(
     outputSchema: GenerateReportSectionsOutputSchema,
   },
   async input => {
-    const acknowledgementTextPromise = acknowledgementPrompt(input).then(
-      res => res.output || ''
-    );
-    const abstractTextPromise = abstractPrompt(input).then(res => res.output || '');
-
-    const [acknowledgementText, abstractText] = await Promise.all([
-      acknowledgementTextPromise,
-      abstractTextPromise,
+    const [acknowledgementResult, abstractResult] = await Promise.all([
+        acknowledgementPrompt(input),
+        abstractPrompt(input),
     ]);
+
+    const acknowledgementText = acknowledgementResult.output;
+    const abstractText = abstractResult.output;
 
     if (!acknowledgementText || !abstractText) {
       throw new Error('Failed to generate one or more report sections. The AI returned empty content.');
