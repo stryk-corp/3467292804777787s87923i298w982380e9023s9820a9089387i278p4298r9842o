@@ -21,6 +21,7 @@ function formatPreviewText(text: string | undefined | null) {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+    .replace(/• (.*$)/gim, '<li class="ml-8 list-disc">$1</li>')
     .replace(/\n/g, '<br />');
 
   return { __html: html };
@@ -35,6 +36,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     scopeOfSpecializationHtml: formatPreviewText(formData.scopeOfSpecialization),
     challengesHtml: formatPreviewText(formData.challengesText),
     organogramAbbreviationsHtml: formatPreviewText(formData.organogramAbbreviations),
+    conclusionHtml: formatPreviewText(formData.conclusionText),
 
     // Chapter 4
     projectIntroHtml: formatPreviewText(formData.projectIntro),
@@ -98,7 +100,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
   return (
     <Card id="preview-content" className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg">
       <style jsx global>{`
-        #preview-content h1, #preview-content h2, #preview-content h3 {
+        #preview-content h1, #preview-content h2, #preview-content h3, #preview-content h4 {
             font-weight: 700;
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
@@ -107,6 +109,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         #preview-content h1 { font-size: 1.8rem; text-align: center; border-bottom: 2px solid hsl(var(--border)); padding-bottom: 1rem; }
         #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; }
         #preview-content h3 { font-size: 1.1rem; font-weight: 600; }
+        #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
       `}</style>
 
@@ -320,7 +323,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Chapter 5 */}
       <div style={{ pageBreakBefore: 'always' }}>
-        <h2>CHAPTER 5: CONCLUSION</h2>
+        <h2>CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
         <h3>5.1 Challenges Encountered and Solutions</h3>
          {previewData.challengesHtml ? (
              <div dangerouslySetInnerHTML={previewData.challengesHtml} className="prose"></div>
@@ -328,7 +331,11 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
              <p><Placeholder>Describe the challenges you faced in Step 4.</Placeholder></p>
          )}
         <h3>5.2 Conclusion</h3>
-        <p>The Students Industrial Work Experience Scheme at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong> has been an invaluable and enlightening experience. It provided a practical dimension to my academic studies and has solidified my interest in pursuing a career in <strong>{previewData.careerPath || <Placeholder>Desired Career Path</Placeholder>}</strong>. The hands-on experience and the challenges overcome have equipped me with the confidence and skills necessary for my future professional endeavors.</p>
+        {previewData.conclusionHtml ? (
+            <p dangerouslySetInnerHTML={previewData.conclusionHtml}></p>
+        ) : (
+            <p><Placeholder>Conclusion will be auto-generated.</Placeholder></p>
+        )}
       </div>
 
     </Card>

@@ -28,6 +28,7 @@ export interface ReportData {
   acknowledgementText: string;
   abstractText: string;
   challengesText: string;
+  conclusionText: string;
   attachmentImages: string[];
   attachmentCaption: string;
   profileImages: string[];
