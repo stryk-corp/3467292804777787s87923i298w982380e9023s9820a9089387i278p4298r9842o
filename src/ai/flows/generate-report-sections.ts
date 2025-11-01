@@ -54,7 +54,7 @@ const reportSectionsPrompt = ai.definePrompt({
 
     **Acknowledgement Instructions:**
     - The tone should be formal and grateful.
-    - Generate at least 3 paragraphs.
+    - Generate at least 3 long, detailed paragraphs.
     - Creatively thank the following, without just listing them. Elaborate on their contributions:
       - God Almighty.
       - The company: {{{placeOfAttachment}}}. Mention the CEO, {{{ceoName}}}, by name if available.
@@ -64,7 +64,7 @@ const reportSectionsPrompt = ai.definePrompt({
     - Student's Name: {{{fullName}}}.
     
     **Abstract Instructions:**
-    - Generate a comprehensive and technical abstract of at least 2-3 paragraphs.
+    - Generate a brief and concise abstract of about one paragraph.
     - Summarize the student's experience, skills gained, and the scope of the report.
     - Use this data to construct a detailed narrative:
       - Place of Attachment: {{{placeOfAttachment}}}

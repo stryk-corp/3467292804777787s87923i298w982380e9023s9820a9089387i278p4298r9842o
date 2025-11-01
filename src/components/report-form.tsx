@@ -73,7 +73,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
       ];
       const allFieldsFilled = requiredFields.every(field => !!debouncedFormData[field as keyof ReportData]);
 
-      if (allFieldsFilled && !loadingStates.sections) {
+      if (allFieldsFilled && !loadingStates.sections && !formData.acknowledgementText && !formData.abstractText) {
         setLoadingStates(prev => ({...prev, sections: true}));
         try {
             const result = await generateReportSections(debouncedFormData);
@@ -95,7 +95,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     if (currentStep >= 3) {
         autoGenerateSections();
     }
-  }, [debouncedFormData, currentStep]);
+  }, [debouncedFormData, currentStep, formData.acknowledgementText, formData.abstractText, setFormData, toast, loadingStates.sections]);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -155,7 +155,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
   const SuggestionPill = ({ field }: { field: keyof Suggestion }) => {
     const suggestionValue = suggestions[field];
-    if (!suggestionValue || formData[field]) return null;
+    if (!suggestionValue || formData[field as keyof ReportData]) return null;
 
     const applySuggestion = () => {
         setFormData(prev => ({ ...prev, [field]: suggestionValue }));

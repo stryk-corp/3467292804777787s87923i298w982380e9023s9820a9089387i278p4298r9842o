@@ -21,11 +21,11 @@ export default function Home() {
     attachmentLocation: '31 Enugu Road, Nsukka',
     supervisorNames: 'Mr. Ebuka Chikodinaka, Mr. Harrison Ozioko',
     ceoName: 'Mr. Harrison Ozioko',
-    companyProfile: '',
-    scopeOfSpecialization: '',
+    companyProfile: `Nanocodes Programming Limited is a dynamic software development company specializing in creating innovative solutions for a wide range of clients. They focus on mobile and web application development, leveraging modern technologies to deliver high-quality products.`,
+    scopeOfSpecialization: `- Mobile App Development (iOS & Android)\n- Web Application Development\n- UI/UX Design\n- Corporate Training`,
     fieldOfStudy: 'Software Development',
     primarySkill: 'App Development',
-    technologiesUsed: 'Dart, Flutter, Firebase, Git',
+    technologiesUsed: 'Dart, Flutter, Firebase, Git, VS Code',
     programmingLanguage: 'Dart',
     framework: 'Flutter',
     careerPath: 'Mobile App Development',
@@ -33,6 +33,7 @@ export default function Home() {
     abstractText: '',
     challengesText: 'One of the main challenges was adapting to the large, existing codebase for a production application. Initially, understanding the architecture and finding where to make changes was difficult. I overcame this by pair-programming with a senior developer and spending extra time studying the documentation.',
     attachmentImages: [],
+    attachmentImageCaptions: [],
   });
 
   return (

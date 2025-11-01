@@ -2,23 +2,26 @@
 
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus, Image as ImageIcon, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import Image from 'next/image';
+import { Input } from '@/components/ui/input';
 
 interface ImageSelectorProps {
   images: string[];
+  captions: string[];
   onImagesChange: (images: string[]) => void;
+  onCaptionsChange: (captions: string[]) => void;
   maxImages?: number;
   figurePrefix?: string;
-  captionText?: string;
 }
 
 export function ImageSelector({
   images,
+  captions,
   onImagesChange,
+  onCaptionsChange,
   maxImages = 3,
   figurePrefix = '1.',
-  captionText = 'Image',
 }: ImageSelectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -38,6 +41,8 @@ export function ImageSelector({
         } else {
           // Add new image
           onImagesChange([...images, newImage]);
+          // Add a default caption
+          onCaptionsChange([...captions, '']);
         }
       };
       reader.readAsDataURL(file);
@@ -62,7 +67,16 @@ export function ImageSelector({
     e.stopPropagation(); // Prevent triggering the image click
     const updatedImages = images.filter((_, i) => i !== index);
     onImagesChange(updatedImages);
+    const updatedCaptions = captions.filter((_, i) => i !== index);
+    onCaptionsChange(updatedCaptions);
   };
+
+  const handleCaptionChange = (index: number, value: string) => {
+    const updatedCaptions = [...captions];
+    updatedCaptions[index] = value;
+    onCaptionsChange(updatedCaptions);
+  };
+
 
   return (
     <div className="my-4">
@@ -78,27 +92,34 @@ export function ImageSelector({
           <div key={index} className="group relative text-center">
             <button
               onClick={() => handleImageClick(index)}
-              className="w-full aspect-video border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full aspect-square border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
             >
               <Image src={src} alt={`Attachment image ${index + 1}`} layout="fill" objectFit="cover" className="rounded-lg" />
             </button>
              <button
                 onClick={(e) => handleRemoveImage(index, e)}
-                className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 aria-label="Remove image"
             >
                 <X className="w-4 h-4" />
             </button>
-            <p className="text-sm text-muted-foreground mt-2 italic">
-              Figure {figurePrefix}{index + 1}: {captionText}
-            </p>
+            <div className="mt-2 text-sm">
+                <span className="font-bold">Figure {figurePrefix}{index + 1}: </span>
+                <Input 
+                    type="text"
+                    value={captions[index] || ''}
+                    onChange={(e) => handleCaptionChange(index, e.target.value)}
+                    placeholder="Enter a caption"
+                    className="mt-1 h-8 text-sm font-bold"
+                />
+            </div>
           </div>
         ))}
         {images.length < maxImages && (
           <div className="text-center">
              <button
                 onClick={handleAddClick}
-                className="w-full aspect-video border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
                 aria-label="Add new image"
             >
                 <Plus className="w-8 h-8" />

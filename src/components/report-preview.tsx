@@ -40,6 +40,10 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     setFormData(prev => ({...prev, attachmentImages: images}));
   };
 
+  const handleCaptionsChange = (captions: string[]) => {
+    setFormData(prev => ({ ...prev, attachmentImageCaptions: captions }));
+  };
+
   return (
     <Card id="preview-content" className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg">
       <style jsx global>{`
@@ -135,10 +139,11 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <p>My Industrial Training was undertaken at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong>.</p>
         <ImageSelector
           images={previewData.attachmentImages}
+          captions={previewData.attachmentImageCaptions}
           onImagesChange={handleImagesChange}
+          onCaptionsChange={handleCaptionsChange}
           maxImages={3}
           figurePrefix="1."
-          captionText={`Place of Attachment (${previewData.placeOfAttachment || '...'})`}
         />
         <h3>1.4 BRIEF PROFILE OF PLACE OF ATTACHMENT</h3>
         {previewData.companyProfileHtml ? (
