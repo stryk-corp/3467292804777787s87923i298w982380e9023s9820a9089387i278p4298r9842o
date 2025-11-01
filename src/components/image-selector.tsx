@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 interface ImageSelectorProps {
   images: string[];
@@ -78,14 +79,25 @@ export function ImageSelector({
         accept="image/*"
       />
       <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className={cn(
+            "grid gap-4",
+            maxImages === 1
+              ? "grid-cols-1 w-full max-w-lg"
+              : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+          )}>
             {images.map((src, index) => (
             <div key={index} className="group relative">
                 <button
                 onClick={() => handleImageClick(index)}
                 className="w-full aspect-square border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
                 >
-                <Image src={src} alt={`Attachment image ${index + 1}`} layout="fill" objectFit="cover" className="rounded-lg" />
+                <Image 
+                  src={src} 
+                  alt={`Attachment image ${index + 1}`} 
+                  fill={true} 
+                  objectFit={maxImages === 1 ? "contain" : "cover"} 
+                  className="rounded-lg" 
+                />
                 </button>
                 <button
                     onClick={(e) => handleRemoveImage(index, e)}
