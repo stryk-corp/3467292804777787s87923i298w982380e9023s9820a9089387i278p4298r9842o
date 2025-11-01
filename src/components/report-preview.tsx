@@ -111,6 +111,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         #preview-content h3 { font-size: 1.1rem; font-weight: 600; }
         #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
+        #preview-content .prose ul { list-style-type: none; padding: 0; }
       `}</style>
 
       {/* Cover Page */}
@@ -140,7 +141,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       <div style={{ pageBreakBefore: 'always' }}>
         <h2>ACKNOWLEDGEMENT</h2>
         {previewData.acknowledgementHtml ? (
-            <p dangerouslySetInnerHTML={previewData.acknowledgementHtml}></p>
+            <div dangerouslySetInnerHTML={previewData.acknowledgementHtml}></div>
         ) : (
             <p><Placeholder>This section will be automatically generated based on your inputs.</Placeholder></p>
         )}
@@ -150,7 +151,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       <div style={{ pageBreakBefore: 'always' }}>
         <h2>ABSTRACT</h2>
         {previewData.abstractHtml ? (
-            <p dangerouslySetInnerHTML={previewData.abstractHtml}></p>
+            <div dangerouslySetInnerHTML={previewData.abstractHtml}></div>
         ) : (
             <p><Placeholder>This section will be automatically generated based on your inputs.</Placeholder></p>
         )}
@@ -211,7 +212,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         />
         <h3>1.4 BRIEF PROFILE OF PLACE OF ATTACHMENT</h3>
         {previewData.companyProfileHtml ? (
-            <p dangerouslySetInnerHTML={previewData.companyProfileHtml}></p>
+            <div dangerouslySetInnerHTML={previewData.companyProfileHtml}></div>
         ) : (
             <p><Placeholder>This section will be filled in by the AI profile generator.</Placeholder></p>
         )}
@@ -271,53 +272,65 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       <div style={{ pageBreakBefore: 'always' }}>
         <h2>CHAPTER 4: PROJECT DEVELOPED</h2>
         <h3>4.1 INTRODUCTION</h3>
-        <p dangerouslySetInnerHTML={previewData.projectIntroHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.projectIntroHtml!}></div>
         
         <h4>4.1.1 The first project...</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_introHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.project1_introHtml!}></div>
         
         <h4>4.1.2 Project Description</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_descHtml!}></p>
-        <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} />
+        <div>
+          <div dangerouslySetInnerHTML={previewData.project1_descHtml!}></div>
+          <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} />
+        </div>
         
         <h4>4.1.2.1 Welcome Screen</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml!}></p>
-        <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" />
+        <div>
+          <div dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml!}></div>
+          <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" />
+        </div>
 
         <h4>4.1.2.2 Sign-In Screen</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_signInScreenHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.project1_signInScreenHtml!}></div>
         
         <h4>4.1.2.3 Validation and Error Handling</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_validationHtml!}></p>
-        <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" />
+        <div>
+          <div dangerouslySetInnerHTML={previewData.project1_validationHtml!}></div>
+          <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" />
+        </div>
 
         <h4>4.1.2.4 Sign-Up Screen</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml!}></p>
-        <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" />
+        <div>
+          <div dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml!}></div>
+          <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" />
+        </div>
         
         <h4>4.1.2.5 Home Screen</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_homeScreenHtml!}></p>
-        <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" />
+        <div>
+          <div dangerouslySetInnerHTML={previewData.project1_homeScreenHtml!}></div>
+          <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" />
+        </div>
         
         <h4>4.1.3 Tools and Technologies Used</h4>
-        <p dangerouslySetInnerHTML={previewData.project1_toolsHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.project1_toolsHtml!}></div>
         
         <h3>4.2 Calculator App</h3>
-        <p dangerouslySetInnerHTML={previewData.project2_introHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.project2_introHtml!}></div>
         
         <h4>4.2.1 Project Description</h4>
         <h4>4.2.1.1 Calculator Structure</h4>
-        <p dangerouslySetInnerHTML={previewData.project2_structureHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.project2_structureHtml!}></div>
         
         <h4>4.2.1.2 User Interface Design</h4>
-        <p dangerouslySetInnerHTML={previewData.project2_uiHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.project2_uiHtml!}></div>
 
-        <h4>4.2.1.3 Core Functionality</h4>
-        <p dangerouslySetInnerHTML={previewData.project2_coreHtml!}></p>
-        <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" />
+        <h4>4a.2.1.3 Core Functionality</h4>
+        <div>
+            <div dangerouslySetInnerHTML={previewData.project2_coreHtml!}></div>
+            <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" />
+        </div>
         
         <h3>4.3 Tools and Technologies Used</h3>
-        <p dangerouslySetInnerHTML={previewData.project2_toolsHtml!}></p>
+        <div dangerouslySetInnerHTML={previewData.project2_toolsHtml!}></div>
       </div>
 
 
@@ -332,7 +345,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
          )}
         <h3>5.2 Conclusion</h3>
         {previewData.conclusionHtml ? (
-            <p dangerouslySetInnerHTML={previewData.conclusionHtml}></p>
+            <div dangerouslySetInnerHTML={previewData.conclusionHtml}></div>
         ) : (
             <p><Placeholder>Conclusion will be auto-generated.</Placeholder></p>
         )}
