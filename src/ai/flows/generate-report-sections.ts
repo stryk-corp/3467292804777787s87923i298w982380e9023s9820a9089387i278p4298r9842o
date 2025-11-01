@@ -47,7 +47,7 @@ export type GenerateReportSectionsOutput = z.infer<
 const acknowledgementPrompt = ai.definePrompt({
   name: 'acknowledgementPrompt',
   input: {schema: GenerateReportSectionsInputSchema},
-  output: {schema: z.string().nullable()},
+  output: {schema: z.string()},
   model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
     Generate a comprehensive and professional acknowledgement section. The tone should be formal and grateful.
@@ -68,7 +68,7 @@ const acknowledgementPrompt = ai.definePrompt({
 const abstractPrompt = ai.definePrompt({
   name: 'abstractPrompt',
   input: {schema: GenerateReportSectionsInputSchema},
-  output: {schema: z.string().nullable()},
+  output: {schema: z.string()},
   model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
     Generate a comprehensive and technical abstract for a SIWES report. 
@@ -107,6 +107,10 @@ const generateReportSectionsFlow = ai.defineFlow(
       acknowledgementTextPromise,
       abstractTextPromise,
     ]);
+
+    if (!acknowledgementText || !abstractText) {
+      throw new Error('Failed to generate one or more report sections. The AI returned empty content.');
+    }
 
     return {acknowledgementText, abstractText};
   }
