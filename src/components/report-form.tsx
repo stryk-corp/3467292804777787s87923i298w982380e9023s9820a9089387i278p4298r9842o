@@ -209,15 +209,15 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                 <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Basic Information</h2>
                     <div className="grid grid-cols-1 gap-6">
-                        <div><Label htmlFor="fullName">Full Name</Label><Input id="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="e.g., Chima Courage Chiemeka" /></div>
-                        <div><Label htmlFor="regNumber">Registration Number</Label><Input id="regNumber" value={formData.regNumber} onChange={handleInputChange} placeholder="e.g., 2021/247172" /></div>
-                        <div><Label htmlFor="universityName">University Name</Label><Input id="universityName" value={formData.universityName} onChange={handleInputChange} placeholder="e.g., University of Nigeria, Nsukka" /></div>
-                        <div><Label htmlFor="facultyName">Faculty Name</Label><Input id="facultyName" value={formData.facultyName} onChange={handleInputChange} placeholder="e.g., Faculty of Physical Sciences" /></div>
-                        <div><Label htmlFor="departmentName">Department Name</Label><Input id="departmentName" value={formData.departmentName} onChange={handleInputChange} placeholder="e.g., Department of Computer Science" /></div>
-                        <div><Label htmlFor="courseCode">Course Code</Label><Input id="courseCode" value={formData.courseCode} onChange={handleInputChange} placeholder="e.g., COS 384" /></div>
+                        <div><Label htmlFor="fullName">Full Name</Label><Input id="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="e.g., John Doe" /></div>
+                        <div><Label htmlFor="regNumber">Registration Number</Label><Input id="regNumber" value={formData.regNumber} onChange={handleInputChange} placeholder="e.g., 2021/123456" /></div>
+                        <div><Label htmlFor="universityName">University Name</Label><Input id="universityName" value={formData.universityName} onChange={handleInputChange} placeholder="e.g., Federal University of Technology" /></div>
+                        <div><Label htmlFor="facultyName">Faculty Name</Label><Input id="facultyName" value={formData.facultyName} onChange={handleInputChange} placeholder="e.g., Faculty of Engineering" /></div>
+                        <div><Label htmlFor="departmentName">Department Name</Label><Input id="departmentName" value={formData.departmentName} onChange={handleInputChange} placeholder="e.g., Department of Computer Engineering" /></div>
+                        <div><Label htmlFor="courseCode">Course Code</Label><Input id="courseCode" value={formData.courseCode} onChange={handleInputChange} placeholder="e.g., CPE 501" /></div>
                         <div className="flex space-x-4">
-                            <div className="w-1/2"><Label htmlFor="reportMonth">Report Month</Label><Input id="reportMonth" value={formData.reportMonth} onChange={handleInputChange} placeholder="e.g., February" /></div>
-                            <div className="w-1/2"><Label htmlFor="reportYear">Report Year</Label><Input type="number" id="reportYear" value={formData.reportYear} onChange={handleInputChange} placeholder="e.g., 2025" /></div>
+                            <div className="w-1/2"><Label htmlFor="reportMonth">Report Month</Label><Input id="reportMonth" value={formData.reportMonth} onChange={handleInputChange} placeholder="e.g., August" /></div>
+                            <div className="w-1/2"><Label htmlFor="reportYear">Report Year</Label><Input type="number" id="reportYear" value={formData.reportYear} onChange={handleInputChange} placeholder="e.g., 2024" /></div>
                         </div>
                     </div>
                 </div>
@@ -227,10 +227,10 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                 <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Company Information</h2>
                      <div className="space-y-6">
-                        <div><Label htmlFor="placeOfAttachment">Place of Attachment</Label><Input id="placeOfAttachment" value={formData.placeOfAttachment} onChange={handleInputChange} placeholder="e.g., Nanocodes Programming Limited" /></div>
-                        <div><Label htmlFor="attachmentLocation">Attachment Location (Address)</Label><Input id="attachmentLocation" value={formData.attachmentLocation} onChange={handleInputChange} placeholder="e.g., 31 Enugu Road, Nsukka" /></div>
-                        <div><Label htmlFor="supervisorNames">Supervisor Names (comma separated)</Label><Input id="supervisorNames" value={formData.supervisorNames} onChange={handleInputChange} placeholder="e.g., Mr. Ebuka Chikodinaka" /></div>
-                        <div><Label htmlFor="ceoName">CEO/Manager Name</Label><Input id="ceoName" value={formData.ceoName} onChange={handleInputChange} placeholder="e.g., Mr. Harrison Ozioko" /></div>
+                        <div><Label htmlFor="placeOfAttachment">Place of Attachment</Label><Input id="placeOfAttachment" value={formData.placeOfAttachment} onChange={handleInputChange} placeholder="e.g., Tech Innovations Inc." /></div>
+                        <div><Label htmlFor="attachmentLocation">Attachment Location (Address)</Label><Input id="attachmentLocation" value={formData.attachmentLocation} onChange={handleInputChange} placeholder="e.g., 123 Tech Avenue, Silicon Valley" /></div>
+                        <div><Label htmlFor="supervisorNames">Supervisor Names (comma separated)</Label><Input id="supervisorNames" value={formData.supervisorNames} onChange={handleInputChange} placeholder="e.g., Mr. John Smith, Mrs. Jane Doe" /></div>
+                        <div><Label htmlFor="ceoName">CEO/Manager Name</Label><Input id="ceoName" value={formData.ceoName} onChange={handleInputChange} placeholder="e.g., Mr. Alex CEO" /></div>
                         <div>
                             <div className="flex justify-between items-center mb-2"><Label htmlFor="companyProfile">Brief Company Profile</Label><AiButton size="sm" variant="outline" onClick={handleGenerateProfile} loading={loadingStates.profile}>Generate Profile</AiButton></div>
                             <Textarea id="companyProfile" value={formData.companyProfile} onChange={handleInputChange} placeholder="Generated by AI or enter manually..." className="min-h-[120px]" />
@@ -257,11 +257,11 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                     <p className="text-muted-foreground -mt-4">Provide these details to help the AI write a better report.</p>
                      <div className="space-y-6">
                         <div><Label htmlFor="fieldOfStudy">Field of Study/Work</Label><Input id="fieldOfStudy" value={formData.fieldOfStudy} onChange={handleInputChange} placeholder="e.g., Software Development" /><SuggestionPill field="fieldOfStudy" /></div>
-                        <div><Label htmlFor="primarySkill">Primary Skill Area</Label><Input id="primarySkill" value={formData.primarySkill} onChange={handleInputChange} placeholder="e.g., App Development" /><SuggestionPill field="primarySkill" /></div>
-                        <div><Label htmlFor="technologiesUsed">Technologies Used (comma separated)</Label><Input id="technologiesUsed" value={formData.technologiesUsed} onChange={handleInputChange} placeholder="e.g., Dart, Flutter, VS Code" /><SuggestionPill field="technologiesUsed" /></div>
-                        <div><Label htmlFor="programmingLanguage">Primary Programming Language</Label><Input id="programmingLanguage" value={formData.programmingLanguage} onChange={handleInputChange} placeholder="e.g., Dart" /><SuggestionPill field="programmingLanguage" /></div>
-                        <div><Label htmlFor="framework">Primary Framework</Label><Input id="framework" value={formData.framework} onChange={handleInputChange} placeholder="e.g., Flutter" /><SuggestionPill field="framework" /></div>
-                        <div><Label htmlFor="careerPath">Desired Career Path</Label><Input id="careerPath" value={formData.careerPath} onChange={handleInputChange} placeholder="e.g., Mobile App Development" /><SuggestionPill field="careerPath" /></div>
+                        <div><Label htmlFor="primarySkill">Primary Skill Area</Label><Input id="primarySkill" value={formData.primarySkill} onChange={handleInputChange} placeholder="e.g., Web Development" /><SuggestionPill field="primarySkill" /></div>
+                        <div><Label htmlFor="technologiesUsed">Technologies Used (comma separated)</Label><Input id="technologiesUsed" value={formData.technologiesUsed} onChange={handleInputChange} placeholder="e.g., React, Node.js, MongoDB" /><SuggestionPill field="technologiesUsed" /></div>
+                        <div><Label htmlFor="programmingLanguage">Primary Programming Language</Label><Input id="programmingLanguage" value={formData.programmingLanguage} onChange={handleInputChange} placeholder="e.g., JavaScript" /><SuggestionPill field="programmingLanguage" /></div>
+                        <div><Label htmlFor="framework">Primary Framework</Label><Input id="framework" value={formData.framework} onChange={handleInputChange} placeholder="e.g., Next.js" /><SuggestionPill field="framework" /></div>
+                        <div><Label htmlFor="careerPath">Desired Career Path</Label><Input id="careerPath" value={formData.careerPath} onChange={handleInputChange} placeholder="e.g., Full Stack Developer" /><SuggestionPill field="careerPath" /></div>
                     </div>
                 </div>
             )}
@@ -272,11 +272,11 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                     <p className="text-muted-foreground -mt-4">Describe the projects you worked on during your internship.</p>
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4">
                       <h3 className="text-lg font-semibold">Overall Project Introduction</h3>
-                      <Textarea id="projectIntro" value={formData.projectIntro} onChange={handleInputChange} placeholder="Provide a brief introduction to the projects you worked on. E.g., 'During my SIWES training, I developed two main projects: a portfolio app and a real-time chat application...'" className="min-h-[100px]" />
+                      <Textarea id="projectIntro" value={formData.projectIntro} onChange={handleInputChange} placeholder="Provide a brief introduction to the projects you worked on. E.g., 'During my SIWES training, I developed two main projects...'" className="min-h-[100px]" />
                     </div>
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
                         <h3 className="text-lg font-semibold">Project 1</h3>
-                        <Textarea id="project1_intro" value={formData.project1_intro} onChange={handleInputChange} placeholder="Give your first project a title and introduce it. E.g., 'Project 1: Portfolio App. This project focused on creating a personal portfolio website to showcase my skills...'" className="min-h-[100px]" />
+                        <Textarea id="project1_intro" value={formData.project1_intro} onChange={handleInputChange} placeholder="Give your first project a title and introduce it here..." className="min-h-[100px]" />
                         <Textarea id="project1_desc" value={formData.project1_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
                         <Textarea id="project1_welcomeScreen" value={formData.project1_welcomeScreen} onChange={handleInputChange} placeholder="Describe the welcome/entry screen of your project..."/>
                         <Textarea id="project1_signInScreen" value={formData.project1_signInScreen} onChange={handleInputChange} placeholder="Describe the sign-in screen and its components..."/>
