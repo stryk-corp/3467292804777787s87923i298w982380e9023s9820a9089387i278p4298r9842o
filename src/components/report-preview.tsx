@@ -50,6 +50,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     project1_homeScreenHtml: formatPreviewText(formData.project1_homeScreen),
     project1_toolsHtml: formatPreviewText(formData.project1_tools),
     project2_introHtml: formatPreviewText(formData.project2_intro),
+    project2_descHtml: formatPreviewText(formData.project2_desc),
     project2_structureHtml: formatPreviewText(formData.project2_structure),
     project2_uiHtml: formatPreviewText(formData.project2_ui),
     project2_coreHtml: formatPreviewText(formData.project2_core),
@@ -186,7 +187,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             <br />
             <strong>Chapter Four: Project Developed</strong><br />
             4.1 Introduction<br />
-            4.2 Calculator App<br />
+            4.2 Project 1<br />
+            4.3 Project 2<br />
             <br />
             <strong>Chapter Five: Conclusion</strong><br />
             5.1 Challenges Encountered<br />
@@ -276,7 +278,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <h3>4.1 INTRODUCTION</h3>
         <div dangerouslySetInnerHTML={previewData.projectIntroHtml || {__html: "<p><Placeholder>Enter project intro in Step 5.</Placeholder></p>"}}></div>
         
-        <h4>4.1.1 The first project...</h4>
+        <h4>4.1.1 Project 1</h4>
         <div dangerouslySetInnerHTML={previewData.project1_introHtml || {__html: "<p><Placeholder>Describe project 1 in Step 5.</Placeholder></p>"}}></div>
         
         <h4>4.1.2 Project Description</h4>
@@ -285,49 +287,51 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
           <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} />
         </div>
         
-        <h4>4.1.2.1 Welcome Screen</h4>
+        <h4>4.1.2.1 A Key Feature</h4>
         <div>
-          <div dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml || {__html: "<p><Placeholder>Describe the welcome screen in Step 5.</Placeholder></p>"}}></div>
+          <div dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml || {__html: "<p><Placeholder>Describe a key feature or screen in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" />
         </div>
 
-        <h4>4.1.2.2 Sign-In Screen</h4>
-        <div dangerouslySetInnerHTML={previewData.project1_signInScreenHtml || {__html: "<p><Placeholder>Describe the sign-in screen in Step 5.</Placeholder></p>"}}></div>
+        <h4>4.1.2.2 Another Feature</h4>
+        <div dangerouslySetInnerHTML={previewData.project1_signInScreenHtml || {__html: "<p><Placeholder>Describe another feature or screen in Step 5.</Placeholder></p>"}}></div>
         
-        <h4>4.1.2.3 Validation and Error Handling</h4>
+        <h4>4.1.2.3 Challenges and Solutions</h4>
         <div>
-          <div dangerouslySetInnerHTML={previewData.project1_validationHtml || {__html: "<p><Placeholder>Describe validation in Step 5.</Placeholder></p>"}}></div>
+          <div dangerouslySetInnerHTML={previewData.project1_validationHtml || {__html: "<p><Placeholder>Describe any challenges for this project in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" />
         </div>
 
-        <h4>4.1.2.4 Sign-Up Screen</h4>
+        <h4>4.1.2.4 Another Part of the Project</h4>
         <div>
-          <div dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml || {__html: "<p><Placeholder>Describe the sign-up screen in Step 5.</Placeholder></p>"}}></div>
+          <div dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml || {__html: "<p><Placeholder>Describe another part of the project in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" />
         </div>
         
-        <h4>4.1.2.5 Home Screen</h4>
+        <h4>4.1.2.5 Final State/Main View</h4>
         <div>
-          <div dangerouslySetInnerHTML={previewData.project1_homeScreenHtml || {__html: "<p><Placeholder>Describe the home screen in Step 5.</Placeholder></p>"}}></div>
+          <div dangerouslySetInnerHTML={previewData.project1_homeScreenHtml || {__html: "<p><Placeholder>Describe the final state or main view of the project in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" />
         </div>
         
         <h4>4.1.3 Tools and Technologies Used</h4>
         <div dangerouslySetInnerHTML={previewData.project1_toolsHtml || {__html: "<p><Placeholder>List tools for project 1 in Step 5.</Placeholder></p>"}}></div>
         
-        <h3>4.2 Calculator App</h3>
+        <h3>4.2 Project 2</h3>
         <div dangerouslySetInnerHTML={previewData.project2_introHtml || {__html: "<p><Placeholder>Introduce project 2 in Step 5.</Placeholder></p>"}}></div>
         
         <h4>4.2.1 Project Description</h4>
-        <h4>4.2.1.1 Calculator Structure</h4>
-        <div dangerouslySetInnerHTML={previewData.project2_structureHtml || {__html: "<p><Placeholder>Describe calculator structure in Step 5.</Placeholder></p>"}}></div>
+        <div dangerouslySetInnerHTML={previewData.project2_descHtml || {__html: "<p><Placeholder>Describe project 2 in Step 5.</Placeholder></p>"}}></div>
+
+        <h4>4.2.1.1 Project Structure</h4>
+        <div dangerouslySetInnerHTML={previewData.project2_structureHtml || {__html: "<p><Placeholder>Describe the project's structure in Step 5.</Placeholder></p>"}}></div>
         
-        <h4>4.2.1.2 User Interface Design</h4>
-        <div dangerouslySetInnerHTML={previewData.project2_uiHtml || {__html: "<p><Placeholder>Describe calculator UI in Step 5.</Placeholder></p>"}}></div>
+        <h4>4.2.1.2 User Interface</h4>
+        <div dangerouslySetInnerHTML={previewData.project2_uiHtml || {__html: "<p><Placeholder>Describe the project's UI in Step 5.</Placeholder></p>"}}></div>
 
         <h4>4.2.1.3 Core Functionality</h4>
         <div>
-            <div dangerouslySetInnerHTML={previewData.project2_coreHtml || {__html: "<p><Placeholder>Describe calculator core functions in Step 5.</Placeholder></p>"}}></div>
+            <div dangerouslySetInnerHTML={previewData.project2_coreHtml || {__html: "<p><Placeholder>Describe the project's core functionality in Step 5.</Placeholder></p>"}}></div>
             <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" />
         </div>
         

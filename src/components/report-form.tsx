@@ -278,8 +278,8 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                         <h3 className="text-lg font-semibold">Project 1</h3>
                         <Textarea id="project1_intro" value={formData.project1_intro} onChange={handleInputChange} placeholder="Give your first project a title and introduce it here..." className="min-h-[100px]" />
                         <Textarea id="project1_desc" value={formData.project1_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
-                        <Textarea id="project1_welcomeScreen" value={formData.project1_welcomeScreen} onChange={handleInputChange} placeholder="Describe a key feature or component of your project..."/>
-                        <Textarea id="project1_signInScreen" value={formData.project1_signInScreen} onChange={handleInputChange} placeholder="Describe another feature or component..."/>
+                        <Textarea id="project1_welcomeScreen" value={formData.project1_welcomeScreen} onChange={handleInputChange} placeholder="Describe a key feature or screen..."/>
+                        <Textarea id="project1_signInScreen" value={formData.project1_signInScreen} onChange={handleInputChange} placeholder="Describe another feature or screen..."/>
                         <Textarea id="project1_validation" value={formData.project1_validation} onChange={handleInputChange} placeholder="Explain any challenges and solutions for this project..."/>
                         <Textarea id="project1_signUpScreen" value={formData.project1_signUpScreen} onChange={handleInputChange} placeholder="Describe another part of the project..."/>
                         <Textarea id="project1_homeScreen" value={formData.project1_homeScreen} onChange={handleInputChange} placeholder="Describe the final state or main view of the project..."/>
@@ -288,7 +288,8 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
                         <h3 className="text-lg font-semibold">Project 2</h3>
                         <Textarea id="project2_intro" value={formData.project2_intro} onChange={handleInputChange} placeholder="Give your second project a title and introduce it here..." className="min-h-[100px]" />
-                        <Textarea id="project2_structure" value={formData.project2_structure} onChange={handleInputChange} placeholder="Describe the project's structure and architecture..." />
+                        <Textarea id="project2_desc" value={formData.project2_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
+                        <Textarea id="project2_structure" value={formData.project2_structure} onChange={handleInputChange} placeholder="Describe the project's structure..." />
                         <Textarea id="project2_ui" value={formData.project2_ui} onChange={handleInputChange} placeholder="Describe the User Interface design and key components..." />
                         <Textarea id="project2_core" value={formData.project2_core} onChange={handleInputChange} placeholder="Describe the core logic and functionality of the project..." />
                         <Textarea id="project2_tools" value={formData.project2_tools} onChange={handleInputChange} placeholder="List the tools and technologies used for this project..." />
@@ -335,5 +336,3 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     </div>
   );
 }
-
-    
