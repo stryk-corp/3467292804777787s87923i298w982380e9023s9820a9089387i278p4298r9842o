@@ -77,36 +77,38 @@ export function ImageSelector({
         className="hidden"
         accept="image/*"
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {images.map((src, index) => (
-          <div key={index} className="group relative">
-            <button
-              onClick={() => handleImageClick(index)}
-              className="w-full aspect-square border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
-            >
-              <Image src={src} alt={`Attachment image ${index + 1}`} layout="fill" objectFit="cover" className="rounded-lg" />
-            </button>
-             <button
-                onClick={(e) => handleRemoveImage(index, e)}
-                className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                aria-label="Remove image"
-            >
-                <X className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-        {images.length < maxImages && (
-          <div className="text-center">
-             <button
-                onClick={handleAddClick}
-                className="w-full aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
-                aria-label="Add new image"
-            >
-                <Plus className="w-8 h-8" />
-                <span>Add Image</span>
-            </button>
-          </div>
-        )}
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {images.map((src, index) => (
+            <div key={index} className="group relative">
+                <button
+                onClick={() => handleImageClick(index)}
+                className="w-full aspect-square border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
+                >
+                <Image src={src} alt={`Attachment image ${index + 1}`} layout="fill" objectFit="cover" className="rounded-lg" />
+                </button>
+                <button
+                    onClick={(e) => handleRemoveImage(index, e)}
+                    className="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    aria-label="Remove image"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+            ))}
+            {images.length < maxImages && (
+            <div className="text-center">
+                <button
+                    onClick={handleAddClick}
+                    className="w-full aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+                    aria-label="Add new image"
+                >
+                    <Plus className="w-8 h-8" />
+                    <span>Add Image</span>
+                </button>
+            </div>
+            )}
+        </div>
       </div>
 
        {images.length > 0 && (
