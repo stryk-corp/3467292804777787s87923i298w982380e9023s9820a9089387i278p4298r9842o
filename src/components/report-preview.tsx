@@ -1,10 +1,13 @@
 'use client';
 
+import type { Dispatch, SetStateAction } from 'react';
 import { ReportData } from '@/lib/types';
 import { Card } from '@/components/ui/card';
+import { ImageSelector } from '@/components/image-selector';
 
 interface ReportPreviewProps {
   formData: ReportData;
+  setFormData: Dispatch<SetStateAction<ReportData>>;
 }
 
 const Placeholder = ({ children }: { children: React.ReactNode }) => (
@@ -23,7 +26,7 @@ function formatPreviewText(text: string | undefined | null) {
   return { __html: html };
 }
 
-export default function ReportPreview({ formData }: ReportPreviewProps) {
+export default function ReportPreview({ formData, setFormData }: ReportPreviewProps) {
   const previewData = {
     ...formData,
     acknowledgementHtml: formatPreviewText(formData.acknowledgementText),
@@ -31,6 +34,10 @@ export default function ReportPreview({ formData }: ReportPreviewProps) {
     companyProfileHtml: formatPreviewText(formData.companyProfile),
     scopeOfSpecializationHtml: formatPreviewText(formData.scopeOfSpecialization),
     challengesHtml: formatPreviewText(formData.challengesText),
+  };
+  
+  const handleImagesChange = (images: string[]) => {
+    setFormData(prev => ({...prev, attachmentImages: images}));
   };
 
   return (
@@ -77,7 +84,7 @@ export default function ReportPreview({ formData }: ReportPreviewProps) {
         {previewData.acknowledgementHtml ? (
             <p dangerouslySetInnerHTML={previewData.acknowledgementHtml}></p>
         ) : (
-            <p><Placeholder>This will be automatically generated based on your inputs in the previous steps.</Placeholder></p>
+            <p><Placeholder>This section will be automatically generated based on your inputs.</Placeholder></p>
         )}
       </div>
 
@@ -87,7 +94,7 @@ export default function ReportPreview({ formData }: ReportPreviewProps) {
         {previewData.abstractHtml ? (
             <p dangerouslySetInnerHTML={previewData.abstractHtml}></p>
         ) : (
-            <p><Placeholder>This will be automatically generated based on your inputs in the previous steps.</Placeholder></p>
+            <p><Placeholder>This section will be automatically generated based on your inputs.</Placeholder></p>
         )}
       </div>
 
@@ -126,6 +133,13 @@ export default function ReportPreview({ formData }: ReportPreviewProps) {
         <p>SIWES aims to bridge the gap between theory and practice, provide students with an opportunity to apply their knowledge in real-world situations, and expose them to work methods and techniques in handling equipment and machinery that may not be available in their institutions.</p>
         <h3>1.3 PLACE OF ATTACHMENT</h3>
         <p>My Industrial Training was undertaken at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong>.</p>
+        <ImageSelector
+          images={previewData.attachmentImages}
+          onImagesChange={handleImagesChange}
+          maxImages={3}
+          figurePrefix="1."
+          captionText={`Place of Attachment (${previewData.placeOfAttachment || '...'})`}
+        />
         <h3>1.4 BRIEF PROFILE OF PLACE OF ATTACHMENT</h3>
         {previewData.companyProfileHtml ? (
             <p dangerouslySetInnerHTML={previewData.companyProfileHtml}></p>

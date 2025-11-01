@@ -32,6 +32,7 @@ export default function Home() {
     acknowledgementText: '',
     abstractText: '',
     challengesText: 'One of the main challenges was adapting to the large, existing codebase for a production application. Initially, understanding the architecture and finding where to make changes was difficult. I overcame this by pair-programming with a senior developer and spending extra time studying the documentation.',
+    attachmentImages: [],
   });
 
   return (
@@ -52,7 +53,7 @@ export default function Home() {
       </div>
 
       <div className="w-full md:w-1/2 lg:w-[55%] xl:w-2/3 p-4 md:p-8 preview-container bg-muted/40 md:overflow-y-auto md:h-screen">
-        <ReportPreview formData={formData} />
+        <ReportPreview formData={formData} setFormData={setFormData} />
       </div>
     </div>
   );
