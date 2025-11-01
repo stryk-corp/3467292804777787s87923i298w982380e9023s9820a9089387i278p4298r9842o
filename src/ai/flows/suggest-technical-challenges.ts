@@ -35,6 +35,7 @@ const prompt = ai.definePrompt({
   name: 'suggestTechnicalChallengesPrompt',
   input: {schema: SuggestTechnicalChallengesInputSchema},
   output: {schema: SuggestTechnicalChallengesOutputSchema},
+  model: 'googleai/gemini-2.5-flash',
   prompt: `You are a senior developer and mentor. Provide practical advice for a beginner.
 
   What are 3-5 common challenges and their solutions for a beginner learning {{technologiesUsed}}?
