@@ -44,6 +44,7 @@ const acknowledgementPrompt = ai.definePrompt({
   name: 'acknowledgementPrompt',
   input: {schema: GenerateReportSectionsInputSchema},
   output: {schema: z.string()},
+  model: 'googleai/gemini-2.5-flash',
   prompt: `You are an AI assistant that helps students write their SIWES report.
     Generate an acknowledgement based on the following data:
     - Place of Attachment: {{{placeOfAttachment}}}
@@ -60,6 +61,7 @@ const abstractPrompt = ai.definePrompt({
   name: 'abstractPrompt',
   input: {schema: GenerateReportSectionsInputSchema},
   output: {schema: z.string()},
+  model: 'googleai/gemini-2.5-flash',
   prompt: `You are an AI assistant that helps students write their SIWES report.
     Generate a new abstract based on the following data:
     - Place of Attachment: {{{placeOfAttachment}}}
