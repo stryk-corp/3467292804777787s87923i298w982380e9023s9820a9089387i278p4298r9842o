@@ -10,6 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import { googleSearch } from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const GenerateCompanyProfileInputSchema = z.object({
@@ -40,7 +41,7 @@ const companyProfilePrompt = ai.definePrompt({
   input: {schema: GenerateCompanyProfileInputSchema},
   output: {schema: GenerateCompanyProfileOutputSchema},
   prompt: `You are a business analyst. Provide a concise, professional company profile and a list of their main services, based on the search results. Return JSON only.\n\nFind the company profile and main services for \"{{{placeOfAttachment}}}\".`,
-  tools: ['googleSearch'],
+  tools: [googleSearch],
 });
 
 const generateCompanyProfileFlow = ai.defineFlow(
