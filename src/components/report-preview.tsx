@@ -100,7 +100,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
 
   return (
-    <Card id="preview-content" className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg">
+    <Card id="preview-content" className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg text-center">
       <style jsx global>{`
         #preview-content h1, #preview-content h2, #preview-content h3, #preview-content h4 {
             font-weight: 700;
@@ -160,7 +160,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Table of Contents */}
-      <div style={{ pageBreakBefore: 'always' }} className="prose prose-sm">
+      <div style={{ pageBreakBefore: 'always' }} className="prose prose-sm text-left">
         <h2>TABLE OF CONTENTS</h2>
         <p className="text-sm leading-relaxed">
             Cover Page<br />
@@ -258,7 +258,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         {previewData.organogramAbbreviationsHtml ? (
             <div dangerouslySetInnerHTML={previewData.organogramAbbreviationsHtml} className="prose"></div>
         ) : (
-            <p><Placeholder>Organogram abbreviations...</Placeholder></p>
+            <p><Placeholder>Enter Organogram abbreviations in step 3...</Placeholder></p>
         )}
       </div>
 
