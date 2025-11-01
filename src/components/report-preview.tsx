@@ -36,12 +36,20 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     challengesHtml: formatPreviewText(formData.challengesText),
   };
   
-  const handleImagesChange = (images: string[]) => {
+  const handleAttachmentImagesChange = (images: string[]) => {
     setFormData(prev => ({...prev, attachmentImages: images}));
   };
 
-  const handleCaptionChange = (caption: string) => {
+  const handleAttachmentCaptionChange = (caption: string) => {
     setFormData(prev => ({ ...prev, attachmentCaption: caption }));
+  };
+
+  const handleProfileImagesChange = (images: string[]) => {
+    setFormData(prev => ({...prev, profileImages: images}));
+  };
+
+  const handleProfileCaptionChange = (caption: string) => {
+    setFormData(prev => ({ ...prev, profileCaption: caption }));
   };
 
   return (
@@ -140,8 +148,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <ImageSelector
           images={previewData.attachmentImages}
           caption={previewData.attachmentCaption}
-          onImagesChange={handleImagesChange}
-          onCaptionChange={handleCaptionChange}
+          onImagesChange={handleAttachmentImagesChange}
+          onCaptionChange={handleAttachmentCaptionChange}
           maxImages={3}
           figurePrefix="1.1"
         />
@@ -151,7 +159,15 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         ) : (
             <p><Placeholder>This section will be filled in by the AI profile generator.</Placeholder></p>
         )}
-         <p>Founded and managed by <strong>{previewData.ceoName || <Placeholder>CEO Name</Placeholder>}</strong>, the company is located at <strong>{previewData.attachmentLocation || <Placeholder>Attachment Location</Placeholder>}</strong>.</p>
+        <p>Founded and managed by <strong>{previewData.ceoName || <Placeholder>CEO Name</Placeholder>}</strong>, the company is located at <strong>{previewData.attachmentLocation || <Placeholder>Attachment Location</Placeholder>}</strong>.</p>
+        <ImageSelector
+          images={previewData.profileImages}
+          caption={previewData.profileCaption}
+          onImagesChange={handleProfileImagesChange}
+          onCaptionChange={handleProfileCaptionChange}
+          maxImages={3}
+          figurePrefix="1.2"
+        />
         <h3>1.5 SCOPE OF SPECIALIZATION</h3>
         {previewData.scopeOfSpecializationHtml ? (
              <div dangerouslySetInnerHTML={previewData.scopeOfSpecializationHtml} className="prose"></div>

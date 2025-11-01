@@ -24,4 +24,6 @@ export interface ReportData {
   challengesText: string;
   attachmentImages: string[];
   attachmentCaption: string;
+  profileImages: string[];
+  profileCaption: string;
 }
