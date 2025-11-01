@@ -149,7 +149,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   };
   
   const AiButton = ({ onClick, loading, children, ...props }: React.ComponentProps<typeof Button> & { loading: boolean }) => (
-      <Button onClick={onClick} disabled={loading} {...props}>
+      <Button type="button" onClick={onClick} disabled={loading} {...props}>
           {loading ? <Loader2 className="animate-spin" /> : <Wand2 />}
           <span className="ml-2">{children}</span>
       </Button>
@@ -166,6 +166,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
     return (
         <button
+            type="button"
             onClick={applySuggestion}
             className="mt-2 flex items-center gap-2 text-sm text-accent-foreground bg-accent/20 border border-accent/30 px-3 py-1 rounded-full hover:bg-accent/30 transition-colors"
         >
@@ -253,8 +254,8 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
             )}
 
              <div className="mt-10 flex justify-between">
-                <Button onClick={handlePrev} variant="outline" disabled={currentStep === 1}>Previous</Button>
-                <Button onClick={handleNext} variant="default">{currentStep === TOTAL_STEPS ? 'Finish' : 'Next'}</Button>
+                <Button type="button" onClick={handlePrev} variant="outline" disabled={currentStep === 1}>Previous</Button>
+                <Button type="button" onClick={handleNext} variant="default">{currentStep === TOTAL_STEPS ? 'Finish' : 'Next'}</Button>
             </div>
         </form>
     </div>
