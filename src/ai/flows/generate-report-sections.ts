@@ -16,15 +16,19 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateReportSectionsInputSchema = z.object({
+  fullName: z.string().describe("The student's full name."),
+  universityName: z.string().describe("The name of the university."),
+  departmentName: z.string().describe('The name of the department.'),
+  facultyName: z.string().describe("The name of the faculty."),
   placeOfAttachment: z.string().describe('The name of the place of attachment.'),
   supervisorNames: z.string().describe('Comma-separated names of supervisors.'),
-  departmentName: z.string().describe('The name of the department.'),
   fieldOfStudy: z.string().describe('The field of study.'),
   attachmentLocation: z.string().describe('The location of the attachment.'),
   primarySkill: z.string().describe('The primary skill acquired during the attachment.'),
   framework: z.string().describe('The primary framework used.'),
   programmingLanguage: z.string().describe('The primary programming language used.'),
   careerPath: z.string().describe('The desired career path.'),
+  ceoName: z.string().optional().describe("The name of the company's CEO."),
 });
 
 export type GenerateReportSectionsInput = z.infer<
@@ -45,16 +49,20 @@ const acknowledgementPrompt = ai.definePrompt({
   input: {schema: GenerateReportSectionsInputSchema},
   output: {schema: z.string().nullable()},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an AI assistant that helps students write their SIWES report.
-    Generate an acknowledgement based on the following data:
-    - Place of Attachment: {{{placeOfAttachment}}}
-    - Supervisors: {{{supervisorNames}}}
-    - Department: {{{departmentName}}}
-    - Field of Study: {{{fieldOfStudy}}}
-    - Also include thanks to: the Dean, friends, and parents.
+  prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
+    Generate a comprehensive and professional acknowledgement section. The tone should be formal and grateful.
+    
+    The acknowledgement must be at least 3 paragraphs long and should creatively thank the following people and entities based on the data provided, without just listing them. Elaborate on their contributions.
 
-    Regenerate an acknowledgement in this format (I extend my deepest gratitude to {{{placeOfAttachment}}} for providing the invaluable opportunity... To the Head of Department of {{{departmentName}}}, IT Coordinator... To my friends... my Parents... all Staff...) but it wont be exactly like this, it can put everything in other words.
-`,
+    - God Almighty.
+    - The company: {{{placeOfAttachment}}}. Mention the CEO, {{{ceoName}}}, by name if available.
+    - Key personnel at the company, including supervisors: {{{supervisorNames}}}.
+    - The University: {{{universityName}}}, including the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}.
+    - Family, parents, and friends for their support.
+    
+    Student's Name: {{{fullName}}}.
+    
+    Generate a long, detailed, and well-written acknowledgement.`,
 });
 
 const abstractPrompt = ai.definePrompt({
@@ -62,17 +70,25 @@ const abstractPrompt = ai.definePrompt({
   input: {schema: GenerateReportSectionsInputSchema},
   output: {schema: z.string().nullable()},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an AI assistant that helps students write their SIWES report.
-    Generate a new abstract based on the following data:
+  prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
+    Generate a comprehensive and technical abstract for a SIWES report. 
+    
+    The abstract must be at least 2-3 paragraphs long and should summarize the student's experience, skills gained, and the scope of the report.
+
+    Use the following data to construct a detailed narrative:
     - Place of Attachment: {{{placeOfAttachment}}}
     - Location: {{{attachmentLocation}}}
-    - Skill Acquired: {{{primarySkill}}}
-    - Applications/Frameworks Used: {{{framework}}}
-    - Programming Language: {{{programmingLanguage}}}
-    - Career Path: {{{careerPath}}}
+    - Core Field of work: {{{fieldOfStudy}}}
+    - Primary Skill Acquired: {{{primarySkill}}}
+    - Key Technologies: {{{programmingLanguage}}}, {{{framework}}}
+    - Future Ambition: {{{careerPath}}}
 
-    Regenerate an abstract in this format (This report provides an overview of my Industrial Training (SIWES) at {{{placeOfAttachment}}}, {{{attachmentLocation}}} where I focused on {{{primarySkill}}}... The training focused on the use of {{{programmingLanguage}}} language... I learnt the basics... The report includes screenshots... The hands-on-experience... pursuing a career in {{{careerPath}}}) but it will be based on the user’s input... eg for web development will be html react or Django etc..
-`,
+    The abstract should cover:
+    1. An introduction stating the purpose of the report and where the training was undertaken.
+    2. A body explaining the specific skills learned, the technologies used ({instrumentation}), and the kind of projects or work done.
+    3. A conclusion reflecting on the experience and how it aligns with the student's career goals in {{{careerPath}}}.
+
+    Generate a long, detailed, and well-written abstract that is technical and professional.`,
 });
 
 const generateReportSectionsFlow = ai.defineFlow(

@@ -14,7 +14,6 @@ import { useToast } from '@/hooks/use-toast';
 
 import { generateCompanyProfile } from '@/ai/flows/generate-company-profile';
 import { generateReportSections } from '@/ai/flows/generate-report-sections';
-import { suggestTechnicalChallenges } from '@/ai/flows/suggest-technical-challenges';
 import { provideAISuggestions } from '@/ai/flows/provide-ai-suggestions';
 
 interface ReportFormProps {
@@ -39,7 +38,6 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   const [loadingStates, setLoadingStates] = useState({
     profile: false,
     sections: false,
-    challenges: false,
   });
   const [suggestions, setSuggestions] = useState<Suggestion>({});
   const { toast } = useToast();
@@ -51,6 +49,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   }), [formData.departmentName, formData.fieldOfStudy, formData.primarySkill]);
   
   const [debouncedSuggestionQuery] = useDebounce(suggestionQuery, 1000);
+  const [debouncedFormData] = useDebounce(formData, 1500);
 
   useEffect(() => {
     async function fetchSuggestions() {
@@ -65,6 +64,39 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     }
     fetchSuggestions();
   }, [debouncedSuggestionQuery]);
+
+  useEffect(() => {
+    async function autoGenerateSections() {
+      const requiredFields = [
+        'placeOfAttachment', 'supervisorNames', 'departmentName', 'fieldOfStudy',
+        'attachmentLocation', 'primarySkill', 'framework', 'programmingLanguage', 'careerPath'
+      ];
+      const allFieldsFilled = requiredFields.every(field => !!debouncedFormData[field as keyof ReportData]);
+
+      if (allFieldsFilled && !loadingStates.sections) {
+        setLoadingStates(prev => ({...prev, sections: true}));
+        try {
+            const result = await generateReportSections(debouncedFormData);
+            setFormData(prev => ({
+                ...prev,
+                acknowledgementText: result.acknowledgementText,
+                abstractText: result.abstractText,
+            }));
+            toast({ title: "Success", description: "Acknowledgement and Abstract generated automatically." });
+        } catch (error) {
+            console.error(error);
+            toast({ variant: "destructive", title: "Error", description: "Failed to auto-generate sections." });
+        } finally {
+            setLoadingStates(prev => ({...prev, sections: false}));
+        }
+      }
+    }
+
+    if (currentStep >= 3) {
+        autoGenerateSections();
+    }
+  }, [debouncedFormData, currentStep]);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -111,42 +143,6 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
       toast({ variant: "destructive", title: "Error", description: "Failed to generate company profile." });
     } finally {
       setLoadingStates(prev => ({ ...prev, profile: false }));
-    }
-  };
-  
-  const handleGenerateSections = async () => {
-    setLoadingStates(prev => ({...prev, sections: true}));
-    try {
-        const result = await generateReportSections(formData);
-        setFormData(prev => ({
-            ...prev,
-            acknowledgementText: result.acknowledgementText,
-            abstractText: result.abstractText,
-        }));
-        toast({ title: "Success", description: "Acknowledgement and Abstract generated." });
-    } catch (error) {
-        console.error(error);
-        toast({ variant: "destructive", title: "Error", description: "Failed to generate sections." });
-    } finally {
-        setLoadingStates(prev => ({...prev, sections: false}));
-    }
-  };
-
-  const handleGenerateChallenges = async () => {
-    if (!formData.technologiesUsed) {
-        toast({ variant: "destructive", title: "Missing Information", description: "Please enter 'Technologies Used' in Step 3." });
-        return;
-    }
-    setLoadingStates(prev => ({...prev, challenges: true}));
-    try {
-        const { challengesAndSolutions } = await suggestTechnicalChallenges({ technologiesUsed: formData.technologiesUsed });
-        setFormData(prev => ({...prev, challengesText: challengesAndSolutions}));
-        toast({ title: "Success", description: "Challenges & Solutions generated." });
-    } catch (error) {
-        console.error(error);
-        toast({ variant: "destructive", title: "Error", description: "Failed to generate challenges." });
-    } finally {
-        setLoadingStates(prev => ({...prev, challenges: false}));
     }
   };
   
@@ -238,18 +234,22 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
             {currentStep === 4 && (
                  <div className="space-y-6 animate-in fade-in-0 duration-300">
-                    <h2 className="text-2xl font-semibold text-foreground mb-6">AI Content Generation</h2>
+                    <h2 className="text-2xl font-semibold text-foreground mb-6">Report Content</h2>
+                     <div className="flex items-center text-sm text-muted-foreground mb-4">
+                        {loadingStates.sections ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span>Auto-generating Acknowledgement & Abstract...</span></> : <span>Acknowledgement & Abstract will be auto-generated.</span>}
+                     </div>
                     <div className="space-y-6">
                         <div>
-                            <div className="flex justify-between items-center mb-2"><Label htmlFor="acknowledgementText">Acknowledgement & Abstract</Label><AiButton size="sm" variant="outline" onClick={handleGenerateSections} loading={loadingStates.sections}>Generate Sections</AiButton></div>
-                            <Textarea id="acknowledgementText" value={formData.acknowledgementText} onChange={handleInputChange} placeholder="Click 'Generate Sections' to write Acknowledgement..." className="min-h-[150px]" />
+                            <Label htmlFor="acknowledgementText">Acknowledgement</Label>
+                            <Textarea id="acknowledgementText" value={formData.acknowledgementText} onChange={handleInputChange} placeholder="This will be generated automatically based on your inputs..." className="min-h-[150px]" />
                         </div>
                         <div>
-                           <Textarea id="abstractText" value={formData.abstractText} onChange={handleInputChange} placeholder="...and Abstract." className="min-h-[150px]" />
+                           <Label htmlFor="abstractText">Abstract</Label>
+                           <Textarea id="abstractText" value={formData.abstractText} onChange={handleInputChange} placeholder="This will be generated automatically based on your inputs..." className="min-h-[150px]" />
                         </div>
                         <div>
-                            <div className="flex justify-between items-center mb-2"><Label htmlFor="challengesText">Challenges & Solutions</Label><AiButton size="sm" variant="outline" onClick={handleGenerateChallenges} loading={loadingStates.challenges}>Suggest Challenges</AiButton></div>
-                            <Textarea id="challengesText" value={formData.challengesText} onChange={handleInputChange} placeholder="Click 'Suggest Challenges' based on your skills..." className="min-h-[150px] font-code" />
+                            <Label htmlFor="challengesText">Challenges Encountered & Solutions</Label>
+                            <Textarea id="challengesText" value={formData.challengesText} onChange={handleInputChange} placeholder="Describe the technical challenges you faced and how you solved them..." className="min-h-[150px]" />
                         </div>
                     </div>
                 </div>
