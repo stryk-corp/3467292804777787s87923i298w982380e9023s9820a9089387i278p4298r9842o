@@ -77,7 +77,7 @@ export default function ReportPreview({ formData }: ReportPreviewProps) {
         {previewData.acknowledgementHtml ? (
             <p dangerouslySetInnerHTML={previewData.acknowledgementHtml}></p>
         ) : (
-            <p><Placeholder>Fill out Step 4 and generate this section.</Placeholder></p>
+            <p><Placeholder>This will be automatically generated based on your inputs in the previous steps.</Placeholder></p>
         )}
       </div>
 
@@ -87,7 +87,7 @@ export default function ReportPreview({ formData }: ReportPreviewProps) {
         {previewData.abstractHtml ? (
             <p dangerouslySetInnerHTML={previewData.abstractHtml}></p>
         ) : (
-            <p><Placeholder>Fill out Step 4 and generate this section.</Placeholder></p>
+            <p><Placeholder>This will be automatically generated based on your inputs in the previous steps.</Placeholder></p>
         )}
       </div>
 
@@ -157,7 +157,7 @@ export default function ReportPreview({ formData }: ReportPreviewProps) {
          {previewData.challengesHtml ? (
              <div dangerouslySetInnerHTML={previewData.challengesHtml} className="prose"></div>
          ) : (
-             <p><Placeholder>Fill out Step 4 and generate this section.</Placeholder></p>
+             <p><Placeholder>Describe the challenges you faced in Step 4.</Placeholder></p>
          )}
         <h3>3.2 Conclusion</h3>
         <p>The Students Industrial Work Experience Scheme at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong> has been an invaluable and enlightening experience. It provided a practical dimension to my academic studies and has solidified my interest in pursuing a career in <strong>{previewData.careerPath || <Placeholder>Desired Career Path</Placeholder>}</strong>. The hands-on experience and the challenges overcome have equipped me with the confidence and skills necessary for my future professional endeavors.</p>
