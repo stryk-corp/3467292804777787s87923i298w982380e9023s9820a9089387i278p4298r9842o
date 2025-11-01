@@ -44,51 +44,42 @@ export type GenerateReportSectionsOutput = z.infer<
   typeof GenerateReportSectionsOutputSchema
 >;
 
-const acknowledgementPrompt = ai.definePrompt({
-  name: 'acknowledgementPrompt',
+const reportSectionsPrompt = ai.definePrompt({
+  name: 'reportSectionsPrompt',
   input: {schema: GenerateReportSectionsInputSchema},
-  output: {schema: z.string()},
+  output: {schema: GenerateReportSectionsOutputSchema},
   model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Generate a comprehensive and professional acknowledgement section. The tone should be formal and grateful.
+    Based on the data provided, generate both an Acknowledgment and an Abstract section.
+
+    **Acknowledgement Instructions:**
+    - The tone should be formal and grateful.
+    - Generate at least 3 paragraphs.
+    - Creatively thank the following, without just listing them. Elaborate on their contributions:
+      - God Almighty.
+      - The company: {{{placeOfAttachment}}}. Mention the CEO, {{{ceoName}}}, by name if available.
+      - Key personnel, including supervisors: {{{supervisorNames}}}.
+      - The University: {{{universityName}}}, including the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}.
+      - Family, parents, and friends.
+    - Student's Name: {{{fullName}}}.
     
-    The acknowledgement must be at least 3 paragraphs long and should creatively thank the following people and entities based on the data provided, without just listing them. Elaborate on their contributions.
+    **Abstract Instructions:**
+    - Generate a comprehensive and technical abstract of at least 2-3 paragraphs.
+    - Summarize the student's experience, skills gained, and the scope of the report.
+    - Use this data to construct a detailed narrative:
+      - Place of Attachment: {{{placeOfAttachment}}}
+      - Location: {{{attachmentLocation}}}
+      - Core Field: {{{fieldOfStudy}}}
+      - Primary Skill: {{{primarySkill}}}
+      - Technologies: {{{programmingLanguage}}}, {{{framework}}}
+      - Future Ambition: {{{careerPath}}}
+    - The abstract should cover:
+      1. An introduction stating the report's purpose and training location.
+      2. A body explaining specific skills, technologies used, and work done.
+      3. A conclusion reflecting on the experience and its alignment with the student's career goals.
 
-    - God Almighty.
-    - The company: {{{placeOfAttachment}}}. Mention the CEO, {{{ceoName}}}, by name if available.
-    - Key personnel at the company, including supervisors: {{{supervisorNames}}}.
-    - The University: {{{universityName}}}, including the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}.
-    - Family, parents, and friends for their support.
-    
-    Student's Name: {{{fullName}}}.
-    
-    Generate a long, detailed, and well-written acknowledgement.`,
-});
-
-const abstractPrompt = ai.definePrompt({
-  name: 'abstractPrompt',
-  input: {schema: GenerateReportSectionsInputSchema},
-  output: {schema: z.string()},
-  model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Generate a comprehensive and technical abstract for a SIWES report. 
-    
-    The abstract must be at least 2-3 paragraphs long and should summarize the student's experience, skills gained, and the scope of the report.
-
-    Use the following data to construct a detailed narrative:
-    - Place of Attachment: {{{placeOfAttachment}}}
-    - Location: {{{attachmentLocation}}}
-    - Core Field of work: {{{fieldOfStudy}}}
-    - Primary Skill Acquired: {{{primarySkill}}}
-    - Key Technologies: {{{programmingLanguage}}}, {{{framework}}}
-    - Future Ambition: {{{careerPath}}}
-
-    The abstract should cover:
-    1. An introduction stating the purpose of the report and where the training was undertaken.
-    2. A body explaining the specific skills learned, the technologies used ({instrumentation}), and the kind of projects or work done.
-    3. A conclusion reflecting on the experience and how it aligns with the student's career goals in {{{careerPath}}}.
-
-    Generate a long, detailed, and well-written abstract that is technical and professional.`,
+    Return the final result as a single JSON object with 'acknowledgementText' and 'abstractText' keys.
+    `,
 });
 
 const generateReportSectionsFlow = ai.defineFlow(
@@ -98,19 +89,15 @@ const generateReportSectionsFlow = ai.defineFlow(
     outputSchema: GenerateReportSectionsOutputSchema,
   },
   async input => {
-    const [acknowledgementResult, abstractResult] = await Promise.all([
-        acknowledgementPrompt(input),
-        abstractPrompt(input),
-    ]);
+    const {output} = await reportSectionsPrompt(input);
 
-    const acknowledgementText = acknowledgementResult.output;
-    const abstractText = abstractResult.output;
-
-    if (!acknowledgementText || !abstractText) {
-      throw new Error('Failed to generate one or more report sections. The AI returned empty content.');
+    if (!output) {
+      throw new Error(
+        'Failed to generate report sections. The AI returned empty content.'
+      );
     }
-
-    return {acknowledgementText, abstractText};
+    
+    return output;
   }
 );
 
