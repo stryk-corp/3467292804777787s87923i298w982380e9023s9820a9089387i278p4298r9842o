@@ -42,7 +42,8 @@ const companyProfilePrompt = ai.definePrompt({
   input: {schema: GenerateCompanyProfileInputSchema},
   output: {schema: GenerateCompanyProfileOutputSchema},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are a business analyst. Based on your general knowledge about the company provided, provide the following:
+  tools: ['googleSearch'],
+  prompt: `You are a business analyst. Use your tools to research the company provided and return the following information:
     
     1. A concise, professional company profile.
     2. A list of their main services.
