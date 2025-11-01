@@ -83,9 +83,9 @@ const generateReportSectionsFlow = ai.defineFlow(
   },
   async input => {
     const acknowledgementTextPromise = acknowledgementPrompt(input).then(
-      res => res.output!
+      res => res.output || ''
     );
-    const abstractTextPromise = abstractPrompt(input).then(res => res.output!);
+    const abstractTextPromise = abstractPrompt(input).then(res => res.output || '');
 
     const [acknowledgementText, abstractText] = await Promise.all([
       acknowledgementTextPromise,
