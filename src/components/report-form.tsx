@@ -49,28 +49,12 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     sections: false,
     skills: false,
     regenerate: false,
+    suggestions: false,
   });
   const [suggestions, setSuggestions] = useState<Suggestion>({});
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   const { toast } = useToast();
-
-  const suggestionQuery = useMemo(() => ({
-      universityName: formData.universityName,
-      facultyName: formData.facultyName,
-      departmentName: formData.departmentName,
-      placeOfAttachment: formData.placeOfAttachment,
-      fieldOfStudy: formData.fieldOfStudy,
-      primarySkill: formData.primarySkill
-  }), [
-      formData.universityName,
-      formData.facultyName,
-      formData.departmentName,
-      formData.placeOfAttachment,
-      formData.fieldOfStudy,
-      formData.primarySkill
-  ]);
   
-  const [debouncedSuggestionQuery] = useDebounce(suggestionQuery, 1000);
   const [debouncedFormData] = useDebounce(formData, 1500);
 
   const requiredFields = useMemo(() => [
@@ -84,21 +68,27 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     setAllFieldsFilled(areAllFieldsFilled);
   }, [formData, requiredFields]);
 
-
-  useEffect(() => {
-    async function fetchSuggestions() {
-        const hasContext = Object.values(debouncedSuggestionQuery).some(val => !!val);
-        if (hasContext) {
-            try {
-                const result = await provideAISuggestions(debouncedSuggestionQuery);
-                setSuggestions(prev => ({ ...prev, ...result }));
-            } catch (error) {
-                console.error("AI Suggestion Error:", error);
-            }
-        }
+  const handleFetchSuggestions = async () => {
+    const hasContext = Object.values(formData).some(val => typeof val === 'string' && val.trim() !== '');
+    if (!hasContext) {
+        toast({ variant: "destructive", title: "Missing Information", description: "Please fill in at least one field to get suggestions." });
+        return;
     }
-    fetchSuggestions();
-  }, [debouncedSuggestionQuery]);
+
+    setLoadingStates(prev => ({...prev, suggestions: true}));
+    toast({ title: "Getting Suggestions", description: "The AI is thinking..." });
+    try {
+        const result = await provideAISuggestions(formData);
+        setSuggestions(prev => ({ ...prev, ...result }));
+        toast({ title: "Suggestions Ready!", description: "AI suggestions have been added to relevant fields." });
+    } catch (error) {
+        console.error("AI Suggestion Error:", error);
+        toast({ variant: "destructive", title: "Error", description: "Could not fetch AI suggestions." });
+    } finally {
+        setLoadingStates(prev => ({...prev, suggestions: false}));
+    }
+  };
+
 
   const runAutoGeneration = async () => {
     // Generate Ack and Abstract
@@ -285,10 +275,18 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
   return (
     <div className="mt-6">
-        <div className="mb-8">
+        <div className="mb-4">
             <p className="text-sm font-medium text-primary">Step {currentStep} of {TOTAL_STEPS}</p>
             <Progress value={(currentStep / TOTAL_STEPS) * 100} className="w-full h-2 mt-2" />
         </div>
+        
+        <div className="mb-8 text-center">
+            <Button type="button" onClick={handleFetchSuggestions} disabled={loadingStates.suggestions} variant="outline" size="sm">
+                {loadingStates.suggestions ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                <span className="ml-2">Get AI Suggestions</span>
+            </Button>
+        </div>
+
 
         <form>
             {currentStep === 1 && (
@@ -437,3 +435,5 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     </div>
   );
 }
+
+    
