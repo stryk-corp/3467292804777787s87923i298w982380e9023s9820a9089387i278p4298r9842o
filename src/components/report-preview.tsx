@@ -16,13 +16,24 @@ const Placeholder = ({ children }: { children: React.ReactNode }) => (
 
 function formatPreviewText(text: string | undefined | null) {
   if (!text) return null;
+  
+  // Create a regex to find markdown headings (###) and bold text (**)
+  const combinedRegex = /(###\s.*)|(\*\*.*?\*\*)/g;
+
   const html = text
     .replace(/</g, "&lt;").replace(/>/g, "&gt;") // Basic HTML escape
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br />') // Convert newlines to <br>
+    .replace(combinedRegex, (match) => {
+      if (match.startsWith('###')) {
+        return `<h3>${match.substring(4)}</h3>`;
+      }
+      if (match.startsWith('**')) {
+        return `<strong>${match.substring(2, match.length - 2)}</strong>`;
+      }
+      return match;
+    })
     .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
-    .replace(/• (.*$)/gim, '<li class="ml-8 list-disc">$1</li>')
-    .replace(/\n/g, '<br />');
+    .replace(/• (.*$)/gim, '<li class="ml-8 list-disc">$1</li>');
 
   return { __html: html };
 }
@@ -390,7 +401,3 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     </Card>
   );
 }
-
-    
-
-    
