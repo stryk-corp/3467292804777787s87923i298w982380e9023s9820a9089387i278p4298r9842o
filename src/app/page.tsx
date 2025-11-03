@@ -46,6 +46,7 @@ export default function Home() {
     profileCaption: 'Company Office Environment',
 
     // Chapter 4 Data
+    projectsDescription: "",
     projectIntro: "",
     project1_intro: "",
     project1_desc: "",

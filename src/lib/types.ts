@@ -36,6 +36,7 @@ export interface ReportData {
   profileCaption: string;
 
   // Chapter 4
+  projectsDescription: string;
   projectIntro: string;
   project1_intro: string;
   project1_desc: string;

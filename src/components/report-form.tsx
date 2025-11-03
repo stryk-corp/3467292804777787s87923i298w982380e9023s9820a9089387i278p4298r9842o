@@ -37,6 +37,10 @@ type Suggestion = {
     companyMission?: string;
     companyValues?: string;
     organogramAbbreviations?: string;
+    project1_intro?: string;
+    project1_desc?: string;
+    project2_intro?: string;
+    project2_desc?: string;
 }
 
 const TOTAL_STEPS = 6;
@@ -303,6 +307,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                             <div className="w-1/2"><Label htmlFor="reportMonth">Report Month</Label><Input id="reportMonth" value={formData.reportMonth} onChange={handleInputChange} placeholder="e.g., August" /></div>
                             <div className="w-1/2"><Label htmlFor="reportYear">Report Year</Label><Input type="number" id="reportYear" value={formData.reportYear} onChange={handleInputChange} placeholder="e.g., 2024" /></div>
                         </div>
+                        <div><Label htmlFor="projectsDescription">All Projects Description</Label><Textarea id="projectsDescription" value={formData.projectsDescription} onChange={handleInputChange} placeholder="Briefly describe the projects you worked on. e.g., 'I built a company dashboard and a blog...'" className="min-h-[120px]" /></div>
                     </div>
                 </div>
             )}
@@ -363,7 +368,9 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
                         <h3 className="text-lg font-semibold">Project 1</h3>
                         <Textarea id="project1_intro" value={formData.project1_intro} onChange={handleInputChange} placeholder="Give your first project a title and introduce it here..." className="min-h-[100px]" />
+                        <SuggestionPill field="project1_intro"/>
                         <Textarea id="project1_desc" value={formData.project1_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
+                        <SuggestionPill field="project1_desc"/>
                         <Textarea id="project1_welcomeScreen" value={formData.project1_welcomeScreen} onChange={handleInputChange} placeholder="Describe a key feature or screen..."/>
                         <Textarea id="project1_signInScreen" value={formData.project1_signInScreen} onChange={handleInputChange} placeholder="Describe another feature or screen..."/>
                         <Textarea id="project1_validation" value={formData.project1_validation} onChange={handleInputChange} placeholder="Explain any challenges and solutions for this project..."/>
@@ -374,7 +381,9 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
                         <h3 className="text-lg font-semibold">Project 2</h3>
                         <Textarea id="project2_intro" value={formData.project2_intro} onChange={handleInputChange} placeholder="Give your second project a title and introduce it here..." className="min-h-[100px]" />
+                        <SuggestionPill field="project2_intro"/>
                         <Textarea id="project2_desc" value={formData.project2_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
+                        <SuggestionPill field="project2_desc"/>
                         <Textarea id="project2_structure" value={formData.project2_structure} onChange={handleInputChange} placeholder="Describe the project's structure..." />
                         <Textarea id="project2_ui" value={formData.project2_ui} onChange={handleInputChange} placeholder="Describe the User Interface design and key components..." />
                         <Textarea id="project2_core" value={formData.project2_core} onChange={handleInputChange} placeholder="Describe the core logic and functionality of the project..." />
@@ -435,5 +444,3 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     </div>
   );
 }
-
-    

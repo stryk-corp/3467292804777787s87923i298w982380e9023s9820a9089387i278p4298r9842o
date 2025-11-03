@@ -24,6 +24,7 @@ const ProvideAISuggestionsInputSchema = z.object({
   placeOfAttachment: z.string().optional().describe("The name of the company."),
   fieldOfStudy: z.string().optional().describe('The field of study.'),
   primarySkill: z.string().optional().describe('The primary skill area.'),
+  projectsDescription: z.string().optional().describe('A manual description of the projects worked on.'),
 });
 export type ProvideAISuggestionsInput = z.infer<typeof ProvideAISuggestionsInputSchema>;
 
@@ -42,6 +43,10 @@ const ProvideAISuggestionsOutputSchema = z.object({
   companyMission: z.string().optional().describe("A suggested company mission statement."),
   companyValues: z.string().optional().describe("Suggested company core values."),
   organogramAbbreviations: z.string().optional().describe("Suggested abbreviations for an organogram."),
+  project1_intro: z.string().optional().describe("A suggested introduction for Project 1."),
+  project1_desc: z.string().optional().describe("A suggested description for Project 1."),
+  project2_intro: z.string().optional().describe("A suggested introduction for Project 2."),
+  project2_desc: z.string().optional().describe("A suggested description for Project 2."),
 });
 export type ProvideAISuggestionsOutput = z.infer<typeof ProvideAISuggestionsOutputSchema>;
 
@@ -63,8 +68,11 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   - Place of Attachment: {{{placeOfAttachment}}}
   - Field of Study: {{{fieldOfStudy}}}
   - Primary Skill: {{{primarySkill}}}
+  - Projects Description: {{{projectsDescription}}}
 
   Based on this context, provide helpful and relevant suggestions for any of the following fields that the user has not yet filled out. Be creative and realistic.
+  If the user has provided a "Projects Description", use it to generate detailed and distinct suggestions for 'project1_intro', 'project1_desc', 'project2_intro', and 'project2_desc'.
+
   - courseCode
   - fieldOfStudy
   - primarySkill
@@ -79,6 +87,10 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   - companyMission
   - companyValues
   - organogramAbbreviations
+  - project1_intro
+  - project1_desc
+  - project2_intro
+  - project2_desc
 
   Return the suggestions in JSON format. Only provide suggestions for fields that are likely to be relevant based on the input. Do not suggest a value for a field if the user has already provided one.
   `,
