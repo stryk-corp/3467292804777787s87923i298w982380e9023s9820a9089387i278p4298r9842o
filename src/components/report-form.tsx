@@ -33,6 +33,10 @@ type Suggestion = {
     challengesText?: string;
     conclusionText?: string;
     projectIntro?: string;
+    companyVision?: string;
+    companyMission?: string;
+    companyValues?: string;
+    organogramAbbreviations?: string;
 }
 
 const TOTAL_STEPS = 6;
@@ -326,10 +330,10 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                  <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Organizational Structure</h2>
                     <div className="space-y-6">
-                      <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." /></div>
-                      <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." /></div>
-                      <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values..." /></div>
-                      <div><Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label><Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer" className="min-h-[120px]" /></div>
+                      <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." /><SuggestionPill field="companyVision"/></div>
+                      <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." /><SuggestionPill field="companyMission"/></div>
+                      <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values..." /><SuggestionPill field="companyValues"/></div>
+                      <div><Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label><Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer" className="min-h-[120px]" /><SuggestionPill field="organogramAbbreviations"/></div>
                     </div>
                 </div>
             )}
@@ -433,5 +437,3 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     </div>
   );
 }
-
-    

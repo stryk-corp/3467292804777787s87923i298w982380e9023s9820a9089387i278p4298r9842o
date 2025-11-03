@@ -38,6 +38,10 @@ const ProvideAISuggestionsOutputSchema = z.object({
   challengesText: z.string().optional().describe('Suggested challenges encountered.'),
   conclusionText: z.string().optional().describe('A suggested conclusion for the report.'),
   projectIntro: z.string().optional().describe("A brief introduction for the projects section."),
+  companyVision: z.string().optional().describe("A suggested company vision statement."),
+  companyMission: z.string().optional().describe("A suggested company mission statement."),
+  companyValues: z.string().optional().describe("Suggested company core values."),
+  organogramAbbreviations: z.string().optional().describe("Suggested abbreviations for an organogram."),
 });
 export type ProvideAISuggestionsOutput = z.infer<typeof ProvideAISuggestionsOutputSchema>;
 
@@ -50,7 +54,7 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   input: {schema: ProvideAISuggestionsInputSchema},
   output: {schema: ProvideAISuggestionsOutputSchema},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an academic assistant. Based on the user's partial input for a SIWES report, suggest related fields and content.
+  prompt: `You are an academic and business analyst assistant. Based on the user's partial input for a SIWES report, suggest related fields and content.
 
   Here is the student's partial data:
   - University: {{{universityName}}}
@@ -71,6 +75,10 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   - challengesText
   - conclusionText
   - projectIntro
+  - companyVision
+  - companyMission
+  - companyValues
+  - organogramAbbreviations
 
   Return the suggestions in JSON format. Only provide suggestions for fields that are likely to be relevant based on the input. Do not suggest a value for a field if the user has already provided one.
   `,
