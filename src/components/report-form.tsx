@@ -16,6 +16,7 @@ import { generateCompanyProfile } from '@/ai/flows/generate-company-profile';
 import { generateReportSections } from '@/ai/flows/generate-report-sections';
 import { provideAISuggestions } from '@/ai/flows/provide-ai-suggestions';
 import { generateSkillsChapter } from '@/ai/flows/generate-skills-chapter';
+import { generateChapterFive } from '@/ai/flows/generate-chapter-five';
 
 interface ReportFormProps {
   formData: ReportData;
@@ -52,6 +53,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     profile: false,
     sections: false,
     skills: false,
+    chapterFive: false,
     regenerate: false,
     suggestions: false,
   });
@@ -131,6 +133,25 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
             setLoadingStates(prev => ({...prev, skills: false}));
         }
     }
+
+     // Generate Chapter 5
+    if (!loadingStates.chapterFive) {
+      setLoadingStates(prev => ({...prev, chapterFive: true}));
+      try {
+          const result = await generateChapterFive(debouncedFormData);
+          setFormData(prev => ({
+              ...prev,
+              challengesText: result.challengesText,
+              conclusionText: result.conclusionText,
+          }));
+          toast({ title: "Success", description: "Chapter 5 (Challenges & Conclusion) generated." });
+      } catch (error) {
+          console.error(error);
+          toast({ variant: "destructive", title: "Error", description: "Failed to generate Chapter 5." });
+      } finally {
+          setLoadingStates(prev => ({...prev, chapterFive: false}));
+      }
+    }
   };
 
 
@@ -140,7 +161,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
       if (allRequiredFieldsFilled) {
         // Generate only if the text fields are empty to prevent overwriting user changes
-        if (!formData.acknowledgementText && !formData.abstractText && !formData.skillsChapterText) {
+        if (!formData.acknowledgementText && !formData.abstractText && !formData.skillsChapterText && !formData.challengesText && !formData.conclusionText) {
           runAutoGeneration();
         }
       }
@@ -150,7 +171,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
         autoGenerateContent();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedFormData, currentStep, requiredFields, formData.acknowledgementText, formData.abstractText, formData.skillsChapterText]);
+  }, [debouncedFormData, currentStep, requiredFields, formData.acknowledgementText, formData.abstractText, formData.skillsChapterText, formData.challengesText, formData.conclusionText]);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -212,6 +233,8 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
         acknowledgementText: "Generating...",
         abstractText: "Generating...",
         skillsChapterText: "Generating...",
+        challengesText: "Generating...",
+        conclusionText: "Generating...",
     }));
 
     try {
@@ -232,6 +255,14 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
             skillsChapterText: skillsResult.skillsChapterText,
           }));
         })(),
+         (async () => {
+          const chapterFiveResult = await generateChapterFive(formData);
+          setFormData(prev => ({
+            ...prev,
+            challengesText: chapterFiveResult.challengesText,
+            conclusionText: chapterFiveResult.conclusionText,
+          }));
+        })(),
       ]);
       toast({ title: "Success!", description: "Report sections have been generated." });
     } catch (error) {
@@ -243,6 +274,8 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
         acknowledgementText: prev.acknowledgementText === 'Generating...' ? '' : prev.acknowledgementText,
         abstractText: prev.abstractText === 'Generating...' ? '' : prev.abstractText,
         skillsChapterText: prev.skillsChapterText === 'Generating...' ? '' : prev.skillsChapterText,
+        challengesText: prev.challengesText === 'Generating...' ? '' : prev.challengesText,
+        conclusionText: prev.conclusionText === 'Generating...' ? '' : prev.conclusionText,
       }));
     } finally {
       setLoadingStates(prev => ({ ...prev, regenerate: false }));
@@ -396,7 +429,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                  <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Report Content</h2>
                      <div className="flex items-center text-sm text-muted-foreground mb-4">
-                        {(loadingStates.sections || loadingStates.skills || loadingStates.regenerate) && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span>Generating report sections... This may take a moment.</span></>}
+                        {(loadingStates.sections || loadingStates.skills || loadingStates.chapterFive || loadingStates.regenerate) && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span>Generating report sections... This may take a moment.</span></>}
                      </div>
                     <div className="space-y-6">
                         <div>
