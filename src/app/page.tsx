@@ -122,25 +122,24 @@ export default function Home() {
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
       const ratio = imgWidth / contentWidth;
-      let scaledHeight = imgHeight / ratio;
+      const scaledHeight = imgHeight / ratio;
 
       if (i > 0) {
         pdf.addPage();
       }
-
-      // Special handling for the cover page to fit on one page
+      
+      let position = margin;
+      let heightLeft = scaledHeight;
+      const pageContentHeight = pdfPageHeight - margin * 2;
+      
       if (sectionId === 'cover-page') {
-        const coverRatio = Math.min((pdfPageWidth - margin*2) / imgWidth, (pdfPageHeight - margin*2) / imgHeight);
+        const coverRatio = Math.min(contentWidth / imgWidth, pageContentHeight / imgHeight);
         const coverWidth = imgWidth * coverRatio;
         const coverHeight = imgHeight * coverRatio;
         const x_pos = (pdfPageWidth - coverWidth) / 2;
         const y_pos = (pdfPageHeight - coverHeight) / 2;
         pdf.addImage(imgData, 'PNG', x_pos, y_pos, coverWidth, coverHeight);
       } else {
-        let position = margin;
-        let heightLeft = scaledHeight;
-        const pageContentHeight = pdfPageHeight - margin * 2;
-        
         pdf.addImage(imgData, 'PNG', margin, position, contentWidth, scaledHeight);
         heightLeft -= pageContentHeight;
         
