@@ -40,13 +40,13 @@ const skillsChapterPrompt = ai.definePrompt({
   input: {schema: GenerateSkillsChapterInputSchema},
   output: {schema: GenerateSkillsChapterOutputSchema},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Based on the data provided, generate the content for Chapter 3: Skills Learnt. **Important: The content must be very detailed, comprehensive, and written in a formal, professional tone. Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
+  prompt: `You are an expert AI assistant for writing extremely detailed SIWES (Students Industrial Work Experience Scheme) reports.
+    Based on the data provided, generate the content for Chapter 3: Skills Learnt. **Critical Instruction: The content must be exceptionally detailed, comprehensive, and written in a formal, professional tone, aiming for a total length of at least 1000 words (around 5000-6000 characters). Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
 
     **Instructions:**
-    - The content should be structured into two main sections: "**3.1 Description of Skills**" and "**3.2 Tools and Technologies Used**".
-    - Elaborate extensively on the skills and technologies. Do not just list them. Explain how they were used, what you learned, and their importance in your field.
-    - Generate at least two detailed paragraphs for each section.
+    - The content must be structured into two main sections: "**3.1 Description of Skills**" and "**3.2 Tools and Technologies Used**".
+    - You must elaborate extensively on all skills and technologies. Do not just list them. Explain the concepts, how they were used in a real-world context, what you learned, the challenges you faced, and their importance in your field.
+    - Generate multiple, detailed paragraphs for each section, ensuring a deep and thorough explanation.
     - Use this data to construct a detailed narrative:
       - Primary Skill: {{{primarySkill}}}
       - Field of Study: {{{fieldOfStudy}}}
@@ -54,18 +54,21 @@ const skillsChapterPrompt = ai.definePrompt({
       - Programming Language: {{{programmingLanguage}}}
       - Framework: {{{framework}}}
     
-    Example structure to expand upon:
-    ### 3.1 Description of Skills
-    During my industrial attachment, I focused on developing and honing my skills in **{{{primarySkill}}}**, which is a critical competency within the broader field of **{{{fieldOfStudy}}}**. The training was comprehensive, covering both foundational theoretical concepts and, more importantly, their practical application in a professional, project-driven environment. I learned to... (e.g., design and implement scalable web applications, analyze complex datasets, manage network infrastructures, etc. Be very specific and elaborate on the learning process and outcomes).
+    **Example structure to expand upon in extreme detail:**
 
-    My practical experience involved... (e.g., participating in daily stand-ups, collaborating with senior developers, taking ownership of specific modules, etc. Describe the professional context).
+    ### 3.1 Description of Skills
+    (This section should be very long and detailed)
+    During my industrial attachment, I undertook an intensive and immersive program to develop and master my skills in **{{{primarySkill}}}**, which is a cornerstone competency within the broader field of **{{{fieldOfStudy}}}**. The training was multifaceted and comprehensive, moving far beyond foundational theoretical concepts to emphasize their practical application in a dynamic, professional, project-driven environment. I learned to... (e.g., design and implement scalable, resilient, and secure web applications from scratch; analyze complex datasets to derive actionable insights; manage and troubleshoot sophisticated network infrastructures; etc. Be extremely specific and elaborate on the learning process, the methodologies (like Agile/Scrum), and the tangible outcomes. Discuss the 'why' behind the techniques, not just the 'what').
+
+    My practical experience involved deep integration into the development team. This included... (e.g., participating in daily stand-up meetings, sprint planning, and retrospectives; collaborating with senior developers on complex codebases; taking full ownership of specific application modules from conception to deployment; conducting code reviews; writing technical documentation. Describe the professional context and your growth within it in great detail).
 
     ### 3.2 Tools and Technologies Used
-    To effectively carry out my tasks, I became proficient with a variety of modern tools and technologies. The primary technologies I worked with include **{{{technologiesUsed}}}**. Specifically, I utilized the **{{{programmingLanguage}}}** programming language in conjunction with the **{{{framework}}}** framework to build, test, and deploy software solutions. This involved... (e.g., writing clean, efficient code, managing state with React Hooks, building RESTful APIs with Node.js/Express, interacting with databases, using version control with Git, etc. Provide detailed explanations).
+    (This section should also be very long and detailed)
+    To effectively carry out my duties and bring projects to fruition, I became proficient with a wide variety of modern tools and industry-standard technologies. The primary technology stack I worked with includes **{{{technologiesUsed}}}**. Specifically, I utilized the **{{{programmingLanguage}}}** programming language in conjunction with the **{{{framework}}}** framework to build, test, and deploy robust software solutions. This involved... (e.g., writing clean, maintainable, and efficient code following best practices; architecting and building RESTful APIs with Node.js/Express; managing application state with advanced techniques in React Hooks; interacting with both SQL and NoSQL databases, including schema design and query optimization; implementing robust authentication and authorization systems; using version control with Git and engaging in collaborative workflows like pull requests and branching strategies. Provide highly detailed explanations and code concepts).
 
-    Furthermore, I gained experience with... (mention other tools or platforms, and explain their role in the workflow, for example, Docker for containerization, Jira for project management, or Figma for UI/UX design).
+    Furthermore, I gained extensive hands-on experience with a suite of ancillary tools that were critical to the development lifecycle. This included... (e.g., using Docker for containerization to ensure consistent development and production environments; leveraging CI/CD pipelines with tools like Jenkins or GitHub Actions to automate testing and deployment; using Jira for agile project management and ticket tracking; utilizing Figma for collaborating on and implementing UI/UX designs. Explain the specific role each tool played in your workflow and the proficiency you gained).
 
-    Return the final result as a single JSON object with a 'skillsChapterText' key. The value should be a single string containing the full chapter content with markdown for headings.
+    Return the final result as a single JSON object with a 'skillsChapterText' key. The value should be a single string containing the full, extremely detailed chapter content with markdown for headings.
     `,
 });
 

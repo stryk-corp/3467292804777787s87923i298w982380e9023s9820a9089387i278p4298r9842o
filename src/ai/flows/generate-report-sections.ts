@@ -49,34 +49,34 @@ const reportSectionsPrompt = ai.definePrompt({
   input: {schema: GenerateReportSectionsInputSchema},
   output: {schema: GenerateReportSectionsOutputSchema},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Based on the data provided, generate both an Acknowledgment and an Abstract section. **Important: Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks. The content should be very detailed and comprehensive.**
+  prompt: `You are an expert AI assistant for writing extremely detailed SIWES (Students Industrial Work Experience Scheme) reports.
+    Based on the data provided, generate both an Acknowledgment and an Abstract section. **Critical Instruction: The content must be exceptionally detailed, elaborate, and comprehensive. Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
 
     **Acknowledgement Instructions:**
-    - The tone should be formal and grateful.
-    - Generate at least 3 long, detailed paragraphs.
-    - Creatively thank the following, without just listing them. Elaborate on their contributions and the impact they had:
-      - God Almighty.
-      - The company: {{{placeOfAttachment}}}. Mention the CEO, {{{ceoName}}}, by name if available, and discuss the company's role in your development.
-      - Key personnel, including supervisors: {{{supervisorNames}}}. Describe their mentorship and guidance in detail.
-      - The University: {{{universityName}}}, including the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}.
-      - Family, parents, and friends for their support.
-    - Conclude with your name: {{{fullName}}}.
+    - The tone must be formal and deeply grateful.
+    - **Generate a very long and detailed text, aiming for at least 1000 words (around 5000-6000 characters).**
+    - Do not just list names. You must creatively and extensively thank the following, elaborating on their specific contributions and the profound impact they had on your professional and personal development.
+      - **God Almighty:** Start with a profound and personal paragraph expressing gratitude.
+      - **The Company ({{{placeOfAttachment}}}):** Dedicate several paragraphs to the company. Discuss its mission, the learning environment it fostered, and how it shaped your understanding of the industry. Mention the CEO, {{{ceoName}}}, by name if available, and discuss their leadership and vision.
+      - **Key Personnel & Supervisors ({{{supervisorNames}}}):** Write multiple, detailed paragraphs describing their mentorship. Provide specific examples of their guidance, the skills they taught you, and the professional wisdom they imparted. Describe how their support helped you overcome challenges.
+      - **The University ({{{universityName}}}):** Write extensively about the academic foundation provided by your university. Thank the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}, discussing how their leadership and the curriculum prepared you for this industrial experience.
+      - **Family and Friends:** Dedicate a heartfelt section to your family, parents, and friends. Detail the emotional, financial, and moral support they provided throughout your academic journey and the SIWES program.
+    - Conclude with your full name: {{{fullName}}}.
     
     **Abstract Instructions:**
-    - Generate a brief and concise abstract of about one long, detailed paragraph.
-    - Summarize the student's experience, skills gained, and the scope of the report.
-    - Use this data to construct a detailed narrative:
+    - Generate a comprehensive and detailed abstract. While abstracts are typically concise, make this one as thorough as possible, expanding on all points.
+    - Summarize the student's experience, skills gained, and the scope of the report in great detail.
+    - Use this data to construct an in-depth narrative:
       - Place of Attachment: {{{placeOfAttachment}}}
       - Location: {{{attachmentLocation}}}
       - Core Field: {{{fieldOfStudy}}}
       - Primary Skill: {{{primarySkill}}}
       - Technologies: {{{programmingLanguage}}}, {{{framework}}}
       - Future Ambition: {{{careerPath}}}
-    - The abstract should cover:
-      1. An introduction stating the report's purpose and the location of the industrial training.
-      2. A body explaining the specific skills acquired, technologies used, and a summary of the work performed.
-      3. A conclusion reflecting on the significance of the experience and its alignment with the student's career aspirations.
+    - The abstract must cover:
+      1. **Introduction:** A detailed opening stating the report's purpose, the context of the SIWES program, and the full details of the industrial training location and duration.
+      2. **Body:** A comprehensive explanation of the specific skills acquired. Go into detail about the technologies used, the projects worked on, the methodologies followed, and a thorough summary of the work performed and challenges faced.
+      3. **Conclusion:** A reflective conclusion on the significance of the experience, its profound impact on your learning, and how it has solidified your career aspirations in {{{careerPath}}}.
 
     Return the final result as a single JSON object with 'acknowledgementText' and 'abstractText' keys.
     `,
