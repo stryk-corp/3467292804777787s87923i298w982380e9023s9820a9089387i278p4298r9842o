@@ -49,23 +49,22 @@ const reportSectionsPrompt = ai.definePrompt({
   input: {schema: GenerateReportSectionsInputSchema},
   output: {schema: GenerateReportSectionsOutputSchema},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an expert AI assistant for writing extremely detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Based on the data provided, generate both an Acknowledgment and an Abstract section. **Critical Instruction: The content must be exceptionally detailed, elaborate, and comprehensive. Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
+  prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
+    Based on the data provided, generate both an Acknowledgment and an Abstract section. **Critical Instruction: The content must be well-detailed, elaborate, and comprehensive. Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
 
     **Acknowledgement Instructions:**
     - The tone must be formal and deeply grateful.
-    - **Generate a very long and detailed text, aiming for at least 1000 words (around 5000-6000 characters).**
     - Do not just list names. You must creatively and extensively thank the following, elaborating on their specific contributions and the profound impact they had on your professional and personal development.
       - **God Almighty:** Start with a profound and personal paragraph expressing gratitude.
-      - **The Company ({{{placeOfAttachment}}}):** Dedicate several paragraphs to the company. Discuss its mission, the learning environment it fostered, and how it shaped your understanding of the industry. Mention the CEO, {{{ceoName}}}, by name if available, and discuss their leadership and vision.
-      - **Key Personnel & Supervisors ({{{supervisorNames}}}):** Write multiple, detailed paragraphs describing their mentorship. Provide specific examples of their guidance, the skills they taught you, and the professional wisdom they imparted. Describe how their support helped you overcome challenges.
-      - **The University ({{{universityName}}}):** Write extensively about the academic foundation provided by your university. Thank the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}, discussing how their leadership and the curriculum prepared you for this industrial experience.
+      - **The Company ({{{placeOfAttachment}}}):** Dedicate paragraphs to the company. Discuss its mission, the learning environment it fostered, and how it shaped your understanding of the industry. Mention the CEO, {{{ceoName}}}, by name if available, and discuss their leadership and vision.
+      - **Key Personnel & Supervisors ({{{supervisorNames}}}):** Write detailed paragraphs describing their mentorship. Provide specific examples of their guidance, the skills they taught you, and the professional wisdom they imparted. Describe how their support helped you overcome challenges.
+      - **The University ({{{universityName}}}):** Write about the academic foundation provided by your university. Thank the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}, discussing how their leadership and the curriculum prepared you for this industrial experience.
       - **Family and Friends:** Dedicate a heartfelt section to your family, parents, and friends. Detail the emotional, financial, and moral support they provided throughout your academic journey and the SIWES program.
     - Conclude with your full name: {{{fullName}}}.
     
     **Abstract Instructions:**
-    - Generate a comprehensive and detailed abstract. While abstracts are typically concise, make this one as thorough as possible, expanding on all points.
-    - Summarize the student's experience, skills gained, and the scope of the report in great detail.
+    - Generate a comprehensive and concise abstract.
+    - Summarize the student's experience, skills gained, and the scope of the report in detail.
     - Use this data to construct an in-depth narrative:
       - Place of Attachment: {{{placeOfAttachment}}}
       - Location: {{{attachmentLocation}}}
