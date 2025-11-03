@@ -151,6 +151,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     if (currentStep >= 4) {
         autoGenerateContent();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedFormData, currentStep, requiredFields, formData.acknowledgementText, formData.abstractText, formData.skillsChapterText]);
 
 
