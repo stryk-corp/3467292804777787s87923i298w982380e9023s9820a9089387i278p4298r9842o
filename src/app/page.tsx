@@ -5,8 +5,10 @@ import ReportForm from '@/components/report-form';
 import ReportPreview from '@/components/report-preview';
 import type { ReportData } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, Printer } from 'lucide-react';
+import { Sparkles, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function Home() {
   const [formData, setFormData] = useState<ReportData>({
@@ -77,10 +79,56 @@ export default function Home() {
     project2_codeSnippetCaption: "Code Snippet for Project 2",
     project2_tools: ""
   });
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPdf = async () => {
+    const reportElement = document.getElementById('preview-content');
+    if (!reportElement) return;
+
+    setIsDownloading(true);
+
+    // Hide form for PDF generation
+    const formElement = document.getElementById('form-container');
+    if(formElement) formElement.style.display = 'none';
+
+    // A4 dimensions in pixels at 96 DPI: 794x1123
+    const a4Width = 794;
+    const a4Height = 1123;
+    const pdf = new jsPDF('p', 'px', 'a4');
+
+    const canvas = await html2canvas(reportElement, {
+      scale: 2, // Higher scale for better quality
+      useCORS: true,
+      logging: false,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+
+    const ratio = imgWidth / a4Width;
+    const pdfHeight = imgHeight / ratio;
+    let heightLeft = pdfHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, a4Width, pdfHeight);
+    heightLeft -= a4Height;
+
+    while (heightLeft > 0) {
+      position = heightLeft - pdfHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, aT4Width, pdfHeight);
+      heightLeft -= a4Height;
+    }
+
+    pdf.save('SIWES-Report.pdf');
+
+    // Show form again
+    if(formElement) formElement.style.display = 'block';
+
+    setIsDownloading(false);
   };
+
 
   return (
     <div id="main-container" className="flex flex-col items-center w-full min-h-screen bg-background p-4 sm:p-8">
@@ -90,9 +138,18 @@ export default function Home() {
             <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
               <CardTitle className="text-3xl font-bold text-foreground">SIWES AI Pro</CardTitle>
-              <Button variant="outline" size="icon" onClick={handlePrint} className="ml-4">
-                <Printer className="h-5 w-5" />
-                <span className="sr-only">Print Report</span>
+              <Button variant="outline" onClick={handleDownloadPdf} disabled={isDownloading} className="ml-4">
+                {isDownloading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span className="ml-2">Downloading...</span>
+                  </>
+                ) : (
+                   <>
+                    <Download className="h-5 w-5" />
+                    <span className="ml-2 sr-only sm:not-sr-only">Download PDF</span>
+                  </>
+                )}
               </Button>
             </div>
             <CardDescription className="text-muted-foreground">
