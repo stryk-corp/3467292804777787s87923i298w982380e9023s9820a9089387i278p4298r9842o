@@ -95,6 +95,7 @@ export default function Home() {
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
     const margin = 40; // 40pt margin
     const contentWidth = pdfPageWidth - margin * 2;
+    const pageContentHeight = pdfPageHeight - margin * 2;
 
     const sections = [
       'cover-page', 'acknowledgement-page', 'abstract-page',
@@ -108,7 +109,7 @@ export default function Home() {
       if (!element) continue;
 
       const canvas = await html2canvas(element, {
-        scale: 2, // Higher scale for better quality
+        scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
@@ -128,25 +129,25 @@ export default function Home() {
         pdf.addPage();
       }
       
+      const x_pos = (pdfPageWidth - contentWidth) / 2;
       let position = margin;
-      let heightLeft = scaledHeight;
-      const pageContentHeight = pdfPageHeight - margin * 2;
       
       if (sectionId === 'cover-page') {
         const coverRatio = Math.min(contentWidth / imgWidth, pageContentHeight / imgHeight);
         const coverWidth = imgWidth * coverRatio;
         const coverHeight = imgHeight * coverRatio;
-        const x_pos = (pdfPageWidth - coverWidth) / 2;
-        const y_pos = (pdfPageHeight - coverHeight) / 2;
-        pdf.addImage(imgData, 'PNG', x_pos, y_pos, coverWidth, coverHeight);
+        const cover_x_pos = (pdfPageWidth - coverWidth) / 2;
+        const cover_y_pos = (pdfPageHeight - coverHeight) / 2;
+        pdf.addImage(imgData, 'PNG', cover_x_pos, cover_y_pos, coverWidth, coverHeight);
       } else {
-        pdf.addImage(imgData, 'PNG', margin, position, contentWidth, scaledHeight);
+        let heightLeft = scaledHeight;
+        pdf.addImage(imgData, 'PNG', x_pos, position, contentWidth, scaledHeight);
         heightLeft -= pageContentHeight;
         
         while (heightLeft > 0) {
-          position = heightLeft - scaledHeight + margin; // This is a negative value
+          position = margin - (scaledHeight - heightLeft);
           pdf.addPage();
-          pdf.addImage(imgData, 'PNG', margin, position, contentWidth, scaledHeight);
+          pdf.addImage(imgData, 'PNG', x_pos, position, contentWidth, scaledHeight);
           heightLeft -= pageContentHeight;
         }
       }
