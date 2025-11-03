@@ -122,7 +122,7 @@ export default function Home() {
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
       const ratio = imgWidth / contentWidth;
-      const scaledHeight = imgHeight / ratio;
+      let scaledHeight = imgHeight / ratio;
 
       if (i > 0) {
         pdf.addPage();
@@ -140,12 +140,12 @@ export default function Home() {
         let position = margin;
         let heightLeft = scaledHeight;
         const pageContentHeight = pdfPageHeight - margin * 2;
-
+        
         pdf.addImage(imgData, 'PNG', margin, position, contentWidth, scaledHeight);
         heightLeft -= pageContentHeight;
-
+        
         while (heightLeft > 0) {
-          position = heightLeft - scaledHeight + margin;
+          position = heightLeft - scaledHeight + margin; // This is a negative value
           pdf.addPage();
           pdf.addImage(imgData, 'PNG', margin, position, contentWidth, scaledHeight);
           heightLeft -= pageContentHeight;
