@@ -82,3 +82,31 @@
     @apply text-muted-foreground italic;
   }
 }
+
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  #main-container {
+    padding: 0;
+  }
+  #form-container, #main-container > .mt-8 > .w-full.max-w-\[8\.5in\].mx-auto > div:not(#preview-content) {
+    display: none;
+  }
+  #preview-content {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: auto;
+    margin: 0;
+    padding: 1in;
+    box-shadow: none;
+    border: none;
+  }
+  h1, h2, h3, h4, p, li {
+    color: black !important;
+  }
+}

@@ -5,7 +5,8 @@ import ReportForm from '@/components/report-form';
 import ReportPreview from '@/components/report-preview';
 import type { ReportData } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Printer } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [formData, setFormData] = useState<ReportData>({
@@ -77,14 +78,22 @@ export default function Home() {
     project2_tools: ""
   });
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-background p-4 sm:p-8">
-      <div className="w-full max-w-4xl">
+    <div id="main-container" className="flex flex-col items-center w-full min-h-screen bg-background p-4 sm:p-8">
+      <div id="form-container" className="w-full max-w-4xl">
         <Card className="bg-card/80 border-0 shadow-none">
           <CardHeader className="p-2 md:p-4 text-center">
             <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
               <CardTitle className="text-3xl font-bold text-foreground">SIWES AI Pro</CardTitle>
+              <Button variant="outline" size="icon" onClick={handlePrint} className="ml-4">
+                <Printer className="h-5 w-5" />
+                <span className="sr-only">Print Report</span>
+              </Button>
             </div>
             <CardDescription className="text-muted-foreground">
               Fill in your details, and let AI help you write the perfect report.
