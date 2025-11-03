@@ -142,6 +142,9 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
            border-bottom: 1px solid hsl(var(--border));
            padding-bottom: 0.5rem;
         }
+        .page-break {
+          page-break-before: always;
+        }
       `}</style>
 
       {/* Cover Page */}
@@ -168,7 +171,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Acknowledgement */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+      <div id="acknowledgement-page" className="text-left page-break">
         <h2>ACKNOWLEDGEMENT</h2>
         {previewData.acknowledgementHtml ? (
             <div dangerouslySetInnerHTML={previewData.acknowledgementHtml}></div>
@@ -178,7 +181,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Abstract */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+      <div id="abstract-page" className="text-left page-break">
         <h2>ABSTRACT</h2>
         {previewData.abstractHtml ? (
             <div dangerouslySetInnerHTML={previewData.abstractHtml}></div>
@@ -188,7 +191,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Table of Contents */}
-      <div style={{ pageBreakBefore: 'always' }} className="prose prose-sm text-left">
+      <div id="toc-page" className="prose prose-sm text-left page-break">
         <h2>TABLE OF CONTENTS</h2>
         <p className="text-sm leading-relaxed">
             Cover Page<br />
@@ -226,7 +229,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
       
       {/* List of Figures */}
-       <div style={{ pageBreakBefore: 'always' }} className="text-left">
+       <div id="lof-page" className="text-left page-break">
             <h2>LIST OF FIGURES</h2>
             <div className="prose prose-sm">
                 {figures.length > 0 ? (
@@ -242,7 +245,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         </div>
 
       {/* Chapter 1 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+      <div id="chapter-1-page" className="text-left page-break">
         <h2>CHAPTER 1: INTRODUCTION</h2>
         <h3>1.1 Brief History of SIWES</h3>
         <p>The Students Industrial Work Experience Scheme (SIWES) is a skills training program designed to equip students from universities, polytechnics, and other higher institutions with practical industry experience. It provides hands-on exposure to equipment and machinery that are often unavailable in academic institutions.</p>
@@ -282,7 +285,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 2 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+      <div id="chapter-2-page" className="text-left page-break">
         <h2>CHAPTER 2: ORGANIZATIONAL STRUCTURE OF PLACEMENT OF ATTACHMENT</h2>
         <h3>2.1 VISION:</h3>
         <p>{previewData.companyVision || <Placeholder>Enter company vision in Step 3.</Placeholder>}</p>
@@ -308,7 +311,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 3 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+      <div id="chapter-3-page" className="text-left page-break">
         <h2>CHAPTER 3: SKILLS LEARNT</h2>
         {previewData.skillsChapterHtml ? (
           <div dangerouslySetInnerHTML={previewData.skillsChapterHtml}></div>
@@ -318,7 +321,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 4 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+      <div id="chapter-4-page" className="text-left page-break">
         <h2>CHAPTER 4: PROJECT DEVELOPED</h2>
         <h3>4.1 INTRODUCTION</h3>
         <div dangerouslySetInnerHTML={previewData.projectIntroHtml || {__html: "<p><Placeholder>Enter project intro in Step 5.</Placeholder></p>"}}></div>
@@ -386,7 +389,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
 
       {/* Chapter 5 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+      <div id="chapter-5-page" className="text-left page-break">
         <h2>CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
         <h3>5.1 Challenges Encountered and Solutions</h3>
          {previewData.challengesHtml ? (
