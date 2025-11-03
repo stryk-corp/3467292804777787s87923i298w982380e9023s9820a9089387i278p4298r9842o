@@ -23,12 +23,16 @@ interface ReportFormProps {
 }
 
 type Suggestion = {
+    courseCode?: string;
     fieldOfStudy?: string;
     primarySkill?: string;
     technologiesUsed?: string;
     programmingLanguage?: string;
     framework?: string;
     careerPath?: string;
+    challengesText?: string;
+    conclusionText?: string;
+    projectIntro?: string;
 }
 
 const TOTAL_STEPS = 6;
@@ -47,10 +51,20 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   const { toast } = useToast();
 
   const suggestionQuery = useMemo(() => ({
+      universityName: formData.universityName,
+      facultyName: formData.facultyName,
       departmentName: formData.departmentName,
+      placeOfAttachment: formData.placeOfAttachment,
       fieldOfStudy: formData.fieldOfStudy,
       primarySkill: formData.primarySkill
-  }), [formData.departmentName, formData.fieldOfStudy, formData.primarySkill]);
+  }), [
+      formData.universityName,
+      formData.facultyName,
+      formData.departmentName,
+      formData.placeOfAttachment,
+      formData.fieldOfStudy,
+      formData.primarySkill
+  ]);
   
   const [debouncedSuggestionQuery] = useDebounce(suggestionQuery, 1000);
   const [debouncedFormData] = useDebounce(formData, 1500);
@@ -69,10 +83,11 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
   useEffect(() => {
     async function fetchSuggestions() {
-        if (debouncedSuggestionQuery.departmentName || debouncedSuggestionQuery.fieldOfStudy || debouncedSuggestionQuery.primarySkill) {
+        const hasContext = Object.values(debouncedSuggestionQuery).some(val => !!val);
+        if (hasContext) {
             try {
                 const result = await provideAISuggestions(debouncedSuggestionQuery);
-                setSuggestions(result);
+                setSuggestions(prev => ({ ...prev, ...result }));
             } catch (error) {
                 console.error("AI Suggestion Error:", error);
             }
@@ -280,7 +295,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                         <div><Label htmlFor="universityName">University Name</Label><Input id="universityName" value={formData.universityName} onChange={handleInputChange} placeholder="e.g., Federal University of Technology" /></div>
                         <div><Label htmlFor="facultyName">Faculty Name</Label><Input id="facultyName" value={formData.facultyName} onChange={handleInputChange} placeholder="e.g., Faculty of Engineering" /></div>
                         <div><Label htmlFor="departmentName">Department Name</Label><Input id="departmentName" value={formData.departmentName} onChange={handleInputChange} placeholder="e.g., Department of Computer Engineering" /></div>
-                        <div><Label htmlFor="courseCode">Course Code</Label><Input id="courseCode" value={formData.courseCode} onChange={handleInputChange} placeholder="e.g., CPE 501" /></div>
+                        <div><Label htmlFor="courseCode">Course Code</Label><Input id="courseCode" value={formData.courseCode} onChange={handleInputChange} placeholder="e.g., CPE 501" /><SuggestionPill field="courseCode"/></div>
                         <div className="flex space-x-4">
                             <div className="w-1/2"><Label htmlFor="reportMonth">Report Month</Label><Input id="reportMonth" value={formData.reportMonth} onChange={handleInputChange} placeholder="e.g., August" /></div>
                             <div className="w-1/2"><Label htmlFor="reportYear">Report Year</Label><Input type="number" id="reportYear" value={formData.reportYear} onChange={handleInputChange} placeholder="e.g., 2024" /></div>
@@ -340,6 +355,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4">
                       <h3 className="text-lg font-semibold">Overall Project Introduction</h3>
                       <Textarea id="projectIntro" value={formData.projectIntro} onChange={handleInputChange} placeholder="Provide a brief introduction to the projects you worked on. E.g., 'During my SIWES training, I developed two main projects...'" className="min-h-[100px]" />
+                      <SuggestionPill field="projectIntro" />
                     </div>
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
                         <h3 className="text-lg font-semibold">Project 1</h3>
@@ -386,10 +402,12 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                         <div>
                             <Label htmlFor="challengesText">Challenges Encountered & Solutions</Label>
                             <Textarea id="challengesText" value={formData.challengesText} onChange={handleInputChange} placeholder="Describe the technical challenges you faced and how you solved them..." className="min-h-[150px]" />
+                            <SuggestionPill field="challengesText" />
                         </div>
                         <div>
                             <Label htmlFor="conclusionText">Conclusion</Label>
                             <Textarea id="conclusionText" value={formData.conclusionText} onChange={handleInputChange} placeholder="Summarize your experience and key learnings..." className="min-h-[150px]" />
+                            <SuggestionPill field="conclusionText" />
                         </div>
                     </div>
                 </div>
