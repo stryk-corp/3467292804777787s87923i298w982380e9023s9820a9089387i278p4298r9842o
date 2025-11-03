@@ -117,7 +117,7 @@ export default function Home() {
     while (heightLeft > 0) {
       position = heightLeft - pdfHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, aT4Width, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, position, a4Width, pdfHeight);
       heightLeft -= a4Height;
     }
 
