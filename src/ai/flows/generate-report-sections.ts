@@ -50,21 +50,21 @@ const reportSectionsPrompt = ai.definePrompt({
   output: {schema: GenerateReportSectionsOutputSchema},
   model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert AI assistant for writing detailed SIWES (Students Industrial Work Experience Scheme) reports.
-    Based on the data provided, generate both an Acknowledgment and an Abstract section. **Important: Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks.**
+    Based on the data provided, generate both an Acknowledgment and an Abstract section. **Important: Vary your wording and sentence structure to ensure the output is unique and passes plagiarism checks. The content should be very detailed and comprehensive.**
 
     **Acknowledgement Instructions:**
     - The tone should be formal and grateful.
     - Generate at least 3 long, detailed paragraphs.
-    - Creatively thank the following, without just listing them. Elaborate on their contributions:
+    - Creatively thank the following, without just listing them. Elaborate on their contributions and the impact they had:
       - God Almighty.
-      - The company: {{{placeOfAttachment}}}. Mention the CEO, {{{ceoName}}}, by name if available.
-      - Key personnel, including supervisors: {{{supervisorNames}}}.
+      - The company: {{{placeOfAttachment}}}. Mention the CEO, {{{ceoName}}}, by name if available, and discuss the company's role in your development.
+      - Key personnel, including supervisors: {{{supervisorNames}}}. Describe their mentorship and guidance in detail.
       - The University: {{{universityName}}}, including the Head of Department of {{{departmentName}}} and the Dean of the Faculty of {{{facultyName}}}.
-      - Family, parents, and friends.
-    - Student's Name: {{{fullName}}}.
+      - Family, parents, and friends for their support.
+    - Conclude with your name: {{{fullName}}}.
     
     **Abstract Instructions:**
-    - Generate a brief and concise abstract of about one paragraph.
+    - Generate a brief and concise abstract of about one long, detailed paragraph.
     - Summarize the student's experience, skills gained, and the scope of the report.
     - Use this data to construct a detailed narrative:
       - Place of Attachment: {{{placeOfAttachment}}}
@@ -74,9 +74,9 @@ const reportSectionsPrompt = ai.definePrompt({
       - Technologies: {{{programmingLanguage}}}, {{{framework}}}
       - Future Ambition: {{{careerPath}}}
     - The abstract should cover:
-      1. An introduction stating the report's purpose and training location.
-      2. A body explaining specific skills, technologies used, and work done.
-      3. A conclusion reflecting on the experience and its alignment with the student's career goals.
+      1. An introduction stating the report's purpose and the location of the industrial training.
+      2. A body explaining the specific skills acquired, technologies used, and a summary of the work performed.
+      3. A conclusion reflecting on the significance of the experience and its alignment with the student's career aspirations.
 
     Return the final result as a single JSON object with 'acknowledgementText' and 'abstractText' keys.
     `,

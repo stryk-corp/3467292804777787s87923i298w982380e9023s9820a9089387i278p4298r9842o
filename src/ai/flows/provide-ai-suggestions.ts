@@ -39,10 +39,10 @@ const ProvideAISuggestionsOutputSchema = z.object({
   challengesText: z.string().optional().describe('Suggested challenges encountered.'),
   conclusionText: z.string().optional().describe('A suggested conclusion for the report.'),
   projectIntro: z.string().optional().describe("A brief introduction for the projects section."),
-  companyVision: z.string().optional().describe("A suggested company vision statement."),
-  companyMission: z.string().optional().describe("A suggested company mission statement."),
-  companyValues: z.string().optional().describe("Suggested company core values."),
-  organogramAbbreviations: z.string().optional().describe("Suggested abbreviations for an organogram."),
+  companyVision: z.string().optional().describe("A suggested company vision statement based on the company's name."),
+  companyMission: z.string().optional().describe("A suggested company mission statement based on the company's name."),
+  companyValues: z.string().optional().describe("Suggested company core values based on the company's name."),
+  organogramAbbreviations: z.string().optional().describe("Suggested abbreviations for a standard corporate organogram."),
   project1_intro: z.string().optional().describe("A suggested introduction for Project 1."),
   project1_desc: z.string().optional().describe("A suggested description for Project 1."),
   project2_intro: z.string().optional().describe("A suggested introduction for Project 2."),
@@ -59,7 +59,7 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   input: {schema: ProvideAISuggestionsInputSchema},
   output: {schema: ProvideAISuggestionsOutputSchema},
   model: 'googleai/gemini-2.5-flash',
-  prompt: `You are an academic and business analyst assistant. Based on the user's partial input for a SIWES report, suggest related fields and content.
+  prompt: `You are an academic and business analyst assistant. Based on the user's partial input for a SIWES report, suggest relevant and detailed content for the empty fields.
 
   Here is the student's partial data:
   - University: {{{universityName}}}
@@ -70,8 +70,9 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   - Primary Skill: {{{primarySkill}}}
   - Projects Description: {{{projectsDescription}}}
 
-  Based on this context, provide helpful and relevant suggestions for any of the following fields that the user has not yet filled out. Be creative and realistic.
+  Based on this context, provide helpful and relevant suggestions for any of the following fields that the user has not yet filled out. Be creative, professional, and realistic.
   If the user has provided a "Projects Description", use it to generate detailed and distinct suggestions for 'project1_intro', 'project1_desc', 'project2_intro', and 'project2_desc'.
+  If the user has provided a "Place of Attachment", use it to suggest a 'companyVision', 'companyMission', and 'companyValues'.
 
   - courseCode
   - fieldOfStudy

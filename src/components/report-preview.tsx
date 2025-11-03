@@ -123,7 +123,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             color: hsl(var(--foreground));
         }
         #preview-content h1 { font-size: 1.8rem; text-align: center; border-bottom: 2px solid hsl(var(--border)); padding-bottom: 1rem; }
-        #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; }
+        #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; text-align: center; }
         #preview-content h3 { font-size: 1.1rem; font-weight: 600; }
         #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
@@ -136,6 +136,11 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         #preview-content .text-left h3 {
             border-bottom: none;
             text-align: left;
+        }
+        #preview-content .text-left h2 {
+           text-align: center;
+           border-bottom: 1px solid hsl(var(--border));
+           padding-bottom: 0.5rem;
         }
       `}</style>
 
@@ -164,7 +169,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Acknowledgement */}
       <div style={{ pageBreakBefore: 'always' }} className="text-left">
-        <h2 className="text-center">ACKNOWLEDGEMENT</h2>
+        <h2>ACKNOWLEDGEMENT</h2>
         {previewData.acknowledgementHtml ? (
             <div dangerouslySetInnerHTML={previewData.acknowledgementHtml}></div>
         ) : (
@@ -174,7 +179,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Abstract */}
       <div style={{ pageBreakBefore: 'always' }} className="text-left">
-        <h2 className="text-center">ABSTRACT</h2>
+        <h2>ABSTRACT</h2>
         {previewData.abstractHtml ? (
             <div dangerouslySetInnerHTML={previewData.abstractHtml}></div>
         ) : (
@@ -238,7 +243,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Chapter 1 */}
       <div style={{ pageBreakBefore: 'always' }} className="text-left">
-        <h2 className="text-center">CHAPTER 1: INTRODUCTION</h2>
+        <h2>CHAPTER 1: INTRODUCTION</h2>
         <h3>1.1 Brief History of SIWES</h3>
         <p>The Students Industrial Work Experience Scheme (SIWES) is a skills training program designed to equip students from universities, polytechnics, and other higher institutions with practical industry experience. It provides hands-on exposure to equipment and machinery that are often unavailable in academic institutions.</p>
         <h3>1.2 Objectives of SIWES</h3>
@@ -278,7 +283,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Chapter 2 */}
       <div style={{ pageBreakBefore: 'always' }} className="text-left">
-        <h2 className="text-center">CHAPTER 2: ORGANIZATIONAL STRUCTURE OF PLACEMENT OF ATTACHMENT</h2>
+        <h2>CHAPTER 2: ORGANIZATIONAL STRUCTURE OF PLACEMENT OF ATTACHMENT</h2>
         <h3>2.1 VISION:</h3>
         <p>{previewData.companyVision || <Placeholder>Enter company vision in Step 3.</Placeholder>}</p>
         <h3>2.2 MISSION:</h3>
@@ -304,7 +309,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Chapter 3 */}
       <div style={{ pageBreakBefore: 'always' }} className="text-left">
-        <h2 className="text-center">CHAPTER 3: SKILLS LEARNT</h2>
+        <h2>CHAPTER 3: SKILLS LEARNT</h2>
         {previewData.skillsChapterHtml ? (
           <div dangerouslySetInnerHTML={previewData.skillsChapterHtml}></div>
         ) : (
@@ -314,7 +319,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Chapter 4 */}
       <div style={{ pageBreakBefore: 'always' }} className="text-left">
-        <h2 className="text-center">CHAPTER 4: PROJECT DEVELOPED</h2>
+        <h2>CHAPTER 4: PROJECT DEVELOPED</h2>
         <h3>4.1 INTRODUCTION</h3>
         <div dangerouslySetInnerHTML={previewData.projectIntroHtml || {__html: "<p><Placeholder>Enter project intro in Step 5.</Placeholder></p>"}}></div>
         
@@ -382,7 +387,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
       {/* Chapter 5 */}
       <div style={{ pageBreakBefore: 'always' }} className="text-left">
-        <h2 className="text-center">CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
+        <h2>CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
         <h3>5.1 Challenges Encountered and Solutions</h3>
          {previewData.challengesHtml ? (
              <div dangerouslySetInnerHTML={previewData.challengesHtml} className="prose"></div>

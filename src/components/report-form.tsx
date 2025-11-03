@@ -333,9 +333,9 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                  <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Organizational Structure</h2>
                     <div className="space-y-6">
-                      <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." /><SuggestionPill field="companyVision"/></div>
-                      <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." /><SuggestionPill field="companyMission"/></div>
-                      <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values..." /><SuggestionPill field="companyValues"/></div>
+                      <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." className="min-h-[100px]" /><SuggestionPill field="companyVision"/></div>
+                      <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." className="min-h-[100px]" /><SuggestionPill field="companyMission"/></div>
+                      <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values, separated by commas..." className="min-h-[100px]" /><SuggestionPill field="companyValues"/></div>
                       <div><Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label><Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer" className="min-h-[120px]" /><SuggestionPill field="organogramAbbreviations"/></div>
                     </div>
                 </div>
@@ -396,7 +396,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                  <div className="space-y-6 animate-in fade-in-0 duration-300">
                     <h2 className="text-2xl font-semibold text-foreground mb-6">Report Content</h2>
                      <div className="flex items-center text-sm text-muted-foreground mb-4">
-                        {(loadingStates.sections || loadingStates.skills) && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span>Auto-generating sections...</span></>}
+                        {(loadingStates.sections || loadingStates.skills || loadingStates.regenerate) && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span>Generating report sections... This may take a moment.</span></>}
                      </div>
                     <div className="space-y-6">
                         <div>
