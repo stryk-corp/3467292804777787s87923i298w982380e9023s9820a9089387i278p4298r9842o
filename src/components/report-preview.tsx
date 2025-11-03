@@ -16,22 +16,12 @@ const Placeholder = ({ children }: { children: React.ReactNode }) => (
 
 function formatPreviewText(text: string | undefined | null) {
   if (!text) return null;
-  
-  // Create a regex to find markdown headings (###) and bold text (**)
-  const combinedRegex = /(###\s.*)|(\*\*.*?\*\*)/g;
 
   const html = text
     .replace(/</g, "&lt;").replace(/>/g, "&gt;") // Basic HTML escape
     .replace(/\n/g, '<br />') // Convert newlines to <br>
-    .replace(combinedRegex, (match) => {
-      if (match.startsWith('###')) {
-        return `<h3>${match.substring(4)}</h3>`;
-      }
-      if (match.startsWith('**')) {
-        return `<strong>${match.substring(2, match.length - 2)}</strong>`;
-      }
-      return match;
-    })
+    .replace(/### (.*?)(<br \/>|$)/g, '<h3>$1</h3>') // Convert ### headings
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert **bold** text
     .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
     .replace(/• (.*$)/gim, '<li class="ml-8 list-disc">$1</li>');
 
@@ -138,6 +128,15 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
         #preview-content .prose ul { list-style-type: none; padding: 0; }
+        #preview-content div > h3:first-child {
+            margin-top: 0;
+        }
+        #preview-content .text-left { text-align: left; }
+        #preview-content .text-left h2,
+        #preview-content .text-left h3 {
+            border-bottom: none;
+            text-align: left;
+        }
       `}</style>
 
       {/* Cover Page */}
@@ -164,8 +163,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Acknowledgement */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-center">
-        <h2>ACKNOWLEDGEMENT</h2>
+      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+        <h2 className="text-center">ACKNOWLEDGEMENT</h2>
         {previewData.acknowledgementHtml ? (
             <div dangerouslySetInnerHTML={previewData.acknowledgementHtml}></div>
         ) : (
@@ -174,8 +173,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Abstract */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-center">
-        <h2>ABSTRACT</h2>
+      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+        <h2 className="text-center">ABSTRACT</h2>
         {previewData.abstractHtml ? (
             <div dangerouslySetInnerHTML={previewData.abstractHtml}></div>
         ) : (
@@ -238,8 +237,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         </div>
 
       {/* Chapter 1 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-center">
-        <h2>CHAPTER 1: INTRODUCTION</h2>
+      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+        <h2 className="text-center">CHAPTER 1: INTRODUCTION</h2>
         <h3>1.1 Brief History of SIWES</h3>
         <p>The Students Industrial Work Experience Scheme (SIWES) is a skills training program designed to equip students from universities, polytechnics, and other higher institutions with practical industry experience. It provides hands-on exposure to equipment and machinery that are often unavailable in academic institutions.</p>
         <h3>1.2 Objectives of SIWES</h3>
@@ -278,8 +277,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 2 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-center">
-        <h2>CHAPTER 2: ORGANIZATIONAL STRUCTURE OF PLACEMENT OF ATTACHMENT</h2>
+      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+        <h2 className="text-center">CHAPTER 2: ORGANIZATIONAL STRUCTURE OF PLACEMENT OF ATTACHMENT</h2>
         <h3>2.1 VISION:</h3>
         <p>{previewData.companyVision || <Placeholder>Enter company vision in Step 3.</Placeholder>}</p>
         <h3>2.2 MISSION:</h3>
@@ -304,8 +303,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 3 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-center">
-        <h2>CHAPTER 3: SKILLS LEARNT</h2>
+      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+        <h2 className="text-center">CHAPTER 3: SKILLS LEARNT</h2>
         {previewData.skillsChapterHtml ? (
           <div dangerouslySetInnerHTML={previewData.skillsChapterHtml}></div>
         ) : (
@@ -314,8 +313,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 4 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-center">
-        <h2>CHAPTER 4: PROJECT DEVELOPED</h2>
+      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+        <h2 className="text-center">CHAPTER 4: PROJECT DEVELOPED</h2>
         <h3>4.1 INTRODUCTION</h3>
         <div dangerouslySetInnerHTML={previewData.projectIntroHtml || {__html: "<p><Placeholder>Enter project intro in Step 5.</Placeholder></p>"}}></div>
         
@@ -382,8 +381,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
 
       {/* Chapter 5 */}
-      <div style={{ pageBreakBefore: 'always' }} className="text-center">
-        <h2>CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
+      <div style={{ pageBreakBefore: 'always' }} className="text-left">
+        <h2 className="text-center">CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
         <h3>5.1 Challenges Encountered and Solutions</h3>
          {previewData.challengesHtml ? (
              <div dangerouslySetInnerHTML={previewData.challengesHtml} className="prose"></div>
