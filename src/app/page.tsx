@@ -90,12 +90,12 @@ export default function Home() {
     const pdf = new jsPDF('p', 'pt', 'a4');
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 40;
+    const margin = 40; // 40 points margin
     const contentWidth = pdfPageWidth - margin * 2;
     const contentHeight = pdfPageHeight - margin * 2;
 
     const sectionIds = [
-      'cover-page', 'acknowledgement-page', 'abstract-page', 
+      'cover-page', 'acknowledgement-page', 'abstract-page',
       'toc-page', 'lof-page', 'chapter-1-page', 'chapter-2-page',
       'chapter-3-page', 'chapter-4-page', 'chapter-5-page'
     ];
@@ -109,13 +109,13 @@ export default function Home() {
       section.style.backgroundColor = 'white';
 
       const canvas = await html2canvas(section, {
-        scale: 2,
+        scale: 2, // Higher scale for better quality
         useCORS: true,
         logging: false,
         width: section.scrollWidth,
         height: section.scrollHeight,
       });
-      
+
       section.style.backgroundColor = originalBackgroundColor;
 
       const imgData = canvas.toDataURL('image/png');
@@ -127,28 +127,29 @@ export default function Home() {
 
       let heightLeft = scaledImgHeight;
       let position = 0;
-
       const x = (pdfPageWidth - contentWidth) / 2;
-      
-      // Handle the first page (cover) to be centered vertically if it fits
+
+      // Special handling for the cover page to center it vertically if it fits
       if (i === 0 && scaledImgHeight < contentHeight) {
         const y = (pdfPageHeight - scaledImgHeight) / 2;
         pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
       } else {
-        // Add first part of the content
+        // Add the first part of the section image
         pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
         heightLeft -= contentHeight;
 
-        // Add subsequent pages if content is too long
+        // If the content is taller than the page, add new pages
         while (heightLeft > 0) {
           position -= contentHeight;
           pdf.addPage();
+          // The `addImage` y-coordinate needs to account for the position on the *source* canvas
+          // and the top margin on the *new PDF page*.
           pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
           heightLeft -= contentHeight;
         }
       }
-      
-      // Add a new page for the next section if it's not the last one
+
+      // Add a new page for the next section unless it's the last one
       if (i < sectionIds.length - 1) {
         pdf.addPage();
       }
