@@ -92,6 +92,7 @@ export default function Home() {
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
     const margin = 40;
     const contentWidth = pdfPageWidth - margin * 2;
+    const contentHeight = pdfPageHeight - margin * 2;
 
     const sectionIds = [
         'cover-page', 'acknowledgement-page', 'abstract-page', 
@@ -128,21 +129,21 @@ export default function Home() {
         
         let x = (pdfPageWidth - contentWidth) / 2;
         let y = margin;
-
+        
         if (sectionId === 'cover-page') {
              // Center the cover page content vertically
              y = (pdfPageHeight - scaledImgHeight) / 2;
              if (y < margin) y = margin;
              pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
         } else {
-            pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
-            heightLeft -= (pdfPageHeight - margin * 2);
+            pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
+            heightLeft -= contentHeight;
 
             while (heightLeft > 0) {
-                position -= (pdfPageHeight - margin * 2);
+                position -= contentHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
-                heightLeft -= (pdfPageHeight - margin * 2);
+                heightLeft -= contentHeight;
             }
         }
 
