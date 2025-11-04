@@ -130,23 +130,22 @@ export default function Home() {
       const x = (pdfPageWidth - contentWidth) / 2;
 
       // Special handling for the cover page to center it vertically if it fits
-      if (i === 0 && scaledImgHeight < contentHeight) {
-        const y = (pdfPageHeight - scaledImgHeight) / 2;
+      if (i === 0) {
+        const y = (scaledImgHeight < contentHeight) ? (pdfPageHeight - scaledImgHeight) / 2 : margin;
         pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
+        heightLeft -= contentHeight;
       } else {
         // Add the first part of the section image
         pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
         heightLeft -= contentHeight;
-
-        // If the content is taller than the page, add new pages
-        while (heightLeft > 0) {
-          position -= contentHeight;
-          pdf.addPage();
-          // The `addImage` y-coordinate needs to account for the position on the *source* canvas
-          // and the top margin on the *new PDF page*.
-          pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
-          heightLeft -= contentHeight;
-        }
+      }
+      
+      // If the content is taller than the page, add new pages
+      while (heightLeft > 0) {
+        position -= contentHeight; 
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
+        heightLeft -= contentHeight;
       }
 
       // Add a new page for the next section unless it's the last one
