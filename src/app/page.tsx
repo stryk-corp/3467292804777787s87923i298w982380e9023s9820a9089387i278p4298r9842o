@@ -87,44 +87,76 @@ export default function Home() {
 
     setIsDownloading(true);
 
-    const originalBackgroundColor = reportContainer.style.backgroundColor;
-    reportContainer.style.backgroundColor = 'white';
-
-    const canvas = await html2canvas(reportContainer, {
-        scale: 2, // Higher scale for better quality
-        useCORS: true,
-        logging: false,
-    });
-
-    reportContainer.style.backgroundColor = originalBackgroundColor;
-
-    const imgData = canvas.toDataURL('image/png');
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-
     const pdf = new jsPDF({
-        orientation: 'p',
-        unit: 'pt',
-        format: 'a4'
+      orientation: 'p',
+      unit: 'pt',
+      format: 'a4',
     });
 
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 40;
+    const contentWidth = pdfPageWidth - margin * 2;
+    const contentHeight = pdfPageHeight - margin * 2;
 
-    const ratio = imgWidth / pdfPageWidth;
-    const scaledImgHeight = imgHeight / ratio;
+    const sections = [
+      'cover-page',
+      'acknowledgement-page',
+      'abstract-page',
+      'toc-page',
+      'lof-page',
+      'chapter-1-page',
+      'chapter-2-page',
+      'chapter-3-page',
+      'chapter-4-page',
+      'chapter-5-page',
+    ];
 
-    let heightLeft = scaledImgHeight;
-    let position = 0;
+    for (let i = 0; i < sections.length; i++) {
+      const sectionId = sections[i];
+      const element = document.getElementById(sectionId) as HTMLElement;
+      if (!element) continue;
 
-    pdf.addImage(imgData, 'PNG', 0, position, pdfPageWidth, scaledImgHeight);
-    heightLeft -= pdfPageHeight;
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+      });
 
-    while (heightLeft > 0) {
-        position -= pdfPageHeight;
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      const ratio = imgWidth / contentWidth;
+      const scaledImgHeight = imgHeight / ratio;
+      
+      let position = 0;
+      let heightLeft = scaledImgHeight;
+      
+      // Special centering for the cover page
+      if (sectionId === 'cover-page') {
+         const y = (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2;
+         const x = (pdfPageWidth - contentWidth) / 2;
+         pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
+         heightLeft -= contentHeight;
+      } else {
+        pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, scaledImgHeight);
+        heightLeft -= contentHeight;
+      }
+
+      while (heightLeft > 0) {
+        position += contentHeight;
+        heightLeft -= contentHeight;
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, pdfPageWidth, scaledImgHeight);
-        heightLeft -= pdfPageHeight;
+        // The y position in addImage is the negative of the position on the source canvas
+        pdf.addImage(imgData, 'PNG', margin, -position + margin, contentWidth, scaledImgHeight);
+      }
+
+      if (i < sections.length - 1) {
+        pdf.addPage();
+      }
     }
 
     pdf.save('SIWES-Report.pdf');
