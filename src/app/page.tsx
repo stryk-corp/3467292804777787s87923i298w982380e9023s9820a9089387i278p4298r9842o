@@ -95,67 +95,68 @@ export default function Home() {
     const contentHeight = pdfPageHeight - margin * 2;
 
     const sectionIds = [
-        'cover-page', 'acknowledgement-page', 'abstract-page', 
-        'toc-page', 'lof-page', 'chapter-1-page', 'chapter-2-page',
-        'chapter-3-page', 'chapter-4-page', 'chapter-5-page'
+      'cover-page', 'acknowledgement-page', 'abstract-page', 
+      'toc-page', 'lof-page', 'chapter-1-page', 'chapter-2-page',
+      'chapter-3-page', 'chapter-4-page', 'chapter-5-page'
     ];
 
     for (let i = 0; i < sectionIds.length; i++) {
-        const sectionId = sectionIds[i];
-        const section = document.getElementById(sectionId);
-        if (!section) continue;
+      const sectionId = sectionIds[i];
+      const section = document.getElementById(sectionId);
+      if (!section) continue;
 
-        const originalBackgroundColor = section.style.backgroundColor;
-        section.style.backgroundColor = 'white';
+      const originalBackgroundColor = section.style.backgroundColor;
+      section.style.backgroundColor = 'white';
 
-        const canvas = await html2canvas(section, {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            width: section.scrollWidth,
-            height: section.scrollHeight,
-        });
+      const canvas = await html2canvas(section, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: section.scrollWidth,
+        height: section.scrollHeight,
+      });
+      
+      section.style.backgroundColor = originalBackgroundColor;
 
-        section.style.backgroundColor = originalBackgroundColor;
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
 
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
-        const ratio = imgWidth / contentWidth;
-        const scaledImgHeight = imgHeight / ratio;
+      const ratio = imgWidth / contentWidth;
+      const scaledImgHeight = imgHeight / ratio;
 
-        let heightLeft = scaledImgHeight;
-        let position = 0;
-        
-        let x = (pdfPageWidth - contentWidth) / 2;
-        let y = margin;
-        
-        if (sectionId === 'cover-page') {
-             // Center the cover page content vertically
-             y = (pdfPageHeight - scaledImgHeight) / 2;
-             if (y < margin) y = margin;
-             pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
-        } else {
-            pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
-            heightLeft -= contentHeight;
+      let heightLeft = scaledImgHeight;
+      let position = 0;
 
-            while (heightLeft > 0) {
-                position -= contentHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
-                heightLeft -= contentHeight;
-            }
+      const x = (pdfPageWidth - contentWidth) / 2;
+      
+      // Handle the first page (cover) to be centered vertically if it fits
+      if (i === 0 && scaledImgHeight < contentHeight) {
+        const y = (pdfPageHeight - scaledImgHeight) / 2;
+        pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
+      } else {
+        // Add first part of the content
+        pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
+        heightLeft -= contentHeight;
+
+        // Add subsequent pages if content is too long
+        while (heightLeft > 0) {
+          position -= contentHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
+          heightLeft -= contentHeight;
         }
-
-        if (i < sectionIds.length - 1) {
-            pdf.addPage();
-        }
+      }
+      
+      // Add a new page for the next section if it's not the last one
+      if (i < sectionIds.length - 1) {
+        pdf.addPage();
+      }
     }
 
     pdf.save('SIWES-Report.pdf');
     setIsDownloading(false);
   };
-
 
   return (
     <div id="main-container" className="flex flex-col items-center w-full min-h-screen bg-background p-4 sm:p-8">
