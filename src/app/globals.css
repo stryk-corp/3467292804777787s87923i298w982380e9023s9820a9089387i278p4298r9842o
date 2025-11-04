@@ -109,4 +109,25 @@
   h1, h2, h3, h4, p, li {
     color: black !important;
   }
+
+  /* Keep whole blocks together */
+  .keep-together {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep headings with the following content */
+  #preview-content h2,
+  #preview-content h3,
+  #preview-content h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Improve widows/orphans handling for paragraphs and list items */
+  #preview-content p,
+  #preview-content li {
+    orphans: 3;
+    widows: 3;
+  }
 }

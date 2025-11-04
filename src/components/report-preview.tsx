@@ -253,14 +253,16 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <p>SIWES aims to bridge the gap between theory and practice, provide students with an opportunity to apply their knowledge in real-world situations, and expose them to work methods and techniques in handling equipment and machinery that may not be available in their institutions.</p>
         <h3>1.3 PLACE OF ATTACHMENT</h3>
         <p>My Industrial Training was undertaken at <strong>{previewData.placeOfAttachment || <Placeholder>Place of Attachment</Placeholder>}</strong>.</p>
-        <ImageSelector
-          images={previewData.attachmentImages}
-          caption={previewData.attachmentCaption}
-          onImagesChange={handleAttachmentImagesChange}
-          onCaptionChange={handleAttachmentCaptionChange}
-          maxImages={3}
-          figurePrefix="1.1"
-        />
+        <div className="keep-together">
+          <ImageSelector
+            images={previewData.attachmentImages}
+            caption={previewData.attachmentCaption}
+            onImagesChange={handleAttachmentImagesChange}
+            onCaptionChange={handleAttachmentCaptionChange}
+            maxImages={3}
+            figurePrefix="1.1"
+          />
+        </div>
         <h3>1.4 BRIEF PROFILE OF PLACE OF ATTACHMENT</h3>
         {previewData.companyProfileHtml ? (
             <div dangerouslySetInnerHTML={previewData.companyProfileHtml}></div>
@@ -268,14 +270,16 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             <p><Placeholder>This section will be filled in by the AI profile generator.</Placeholder></p>
         )}
         <p>Founded and managed by <strong>{previewData.ceoName || <Placeholder>CEO Name</Placeholder>}</strong>, the company is located at <strong>{previewData.attachmentLocation || <Placeholder>Attachment Location</Placeholder>}</strong>.</p>
-        <ImageSelector
-          images={previewData.profileImages}
-          caption={previewData.profileCaption}
-          onImagesChange={handleProfileImagesChange}
-          onCaptionChange={handleProfileCaptionChange}
-          maxImages={3}
-          figurePrefix="1.2"
-        />
+        <div className="keep-together">
+          <ImageSelector
+            images={previewData.profileImages}
+            caption={previewData.profileCaption}
+            onImagesChange={handleProfileImagesChange}
+            onCaptionChange={handleProfileCaptionChange}
+            maxImages={3}
+            figurePrefix="1.2"
+          />
+        </div>
         <h3>1.5 SCOPE OF SPECIALIZATION</h3>
         {previewData.scopeOfSpecializationHtml ? (
              <div dangerouslySetInnerHTML={previewData.scopeOfSpecializationHtml} className="prose"></div>
@@ -295,14 +299,16 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <p>{previewData.companyValues || <Placeholder>Enter company values in Step 3.</Placeholder>}</p>
         
         <h3>2.4 ORGANOGRAM</h3>
-        <ImageSelector
-            images={previewData.organogramImage}
-            caption={previewData.organogramCaption}
-            onImagesChange={handleOrganogramImageChange}
-            onCaptionChange={handleOrganogramCaptionChange}
-            maxImages={1}
-            figurePrefix="2.1"
-        />
+        <div className="keep-together">
+          <ImageSelector
+              images={previewData.organogramImage}
+              caption={previewData.organogramCaption}
+              onImagesChange={handleOrganogramImageChange}
+              onCaptionChange={handleOrganogramCaptionChange}
+              maxImages={1}
+              figurePrefix="2.1"
+          />
+        </div>
         {previewData.organogramAbbreviationsHtml ? (
             <div dangerouslySetInnerHTML={previewData.organogramAbbreviationsHtml} className="prose"></div>
         ) : (
@@ -330,13 +336,13 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <div dangerouslySetInnerHTML={previewData.project1_introHtml || {__html: "<p><Placeholder>Describe project 1 in Step 5.</Placeholder></p>"}}></div>
         
         <h4>4.1.2 Project Description</h4>
-        <div>
+        <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_descHtml || {__html: "<p><Placeholder>Describe project 1 details in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} />
         </div>
         
         <h4>4.1.2.1 A Key Feature</h4>
-        <div>
+        <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml || {__html: "<p><Placeholder>Describe a key feature or screen in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" />
         </div>
@@ -345,19 +351,19 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <div dangerouslySetInnerHTML={previewData.project1_signInScreenHtml || {__html: "<p><Placeholder>Describe another feature or screen in Step 5.</Placeholder></p>"}}></div>
         
         <h4>4.1.2.3 Challenges and Solutions</h4>
-        <div>
+        <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_validationHtml || {__html: "<p><Placeholder>Describe any challenges for this project in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" />
         </div>
 
         <h4>4.1.2.4 Another Part of the Project</h4>
-        <div>
+        <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml || {__html: "<p><Placeholder>Describe another part of the project in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" />
         </div>
         
         <h4>4.1.2.5 Final State/Main View</h4>
-        <div>
+        <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_homeScreenHtml || {__html: "<p><Placeholder>Describe the final state or main view of the project in Step 5.</Placeholder></p>"}}></div>
           <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" />
         </div>
@@ -378,7 +384,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <div dangerouslySetInnerHTML={previewData.project2_uiHtml || {__html: "<p><Placeholder>Describe the project's UI in Step 5.</Placeholder></p>"}}></div>
 
         <h4>4.2.1.3 Core Functionality</h4>
-        <div>
+        <div className="keep-together">
             <div dangerouslySetInnerHTML={previewData.project2_coreHtml || {__html: "<p><Placeholder>Describe the project's core functionality in Step 5.</Placeholder></p>"}}></div>
             <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" />
         </div>
