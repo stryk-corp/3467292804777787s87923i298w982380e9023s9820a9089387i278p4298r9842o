@@ -82,47 +82,78 @@ export default function Home() {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownloadPdf = async () => {
-    const report = document.getElementById('preview-content');
-    if (!report) return;
+    const reportContainer = document.getElementById('preview-content');
+    if (!reportContainer) return;
 
     setIsDownloading(true);
-    
-    const originalBackgroundColor = report.style.backgroundColor;
-    report.style.backgroundColor = 'white';
 
-    const canvas = await html2canvas(report, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-    });
-
-    report.style.backgroundColor = originalBackgroundColor;
-
-    const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'pt', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-    const ratio = canvasWidth / pdfWidth;
-    const imgHeight = canvasHeight / ratio;
+    const pdfPageWidth = pdf.internal.pageSize.getWidth();
+    const pdfPageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 40;
+    const contentWidth = pdfPageWidth - margin * 2;
 
-    let heightLeft = imgHeight;
-    let position = 0;
+    const sectionIds = [
+        'cover-page', 'acknowledgement-page', 'abstract-page', 
+        'toc-page', 'lof-page', 'chapter-1-page', 'chapter-2-page',
+        'chapter-3-page', 'chapter-4-page', 'chapter-5-page'
+    ];
 
-    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-    heightLeft -= pdfHeight;
+    for (let i = 0; i < sectionIds.length; i++) {
+        const sectionId = sectionIds[i];
+        const section = document.getElementById(sectionId);
+        if (!section) continue;
 
-    while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-        heightLeft -= pdfHeight;
+        const originalBackgroundColor = section.style.backgroundColor;
+        section.style.backgroundColor = 'white';
+
+        const canvas = await html2canvas(section, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            width: section.scrollWidth,
+            height: section.scrollHeight,
+        });
+
+        section.style.backgroundColor = originalBackgroundColor;
+
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = imgWidth / contentWidth;
+        const scaledImgHeight = imgHeight / ratio;
+
+        let heightLeft = scaledImgHeight;
+        let position = 0;
+        
+        let x = (pdfPageWidth - contentWidth) / 2;
+        let y = margin;
+
+        if (sectionId === 'cover-page') {
+             // Center the cover page content vertically
+             y = (pdfPageHeight - scaledImgHeight) / 2;
+             if (y < margin) y = margin;
+             pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
+        } else {
+            pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
+            heightLeft -= (pdfPageHeight - margin * 2);
+
+            while (heightLeft > 0) {
+                position -= (pdfPageHeight - margin * 2);
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
+                heightLeft -= (pdfPageHeight - margin * 2);
+            }
+        }
+
+        if (i < sectionIds.length - 1) {
+            pdf.addPage();
+        }
     }
 
     pdf.save('SIWES-Report.pdf');
     setIsDownloading(false);
-};
+  };
 
 
   return (
