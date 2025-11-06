@@ -84,21 +84,21 @@ export default function Home() {
   const handleDownloadPdf = async () => {
     const reportContainer = document.getElementById('preview-content');
     if (!reportContainer) return;
-
+  
     setIsDownloading(true);
-
+  
     const pdf = new jsPDF({
       orientation: 'p',
       unit: 'pt',
       format: 'a4',
     });
-
+  
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 40;
+    const margin = 72; // 1 inch margin (72 points)
     const contentWidth = pdfPageWidth - margin * 2;
     const contentHeight = pdfPageHeight - margin * 2;
-
+  
     const sections = [
       'cover-page',
       'acknowledgement-page',
@@ -111,54 +111,50 @@ export default function Home() {
       'chapter-4-page',
       'chapter-5-page',
     ];
-
+  
     for (let i = 0; i < sections.length; i++) {
       const sectionId = sections[i];
       const element = document.getElementById(sectionId) as HTMLElement;
       if (!element) continue;
-
+  
       const canvas = await html2canvas(element, {
-        scale: 2,
+        scale: 2, // Higher resolution
         useCORS: true,
         logging: false,
         width: element.scrollWidth,
         height: element.scrollHeight,
       });
-
+  
       const imgData = canvas.toDataURL('image/png');
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgWidth = imgProps.width;
+      const imgHeight = imgProps.height;
+  
       const ratio = imgWidth / contentWidth;
       const scaledImgHeight = imgHeight / ratio;
-      
+  
       let position = 0;
       let heightLeft = scaledImgHeight;
-      
-      // Special centering for the cover page
-      if (sectionId === 'cover-page') {
-         const y = (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2;
-         const x = (pdfPageWidth - contentWidth) / 2;
-         pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
-         heightLeft -= contentHeight;
-      } else {
-        pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, scaledImgHeight);
-        heightLeft -= contentHeight;
-      }
-
+  
+      // Add the first part of the image
+      const x = (pdfPageWidth - contentWidth) / 2; // Center horizontally
+      pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
+      heightLeft -= contentHeight;
+  
+      // If content is taller than one page, add new pages
       while (heightLeft > 0) {
         position += contentHeight;
-        heightLeft -= contentHeight;
         pdf.addPage();
-        // The y position in addImage is the negative of the position on the source canvas
-        pdf.addImage(imgData, 'PNG', margin, -position + margin, contentWidth, scaledImgHeight);
+        pdf.addImage(imgData, 'PNG', x, margin - position, contentWidth, scaledImgHeight);
+        heightLeft -= contentHeight;
       }
-
+  
+      // Add a new page for the next section, unless it's the last one
       if (i < sections.length - 1) {
         pdf.addPage();
       }
     }
-
+  
     pdf.save('SIWES-Report.pdf');
     setIsDownloading(false);
   };
