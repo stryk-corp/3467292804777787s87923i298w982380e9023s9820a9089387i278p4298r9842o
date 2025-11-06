@@ -95,7 +95,7 @@ export default function Home() {
   
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 72; // 1 inch margin (72 points)
+    const margin = 72; // 1 inch
     const contentWidth = pdfPageWidth - margin * 2;
     const contentHeight = pdfPageHeight - margin * 2;
   
@@ -117,38 +117,46 @@ export default function Home() {
       const element = document.getElementById(sectionId) as HTMLElement;
       if (!element) continue;
   
+      // Temporarily make the element visible for capture if it's on another "page"
+      const originalDisplay = element.style.display;
+      element.style.display = 'block';
+
       const canvas = await html2canvas(element, {
-        scale: 2, // Higher resolution
+        scale: 2, // Higher resolution for better quality
         useCORS: true,
         logging: false,
         width: element.scrollWidth,
         height: element.scrollHeight,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
       });
-  
+      
+      element.style.display = originalDisplay;
+
       const imgData = canvas.toDataURL('image/png');
       const imgProps = pdf.getImageProperties(imgData);
-      const imgWidth = imgProps.width;
-      const imgHeight = imgProps.height;
-  
-      const ratio = imgWidth / contentWidth;
-      const scaledImgHeight = imgHeight / ratio;
-  
-      let position = 0;
+      
+      const ratio = contentWidth / imgProps.width;
+      const scaledImgHeight = imgProps.height * ratio;
+      
       let heightLeft = scaledImgHeight;
-  
-      // Add the first part of the image
-      const x = (pdfPageWidth - contentWidth) / 2; // Center horizontally
+      let position = 0;
+
+      // Center the content horizontally
+      const x = (pdfPageWidth - contentWidth) / 2;
+
+      // Add the first part of the section
       pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
       heightLeft -= contentHeight;
-  
-      // If content is taller than one page, add new pages
+
+      // If the content is taller than one page, add new pages
       while (heightLeft > 0) {
-        position += contentHeight;
+        position -= pdfPageHeight; // Correctly calculate the negative offset for the new page
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', x, margin - position, contentWidth, scaledImgHeight);
+        pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
         heightLeft -= contentHeight;
       }
-  
+      
       // Add a new page for the next section, unless it's the last one
       if (i < sections.length - 1) {
         pdf.addPage();
