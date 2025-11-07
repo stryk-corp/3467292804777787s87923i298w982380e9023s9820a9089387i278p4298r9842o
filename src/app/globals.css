@@ -81,6 +81,9 @@
   .preview-placeholder {
     @apply text-muted-foreground italic;
   }
+  .printable-caption {
+    display: none;
+  }
 }
 
 @media print {
@@ -108,6 +111,14 @@
   }
   h1, h2, h3, h4, p, li {
     color: black !important;
+  }
+
+  .editable-caption {
+    display: none;
+  }
+
+  .printable-caption {
+    display: inline;
   }
 
   /* Keep whole blocks together */

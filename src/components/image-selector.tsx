@@ -84,13 +84,12 @@ export function ImageSelector({
             <div key={index} className="group relative">
                 <button
                 onClick={() => handleImageClick(index)}
-                className="w-full aspect-video border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
+                className="w-full border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
                 >
                 <img
                   src={src}
                   alt={`Attachment image ${index + 1}`}
-                  className="rounded-lg w-full h-full object-contain"
-                  style={{ objectFit: 'contain' }}
+                  className="rounded-lg w-full object-contain"
                 />
                 </button>
                 <button
@@ -126,8 +125,9 @@ export function ImageSelector({
                     value={caption}
                     onChange={(e) => onCaptionChange(e.target.value)}
                     placeholder="Enter caption"
-                    className="mt-1 h-8 text-sm font-bold inline-block w-auto max-w-full"
+                    className="editable-caption mt-1 h-8 text-sm font-bold inline-block w-auto max-w-full"
                 />
+                <span className="printable-caption">{caption}</span>
             </p>
         </div>
       )}
