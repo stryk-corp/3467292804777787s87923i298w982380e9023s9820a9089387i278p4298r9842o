@@ -1,70 +1,74 @@
-"use client"
+'use client';
 
+import type { Dispatch, SetStateAction } from 'react';
+import type { ReportData } from '@/lib/types';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/components/ui/radio-group"
-
-type ContentAlignment = "left" | "center" | "justify"
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 interface ReportSettingsModalProps {
-  children: React.ReactNode
-  contentAlignment: ContentAlignment
-  onAlignmentChange: (value: ContentAlignment) => void
+  isOpen: boolean;
+  onClose: () => void;
+  formData: ReportData;
+  setFormData: Dispatch<SetStateAction<ReportData>>;
 }
 
 export function ReportSettingsModal({
-  children,
-  contentAlignment,
-  onAlignmentChange,
+  isOpen,
+  onClose,
+  formData,
+  setFormData,
 }: ReportSettingsModalProps) {
+
+  const handleAlignmentChange = (value: 'left' | 'center' | 'justify') => {
+    setFormData((prev) => ({ ...prev, textAlign: value }));
+  };
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Report Structure Settings</DialogTitle>
+          <DialogDescription>
+            Customize the layout and structure of your report.
+          </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="alignment" className="text-right">
-              Alignment
-            </Label>
-            <RadioGroup
-              id="alignment"
-              value={contentAlignment}
-              onValueChange={(value) => onAlignmentChange(value as ContentAlignment)}
-              className="col-span-3 flex gap-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="left" id="r1" />
-                <Label htmlFor="r1">Left</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="center" id="r2" />
-                <Label htmlFor="r2">Center</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="justify" id="r3" />
-                <Label htmlFor="r3">Justify</Label>
-              </div>
-            </RadioGroup>
+        <div className="py-4">
+          <div className="space-y-4">
+            <div>
+              <Label>Content Alignment</Label>
+              <p className="text-sm text-muted-foreground">
+                Align the main content of your report (chapters, sections).
+                This does not affect the Cover or TOC pages.
+              </p>
+              <RadioGroup
+                value={formData.textAlign}
+                onValueChange={handleAlignmentChange}
+                className="mt-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="left" id="align-left" />
+                  <Label htmlFor="align-left">Left</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="center" id="align-center" />
+                  <Label htmlFor="align-center">Center</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="justify" id="align-justify" />
+                  <Label htmlFor="align-justify">Justify</Label>
+                </div>
+              </RadioGroup>
+            </div>
           </div>
         </div>
-        <DialogFooter>
-          {/* Future settings buttons can go here */}
-        </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

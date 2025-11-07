@@ -5,6 +5,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { ReportData } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { ImageSelector } from '@/components/image-selector';
+import { cn } from '@/lib/utils';
 
 interface ReportPreviewProps {
   formData: ReportData;
@@ -113,13 +114,126 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     { images: previewData.project2_codeSnippetImages, prefix: "4.1.6", caption: previewData.project2_codeSnippetCaption },
   ].filter(fig => fig.images.length > 0);
 
+  const [tocEntries, setTocEntries] = useState<Array<{ id: string; label: string; level: number }>>([]);
+  const [tocPages, setTocPages] = useState<Record<string, number>>({});
+
+  const scanToc = () => {
+    try {
+      const preview = document.getElementById('preview-content');
+      if (!preview) return [];
+
+      // Find headings inside preview in document order (h2, h3, h4)
+      const nodes = Array.from(preview.querySelectorAll('h2, h3, h4')) as HTMLElement[];
+      const entries: Array<{ id: string; label: string; level: number }> = [];
+      const usedIds = new Set<string>();
+
+      nodes.forEach((node) => {
+        // Skip the TOC heading itself
+        if (node.closest('#toc-page')) return;
+        const text = (node.textContent || '').trim();
+        if (!text) return;
+        // slugify label to create id
+        let slug = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+        if (!slug) slug = 'heading';
+        let uniq = slug;
+        let k = 1;
+        while (usedIds.has(uniq) || document.getElementById(uniq)) {
+          uniq = `${slug}-${k++}`;
+        }
+        usedIds.add(uniq);
+        // set id on the heading so anchors work
+        node.id = uniq;
+        const level = node.tagName.toLowerCase() === 'h2' ? 2 : node.tagName.toLowerCase() === 'h3' ? 3 : 4;
+        entries.push({ id: uniq, label: text, level });
+      });
+
+      setTocEntries(entries);
+      return entries;
+    } catch (err) {
+      return [];
+    }
+  };
+
+  const computeTocPages = () => {
+    try {
+      const preview = document.getElementById('preview-content');
+      if (!preview) return;
+
+      // Re-scan headings (in case content changed)
+      const entries = scanToc();
+
+      // Assume Letter size (11in) and 96dpi for screen -> px mapping.
+      // Printable area height = 11in - 2 * 1.5in = 8in
+      const dpi = 96; // px per inch
+      const printableHeightPx = 8 * dpi; // 8 inches printable area
+
+      const previewRect = preview.getBoundingClientRect();
+      const newMap: Record<string, number> = {};
+
+      entries.forEach((entry) => {
+        const el = document.getElementById(entry.id) as HTMLElement | null;
+        if (!el) return;
+        const elRect = el.getBoundingClientRect();
+        // offset from top of preview content
+        const offsetTop = elRect.top - previewRect.top + preview.scrollTop;
+        const pageNumber = Math.floor(offsetTop / printableHeightPx) + 1;
+        newMap[entry.id] = pageNumber;
+      });
+
+      setTocPages(newMap);
+    } catch (err) {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    // Compute initially and when window resizes or before print
+    computeTocPages();
+    const onResize = () => setTimeout(computeTocPages, 200);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('beforeprint', computeTocPages);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('beforeprint', computeTocPages);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const printPreview = () => {
+    try {
+      // Create temporary stylesheet to hide everything except the preview during print
+  const style = document.createElement('style');
+  style.setAttribute('data-temp-print-style', 'true');
+  style.innerHTML = `@page { margin: 1.5in; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } /* Keep the preview content static so it respects @page margins */ #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+      document.head.appendChild(style);
+
+      // Trigger print
+      window.print();
+
+      // Remove the temporary style after a short delay (print dialog may still be open)
+      setTimeout(() => {
+        if (style && style.parentNode) style.parentNode.removeChild(style);
+      }, 1000);
+    } catch (err) {
+      // Fallback: just call print
+      window.print();
+    }
+  };
+
+
   return (
     <div className="relative">
-      <Card
-        id="preview-content"
-        className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg"
-        style={{ textAlign: formData.contentAlignment }}
-      >
+      <div className="absolute right-4 top-4 z-50">
+        
+      </div>
+      <Card id="preview-content" className={cn(
+        "w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg",
+        {
+          'text-left': formData.textAlign === 'left',
+          'text-center': formData.textAlign === 'center',
+          'text-justify': formData.textAlign === 'justify',
+        }
+        )}>
       <style jsx global>{`
         #preview-content h1, #preview-content h2, #preview-content h3, #preview-content h4 {
             font-weight: 700;
@@ -129,8 +243,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         }
         #preview-content h1 { font-size: 1.8rem; text-align: center; border-bottom: 2px solid hsl(var(--border)); padding-bottom: 1rem; }
         #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; text-align: center; }
-        #preview-content h3 { font-size: 1.1rem; font-weight: 600; text-align: left; }
-        #preview-content h4 { font-size: 1.0rem; font-weight: 600; text-align: left; }
+        #preview-content h3 { font-size: 1.1rem; font-weight: 600; }
+        #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
         #preview-content .prose ul { list-style-type: none; padding: 0; }
         #preview-content div > h3:first-child {
@@ -147,22 +261,35 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
            border-bottom: 1px solid hsl(var(--border));
            padding-bottom: 0.5rem;
         }
-        
-        #toc-page {
-          text-align: left;
-        }
-
-        #cover-page {
-          text-align: center;
-        }
-        
         .page-break {
           page-break-before: always;
+        }
+        @media print {
+          .image-selector-ui { display: none; }
+          body { background: white; color: black; }
+          #main-container { padding: 0; }
+          #form-container, #main-container > .mt-8 > .w-full.max-w-\[8\.5in\].mx-auto > div:not(#preview-content) { display: none; }
+          #preview-content {
+            display: block !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: auto;
+            margin: 0;
+            padding: 1in;
+            box-shadow: none;
+            border: none;
+          }
+          h1, h2, h3, h4, p, li { color: black !important; }
+          .keep-together { break-inside: avoid; page-break-inside: avoid; }
+          #preview-content h2, #preview-content h3, #preview-content h4 { break-after: avoid; page-break-after: avoid; }
+          #preview-content p, #preview-content li { orphans: 3; widows: 3; }
         }
       `}</style>
 
       {/* Cover Page */}
-      <div id="cover-page" className="flex flex-col justify-between min-h-[9in]">
+      <div id="cover-page" className="text-center flex flex-col justify-between min-h-[9in]">
         <div></div> {/* Spacer */}
         <div className="title-block mt-8">
           <p className="font-medium uppercase">{previewData.universityName || <Placeholder>University Name</Placeholder>}</p>
@@ -185,7 +312,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Acknowledgement */}
-      <div id="acknowledgement-page" className="page-break">
+      <div id="acknowledgement-page" className="text-left page-break">
         <h2>ACKNOWLEDGEMENT</h2>
         {previewData.acknowledgementHtml ? (
             <div dangerouslySetInnerHTML={previewData.acknowledgementHtml}></div>
@@ -195,7 +322,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Abstract */}
-      <div id="abstract-page" className="page-break">
+      <div id="abstract-page" className="text-left page-break">
         <h2>ABSTRACT</h2>
         {previewData.abstractHtml ? (
             <div dangerouslySetInnerHTML={previewData.abstractHtml}></div>
@@ -205,20 +332,23 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Table of Contents */}
-      <div id="toc-page" className="prose prose-sm page-break">
+      <div id="toc-page" className="prose prose-sm text-left page-break">
         <h2>TABLE OF CONTENTS</h2>
-        {/* Placeholder for dynamic TOC */}
-        <p>CHAPTER 1: INTRODUCTION ....................................... 1</p>
-        <p>CHAPTER 2: ORGANIZATIONAL STRUCTURE .............. 2</p>
-        <p>CHAPTER 3: SKILLS LEARNT .......................................... 3</p>
-        <p>CHAPTER 4: PROJECT DEVELOPED ............................ 4</p>
-        <p>CHAPTER 5: CONCLUSION ............................................ 5</p>
+        <div className="toc-list">
+          {tocEntries.map((entry) => (
+            <div key={entry.id} className="toc-entry text-sm leading-relaxed" data-level={entry.level}>
+              <div className="toc-label">{entry.label}</div>
+              <div className="toc-leader" aria-hidden />
+              <div className="toc-page">{tocPages[entry.id] ?? ''}</div>
+            </div>
+          ))}
+        </div>
       </div>
       
       {/* List of Figures */}
-       <div id="lof-page" className="page-break">
-            <h2 style={{ textAlign: 'left' }}>LIST OF FIGURES</h2>
-            <div className="prose prose-sm" style={{ textAlign: 'left' }}>
+       <div id="lof-page" className="text-left page-break">
+            <h2>LIST OF FIGURES</h2>
+            <div className="prose prose-sm">
                 {figures.length > 0 ? (
                     figures.map((fig, index) => (
                         <p key={index} className="text-sm leading-relaxed">

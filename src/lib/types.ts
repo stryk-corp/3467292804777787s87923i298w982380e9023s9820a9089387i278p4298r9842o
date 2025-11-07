@@ -1,4 +1,5 @@
 export interface ReportData {
+  textAlign: 'left' | 'center' | 'justify';
   fullName: string;
   regNumber: string;
   universityName: string;
@@ -65,7 +66,4 @@ export interface ReportData {
   project2_codeSnippetImages: string[];
   project2_codeSnippetCaption: string;
   project2_tools: string;
-
-  // Report Settings
-  contentAlignment: 'left' | 'center' | 'justify';
 }

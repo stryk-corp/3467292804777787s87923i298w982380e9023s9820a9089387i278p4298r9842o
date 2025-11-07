@@ -5,12 +5,15 @@ import ReportForm from '@/components/report-form';
 import ReportPreview from '@/components/report-preview';
 import type { ReportData } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, Printer, Settings } from 'lucide-react';
+import { Sparkles, Download, Loader2, Printer, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { ReportSettingsModal } from '@/components/report-settings-modal';
 
 export default function Home() {
   const [formData, setFormData] = useState<ReportData>({
+    textAlign: 'left',
     fullName: '',
     regNumber: '',
     universityName: '',
@@ -76,17 +79,99 @@ export default function Home() {
     project2_core: "",
     project2_codeSnippetImages: [],
     project2_codeSnippetCaption: "Code Snippet for Project 2",
-    project2_tools: "",
-
-    // Report Settings
-    contentAlignment: 'left',
+    project2_tools: ""
   });
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    const reportContainer = document.getElementById('preview-content');
+    if (!reportContainer) return;
+
+    setIsDownloading(true);
+
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'pt',
+      format: 'a4',
+    });
+
+    const pdfPageWidth = pdf.internal.pageSize.getWidth();
+    const pdfPageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 72; // 1 inch
+    const contentWidth = pdfPageWidth - margin * 2;
+    const contentHeight = pdfPageHeight - margin * 2;
+    const x = margin;
+
+    const sections = [
+      'cover-page',
+      'acknowledgement-page',
+      'abstract-page',
+      'toc-page',
+      'lof-page',
+      'chapter-1-page',
+      'chapter-2-page',
+      'chapter-3-page',
+      'chapter-4-page',
+      'chapter-5-page',
+    ];
+
+    for (let i = 0; i < sections.length; i++) {
+      const sectionId = sections[i];
+      const element = document.getElementById(sectionId) as HTMLElement;
+      if (!element) continue;
+
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = imgWidth / contentWidth;
+      const scaledImgHeight = imgHeight / ratio;
+      
+      let position = 0;
+      let heightLeft = scaledImgHeight;
+
+      // Special handling for the cover page to center it vertically
+      if (sectionId === 'cover-page') {
+        const y = (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2;
+        pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
+      } else {
+        pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
+      }
+      
+      heightLeft -= contentHeight;
+
+      while (heightLeft > 0) {
+        position += contentHeight;
+        pdf.addPage();
+        // The y position in addImage is the negative of the position on the source canvas
+        pdf.addImage(imgData, 'PNG', x, -position + margin, contentWidth, scaledImgHeight);
+        heightLeft -= contentHeight;
+      }
+
+      if (i < sections.length - 1) {
+        pdf.addPage();
+      }
+    }
+
+    pdf.save('SIWES-Report.pdf');
+    setIsDownloading(false);
+  };
+
 
   const printPreview = () => {
     window.print();
   };
 
   return (
+    <>
     <div id="main-container" className="flex flex-col items-center w-full min-h-screen bg-background p-4 sm:p-8">
       <div id="form-container" className="w-full max-w-4xl">
         <Card className="bg-card/80 border-0 shadow-none">
@@ -94,21 +179,14 @@ export default function Home() {
             <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
               <CardTitle className="text-3xl font-bold text-foreground">SIWES AI Pro</CardTitle>
-              <div className='flex items-center gap-2 ml-4'>
-                <ReportSettingsModal
-                  contentAlignment={formData.contentAlignment}
-                  onAlignmentChange={(value) => setFormData(prev => ({...prev, contentAlignment: value}))}
-                >
-                  <Button variant="outline">
-                    <Settings className="h-5 w-5" />
-                    <span className="ml-2 sr-only sm:not-sr-only">Settings</span>
-                  </Button>
-                </ReportSettingsModal>
-                <Button variant="outline" onClick={printPreview}>
-                  <Printer className="h-5 w-5" />
-                  <span className="ml-2 sr-only sm:not-sr-only">Print</span>
-                </Button>
-              </div>
+               <Button variant="outline" onClick={() => setIsSettingsModalOpen(true)} className="ml-4">
+                <Settings className="h-5 w-5" />
+                <span className="ml-2 sr-only sm:not-sr-only">Settings</span>
+              </Button>
+              <Button variant="outline" onClick={printPreview} className="ml-2">
+                <Printer className="h-5 w-5" />
+                <span className="ml-2 sr-only sm:not-sr-only">Print</span>
+              </Button>
             </div>
             <CardDescription className="text-muted-foreground">
               Fill in your details, and let AI help you write the perfect report.
@@ -122,5 +200,12 @@ export default function Home() {
         <ReportPreview formData={formData} setFormData={setFormData} />
       </div>
     </div>
+    <ReportSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        formData={formData}
+        setFormData={setFormData}
+      />
+    </>
   );
 }
