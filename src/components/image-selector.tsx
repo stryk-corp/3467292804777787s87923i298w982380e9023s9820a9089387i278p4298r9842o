@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, X } from 'lucide-react';
-import Image from 'next/image';
+// Use a regular img for better print/PDF behavior (avoids absolute/fill positioning issues)
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
@@ -86,12 +86,11 @@ export function ImageSelector({
                 onClick={() => handleImageClick(index)}
                 className="w-full aspect-video border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
                 >
-                <Image 
-                  src={src} 
-                  alt={`Attachment image ${index + 1}`} 
-                  fill={true} 
-                  objectFit="cover"
-                  className="rounded-lg" 
+                <img
+                  src={src}
+                  alt={`Attachment image ${index + 1}`}
+                  className="rounded-lg w-full h-full object-contain"
+                  style={{ objectFit: 'contain' }}
                 />
                 </button>
                 <button

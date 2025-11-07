@@ -5,10 +5,9 @@ import ReportForm from '@/components/report-form';
 import ReportPreview from '@/components/report-preview';
 import type { ReportData } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, Download, Loader2 } from 'lucide-react';
+import { Sparkles, Printer, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { ReportSettingsModal } from '@/components/report-settings-modal';
 
 export default function Home() {
   const [formData, setFormData] = useState<ReportData>({
@@ -77,94 +76,14 @@ export default function Home() {
     project2_core: "",
     project2_codeSnippetImages: [],
     project2_codeSnippetCaption: "Code Snippet for Project 2",
-    project2_tools: ""
+    project2_tools: "",
+
+    // Report Settings
+    contentAlignment: 'left',
   });
-  const [isDownloading, setIsDownloading] = useState(false);
 
-  const handleDownloadPdf = async () => {
-    const reportContainer = document.getElementById('preview-content');
-    if (!reportContainer) return;
-  
-    setIsDownloading(true);
-  
-    const pdf = new jsPDF({
-      orientation: 'p',
-      unit: 'pt',
-      format: 'a4',
-    });
-  
-    const pdfPageWidth = pdf.internal.pageSize.getWidth();
-    const pdfPageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 72; // 1 inch
-    const contentWidth = pdfPageWidth - margin * 2;
-    const contentHeight = pdfPageHeight - margin * 2;
-  
-    const sections = [
-      'cover-page',
-      'acknowledgement-page',
-      'abstract-page',
-      'toc-page',
-      'lof-page',
-      'chapter-1-page',
-      'chapter-2-page',
-      'chapter-3-page',
-      'chapter-4-page',
-      'chapter-5-page',
-    ];
-  
-    for (let i = 0; i < sections.length; i++) {
-      const sectionId = sections[i];
-      const element = document.getElementById(sectionId) as HTMLElement;
-      if (!element) continue;
-  
-      // Temporarily make the element visible for capture if it's on another "page"
-      const originalDisplay = element.style.display;
-      element.style.display = 'block';
-
-      const canvas = await html2canvas(element, {
-        scale: 2, // Higher resolution for better quality
-        useCORS: true,
-        logging: false,
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight
-      });
-      
-      element.style.display = originalDisplay;
-
-      const imgData = canvas.toDataURL('image/png');
-      const imgProps = pdf.getImageProperties(imgData);
-      
-      const ratio = contentWidth / imgProps.width;
-      const scaledImgHeight = imgProps.height * ratio;
-      
-      let heightLeft = scaledImgHeight;
-      let position = 0;
-
-      // Center the content horizontally
-      const x = (pdfPageWidth - contentWidth) / 2;
-
-      // Add the first part of the section
-      pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
-      heightLeft -= contentHeight;
-
-      // If the content is taller than one page, add new pages
-      while (heightLeft > 0) {
-        position -= pdfPageHeight; // Correctly calculate the negative offset for the new page
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', x, position + margin, contentWidth, scaledImgHeight);
-        heightLeft -= contentHeight;
-      }
-      
-      // Add a new page for the next section, unless it's the last one
-      if (i < sections.length - 1) {
-        pdf.addPage();
-      }
-    }
-  
-    pdf.save('SIWES-Report.pdf');
-    setIsDownloading(false);
+  const printPreview = () => {
+    window.print();
   };
 
   return (
@@ -175,19 +94,21 @@ export default function Home() {
             <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
               <CardTitle className="text-3xl font-bold text-foreground">SIWES AI Pro</CardTitle>
-              <Button variant="outline" onClick={handleDownloadPdf} disabled={isDownloading} className="ml-4">
-                {isDownloading ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    <span className="ml-2">Downloading...</span>
-                  </>
-                ) : (
-                   <>
-                    <Download className="h-5 w-5" />
-                    <span className="ml-2 sr-only sm:not-sr-only">Download PDF</span>
-                  </>
-                )}
-              </Button>
+              <div className='flex items-center gap-2 ml-4'>
+                <ReportSettingsModal
+                  contentAlignment={formData.contentAlignment}
+                  onAlignmentChange={(value) => setFormData(prev => ({...prev, contentAlignment: value}))}
+                >
+                  <Button variant="outline">
+                    <Settings className="h-5 w-5" />
+                    <span className="ml-2 sr-only sm:not-sr-only">Settings</span>
+                  </Button>
+                </ReportSettingsModal>
+                <Button variant="outline" onClick={printPreview}>
+                  <Printer className="h-5 w-5" />
+                  <span className="ml-2 sr-only sm:not-sr-only">Print</span>
+                </Button>
+              </div>
             </div>
             <CardDescription className="text-muted-foreground">
               Fill in your details, and let AI help you write the perfect report.

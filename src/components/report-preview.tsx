@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { ReportData } from '@/lib/types';
 import { Card } from '@/components/ui/card';
@@ -112,9 +113,13 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     { images: previewData.project2_codeSnippetImages, prefix: "4.1.6", caption: previewData.project2_codeSnippetCaption },
   ].filter(fig => fig.images.length > 0);
 
-
   return (
-    <Card id="preview-content" className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg">
+    <div className="relative">
+      <Card
+        id="preview-content"
+        className="w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg"
+        style={{ textAlign: formData.contentAlignment }}
+      >
       <style jsx global>{`
         #preview-content h1, #preview-content h2, #preview-content h3, #preview-content h4 {
             font-weight: 700;
@@ -124,8 +129,8 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         }
         #preview-content h1 { font-size: 1.8rem; text-align: center; border-bottom: 2px solid hsl(var(--border)); padding-bottom: 1rem; }
         #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; text-align: center; }
-        #preview-content h3 { font-size: 1.1rem; font-weight: 600; }
-        #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
+        #preview-content h3 { font-size: 1.1rem; font-weight: 600; text-align: left; }
+        #preview-content h4 { font-size: 1.0rem; font-weight: 600; text-align: left; }
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
         #preview-content .prose ul { list-style-type: none; padding: 0; }
         #preview-content div > h3:first-child {
@@ -142,13 +147,22 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
            border-bottom: 1px solid hsl(var(--border));
            padding-bottom: 0.5rem;
         }
+        
+        #toc-page {
+          text-align: left;
+        }
+
+        #cover-page {
+          text-align: center;
+        }
+        
         .page-break {
           page-break-before: always;
         }
       `}</style>
 
       {/* Cover Page */}
-      <div id="cover-page" className="text-center flex flex-col justify-between min-h-[9in]">
+      <div id="cover-page" className="flex flex-col justify-between min-h-[9in]">
         <div></div> {/* Spacer */}
         <div className="title-block mt-8">
           <p className="font-medium uppercase">{previewData.universityName || <Placeholder>University Name</Placeholder>}</p>
@@ -171,7 +185,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Acknowledgement */}
-      <div id="acknowledgement-page" className="text-left page-break">
+      <div id="acknowledgement-page" className="page-break">
         <h2>ACKNOWLEDGEMENT</h2>
         {previewData.acknowledgementHtml ? (
             <div dangerouslySetInnerHTML={previewData.acknowledgementHtml}></div>
@@ -181,7 +195,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Abstract */}
-      <div id="abstract-page" className="text-left page-break">
+      <div id="abstract-page" className="page-break">
         <h2>ABSTRACT</h2>
         {previewData.abstractHtml ? (
             <div dangerouslySetInnerHTML={previewData.abstractHtml}></div>
@@ -191,47 +205,20 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Table of Contents */}
-      <div id="toc-page" className="prose prose-sm text-left page-break">
+      <div id="toc-page" className="prose prose-sm page-break">
         <h2>TABLE OF CONTENTS</h2>
-        <p className="text-sm leading-relaxed">
-            Cover Page<br />
-            Acknowledgement<br />
-            Abstract<br />
-            Table of Contents<br />
-            List of Figures<br />
-            <br />
-            <strong>Chapter One: Introduction</strong><br />
-            1.1 Brief History of SIWES<br />
-            1.2 Objectives and Aims of SIWES<br />
-            1.3 Place of Attachment<br />
-            1.4 Brief Profile of Place of Attachment<br />
-            1.5 Scope of Specialization<br />
-            <br />
-            <strong>Chapter Two: Organizational Structure of Placement of Attachment</strong><br />
-            2.1 Vision<br />
-            2.2 Mission<br />
-            2.3 Value<br />
-            2.4 Organogram<br />
-            <br />
-            <strong>Chapter Three: Skills Learnt</strong><br />
-            3.1 Description of Skills<br />
-            3.2 Tools and Technologies used<br />
-            <br />
-            <strong>Chapter Four: Project Developed</strong><br />
-            4.1 Introduction<br />
-            4.2 Project 1<br />
-            4.3 Project 2<br />
-            <br />
-            <strong>Chapter Five: Conclusion</strong><br />
-            5.1 Challenges Encountered<br />
-            5.2 Conclusion<br />
-        </p>
+        {/* Placeholder for dynamic TOC */}
+        <p>CHAPTER 1: INTRODUCTION ....................................... 1</p>
+        <p>CHAPTER 2: ORGANIZATIONAL STRUCTURE .............. 2</p>
+        <p>CHAPTER 3: SKILLS LEARNT .......................................... 3</p>
+        <p>CHAPTER 4: PROJECT DEVELOPED ............................ 4</p>
+        <p>CHAPTER 5: CONCLUSION ............................................ 5</p>
       </div>
       
       {/* List of Figures */}
-       <div id="lof-page" className="text-left page-break">
-            <h2>LIST OF FIGURES</h2>
-            <div className="prose prose-sm">
+       <div id="lof-page" className="page-break">
+            <h2 style={{ textAlign: 'left' }}>LIST OF FIGURES</h2>
+            <div className="prose prose-sm" style={{ textAlign: 'left' }}>
                 {figures.length > 0 ? (
                     figures.map((fig, index) => (
                         <p key={index} className="text-sm leading-relaxed">
@@ -245,7 +232,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         </div>
 
       {/* Chapter 1 */}
-      <div id="chapter-1-page" className="text-left page-break">
+      <div id="chapter-1-page" className="page-break">
         <h2>CHAPTER 1: INTRODUCTION</h2>
         <h3>1.1 Brief History of SIWES</h3>
         <p>The Students Industrial Work Experience Scheme (SIWES) is a skills training program designed to equip students from universities, polytechnics, and other higher institutions with practical industry experience. It provides hands-on exposure to equipment and machinery that are often unavailable in academic institutions.</p>
@@ -289,7 +276,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 2 */}
-      <div id="chapter-2-page" className="text-left page-break">
+      <div id="chapter-2-page" className="page-break">
         <h2>CHAPTER 2: ORGANIZATIONAL STRUCTURE OF PLACEMENT OF ATTACHMENT</h2>
         <h3>2.1 VISION:</h3>
         <p>{previewData.companyVision || <Placeholder>Enter company vision in Step 3.</Placeholder>}</p>
@@ -317,7 +304,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 3 */}
-      <div id="chapter-3-page" className="text-left page-break">
+      <div id="chapter-3-page" className="page-break">
         <h2>CHAPTER 3: SKILLS LEARNT</h2>
         {previewData.skillsChapterHtml ? (
           <div dangerouslySetInnerHTML={previewData.skillsChapterHtml}></div>
@@ -327,7 +314,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Chapter 4 */}
-      <div id="chapter-4-page" className="text-left page-break">
+      <div id="chapter-4-page" className="page-break">
         <h2>CHAPTER 4: PROJECT DEVELOPED</h2>
         <h3>4.1 INTRODUCTION</h3>
         <div dangerouslySetInnerHTML={previewData.projectIntroHtml || {__html: "<p><Placeholder>Enter project intro in Step 5.</Placeholder></p>"}}></div>
@@ -395,7 +382,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
 
 
       {/* Chapter 5 */}
-      <div id="chapter-5-page" className="text-left page-break">
+      <div id="chapter-5-page" className="page-break">
         <h2>CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
         <h3>5.1 Challenges Encountered and Solutions</h3>
          {previewData.challengesHtml ? (
@@ -412,5 +399,6 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
     </Card>
+    </div>
   );
 }
