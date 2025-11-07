@@ -17,6 +17,8 @@ import { generateReportSections } from '@/ai/flows/generate-report-sections';
 import { provideAISuggestions } from '@/ai/flows/provide-ai-suggestions';
 import { generateSkillsChapter } from '@/ai/flows/generate-skills-chapter';
 import { generateChapterFive } from '@/ai/flows/generate-chapter-five';
+import { generateDiagram } from '@/ai/flows/generate-diagram-flow';
+import { generateImageFromMermaid } from '@/ai/flows/generate-image-from-mermaid';
 
 interface ReportFormProps {
   formData: ReportData;
@@ -56,6 +58,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     chapterFive: false,
     regenerate: false,
     suggestions: false,
+    diagram: false,
   });
   const [suggestions, setSuggestions] = useState<Suggestion>({});
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
@@ -218,6 +221,48 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
       setLoadingStates(prev => ({ ...prev, profile: false }));
     }
   };
+  
+    const handleGenerateDiagram = async () => {
+    if (!formData.organogramAbbreviations) {
+      toast({
+        variant: 'destructive',
+        title: 'Missing Information',
+        description: 'Please enter Organogram Abbreviations to generate a diagram.',
+      });
+      return;
+    }
+    setLoadingStates(prev => ({...prev, diagram: true}));
+    toast({
+      title: 'Generating Diagram...',
+      description: 'The AI is creating your diagram. This can take a moment.',
+    });
+    try {
+      // Step 1: Generate Mermaid syntax from the description
+      const diagramResult = await generateDiagram({
+        description: formData.organogramAbbreviations,
+      });
+
+      // Step 2: Generate an image from the Mermaid syntax
+      const imageResult = await generateImageFromMermaid({
+        mermaidSyntax: diagramResult.mermaidSyntax,
+      });
+
+      setFormData(prev => ({
+        ...prev,
+        organogramImage: [imageResult.imageUrl], // Replace existing image
+      }));
+      toast({title: 'Success!', description: 'Organogram diagram has been generated.'});
+    } catch (error) {
+      console.error('Diagram Generation Error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to generate the diagram.',
+      });
+    } finally {
+      setLoadingStates(prev => ({...prev, diagram: false}));
+    }
+  };
 
   const handleRegenerate = async () => {
     if (!allFieldsFilled) {
@@ -369,7 +414,13 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                       <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." className="min-h-[100px]" /><SuggestionPill field="companyVision"/></div>
                       <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." className="min-h-[100px]" /><SuggestionPill field="companyMission"/></div>
                       <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values, separated by commas..." className="min-h-[100px]" /><SuggestionPill field="companyValues"/></div>
-                      <div><Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label><Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer" className="min-h-[120px]" /><SuggestionPill field="organogramAbbreviations"/></div>
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                           <Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label>
+                           <AiButton size="sm" variant="outline" onClick={handleGenerateDiagram} loading={loadingStates.diagram}>Generate Diagram</AiButton>
+                        </div>
+                        <Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer, CTO - Chief Technology Officer..." className="min-h-[120px]" /><SuggestionPill field="organogramAbbreviations"/>
+                      </div>
                     </div>
                 </div>
             )}
