@@ -244,7 +244,26 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
       const { svg } = await mermaid.render('mermaid-graph', mermaidSyntax);
 
-      const dataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
+      const svgElement = new DOMParser().parseFromString(svg, "image/svg+xml").documentElement;
+      const viewBox = svgElement.getAttribute('viewBox');
+      const width = svgElement.getAttribute('width');
+      const height = svgElement.getAttribute('height');
+      
+      if (width && height && !viewBox) {
+        svgElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      }
+      svgElement.setAttribute('width', '100%');
+      svgElement.setAttribute('height', '100%');
+      
+      // Remove the transform that centers the diagram
+      const gElement = svgElement.querySelector('g');
+      if (gElement) {
+        gElement.removeAttribute('transform');
+      }
+
+      const finalSvg = new XMLSerializer().serializeToString(svgElement);
+      const dataUrl = `data:image/svg+xml;base64,${btoa(finalSvg)}`;
+
       setFormData(prev => ({
         ...prev,
         organogramImage: [dataUrl],
@@ -527,3 +546,5 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     </div>
   );
 }
+
+    

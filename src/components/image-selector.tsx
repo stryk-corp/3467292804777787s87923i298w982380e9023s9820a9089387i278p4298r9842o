@@ -78,18 +78,18 @@ export function ImageSelector({
         className="hidden"
         accept="image/*"
       />
-      <div className="flex justify-center">
+      <div className="">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
             {images.map((src, index) => (
             <div key={index} className="group relative">
                 <button
                 onClick={() => handleImageClick(index)}
-                className="w-full border-2 border-dashed rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
+                className="w-full border-2 border-dashed rounded-lg flex items-center text-muted-foreground hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring relative"
                 >
                 <img
                   src={src}
                   alt={`Attachment image ${index + 1}`}
-                  className="rounded-lg w-full object-contain"
+                  className="rounded-lg w-full"
                 />
                 </button>
                 <button
@@ -134,3 +134,5 @@ export function ImageSelector({
     </div>
   );
 }
+
+    
