@@ -53,6 +53,7 @@ export interface ReportData {
   project1_signUpScreen: string;
   project1_signUpImages: string[];
   project1_signUpCaption: string;
+also include the images while aligning
   project1_homeScreen: string;
   project1_homeScreenImages: string[];
   project1_homeScreenCaption: string;

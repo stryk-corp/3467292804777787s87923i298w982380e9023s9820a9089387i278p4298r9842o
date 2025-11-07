@@ -6,6 +6,7 @@ import { Plus, X } from 'lucide-react';
 // Use a regular img for better print/PDF behavior (avoids absolute/fill positioning issues)
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import type { ReportData } from '@/lib/types';
 
 interface ImageSelectorProps {
   images: string[];
@@ -14,6 +15,7 @@ interface ImageSelectorProps {
   onCaptionChange: (caption: string) => void;
   maxImages?: number;
   figurePrefix?: string;
+  textAlign?: ReportData['textAlign'];
 }
 
 export function ImageSelector({
@@ -23,6 +25,7 @@ export function ImageSelector({
   onCaptionChange,
   maxImages = 3,
   figurePrefix = '1.1',
+  textAlign = 'left',
 }: ImageSelectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -78,7 +81,10 @@ export function ImageSelector({
         className="hidden"
         accept="image/*"
       />
-      <div className="flex justify-center">
+      <div className={cn("flex", {
+        "justify-center": textAlign === 'center',
+        "justify-start": textAlign === 'left' || textAlign === 'justify',
+      })}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
             {images.map((src, index) => (
             <div key={index} className="group relative">

@@ -242,7 +242,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             color: hsl(var(--foreground));
         }
         #preview-content h1 { font-size: 1.8rem; text-align: center; border-bottom: 2px solid hsl(var(--border)); padding-bottom: 1rem; }
-        #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; text-align: center; }
+        #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; }
         #preview-content h3 { font-size: 1.1rem; font-weight: 600; }
         #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
@@ -250,17 +250,20 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         #preview-content div > h3:first-child {
             margin-top: 0;
         }
-        #preview-content .text-left { text-align: left; }
-        #preview-content .text-left h2,
-        #preview-content .text-left h3 {
-            border-bottom: none;
-            text-align: left;
-        }
+
+        #preview-content.text-center h2,
+        #preview-content.text-center h3,
+        #preview-content.text-center h4 { text-align: center; }
+
+        #preview-content.text-left h2,
+        #preview-content.text-left h3,
+        #preview-content.text-left h4 { text-align: left; }
+        
+        /* Keep Chapter titles centered */
         #preview-content .text-left h2 {
            text-align: center;
-           border-bottom: 1px solid hsl(var(--border));
-           padding-bottom: 0.5rem;
         }
+
         .page-break {
           page-break-before: always;
         }
@@ -312,7 +315,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Acknowledgement */}
-      <div id="acknowledgement-page" className="text-left page-break">
+      <div id="acknowledgement-page" className="page-break">
         <h2>ACKNOWLEDGEMENT</h2>
         {previewData.acknowledgementHtml ? (
             <div dangerouslySetInnerHTML={previewData.acknowledgementHtml}></div>
@@ -322,7 +325,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
 
       {/* Abstract */}
-      <div id="abstract-page" className="text-left page-break">
+      <div id="abstract-page" className="page-break">
         <h2>ABSTRACT</h2>
         {previewData.abstractHtml ? (
             <div dangerouslySetInnerHTML={previewData.abstractHtml}></div>
@@ -378,6 +381,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             onCaptionChange={handleAttachmentCaptionChange}
             maxImages={3}
             figurePrefix="1.1"
+            textAlign={previewData.textAlign}
           />
         </div>
         <h3>1.4 BRIEF PROFILE OF PLACE OF ATTACHMENT</h3>
@@ -395,6 +399,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             onCaptionChange={handleProfileCaptionChange}
             maxImages={3}
             figurePrefix="1.2"
+            textAlign={previewData.textAlign}
           />
         </div>
         <h3>1.5 SCOPE OF SPECIALIZATION</h3>
@@ -424,6 +429,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
               onCaptionChange={handleOrganogramCaptionChange}
               maxImages={1}
               figurePrefix="2.1"
+              textAlign={previewData.textAlign}
           />
         </div>
         {previewData.organogramAbbreviationsHtml ? (
@@ -455,13 +461,13 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <h4>4.1.2 Project Description</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_descHtml || {__html: "<p><Placeholder>Describe project 1 details in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} />
+          <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} textAlign={previewData.textAlign} />
         </div>
         
         <h4>4.1.2.1 A Key Feature</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml || {__html: "<p><Placeholder>Describe a key feature or screen in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" />
+          <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" textAlign={previewData.textAlign} />
         </div>
 
         <h4>4.1.2.2 Another Feature</h4>
@@ -470,19 +476,19 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <h4>4.1.2.3 Challenges and Solutions</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_validationHtml || {__html: "<p><Placeholder>Describe any challenges for this project in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" />
+          <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" textAlign={previewData.textAlign} />
         </div>
 
         <h4>4.1.2.4 Another Part of the Project</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml || {__html: "<p><Placeholder>Describe another part of the project in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" />
+          <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" textAlign={previewData.textAlign} />
         </div>
         
         <h4>4.1.2.5 Final State/Main View</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_homeScreenHtml || {__html: "<p><Placeholder>Describe the final state or main view of the project in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" />
+          <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" textAlign={previewData.textAlign} />
         </div>
         
         <h4>4.1.3 Tools and Technologies Used</h4>
@@ -503,7 +509,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <h4>4.2.1.3 Core Functionality</h4>
         <div className="keep-together">
             <div dangerouslySetInnerHTML={previewData.project2_coreHtml || {__html: "<p><Placeholder>Describe the project's core functionality in Step 5.</Placeholder></p>"}}></div>
-            <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" />
+            <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" textAlign={previewData.textAlign} />
         </div>
         
         <h3>4.3 Tools and Technologies Used</h3>
