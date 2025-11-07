@@ -11,12 +11,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import mermaid from 'mermaid';
 
 import { generateCompanyProfile } from '@/ai/flows/generate-company-profile';
 import { generateReportSections } from '@/ai/flows/generate-report-sections';
 import { provideAISuggestions } from '@/ai/flows/provide-ai-suggestions';
 import { generateSkillsChapter } from '@/ai/flows/generate-skills-chapter';
 import { generateChapterFive } from '@/ai/flows/generate-chapter-five';
+import { generateDiagram } from '@/ai/flows/generate-diagram-flow';
 
 interface ReportFormProps {
   formData: ReportData;
@@ -56,6 +58,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     chapterFive: false,
     regenerate: false,
     suggestions: false,
+    diagram: false,
   });
   const [suggestions, setSuggestions] = useState<Suggestion>({});
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
@@ -68,6 +71,10 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     'attachmentLocation', 'primarySkill', 'framework', 'programmingLanguage', 'careerPath',
     'fullName', 'universityName', 'facultyName'
   ], []);
+
+  useEffect(() => {
+    mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+  }, []);
 
   useEffect(() => {
     const areAllFieldsFilled = requiredFields.every(field => !!formData[field as keyof ReportData]);
@@ -216,6 +223,43 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
       toast({ variant: "destructive", title: "Error", description: "Failed to generate company profile." });
     } finally {
       setLoadingStates(prev => ({ ...prev, profile: false }));
+    }
+  };
+  
+  const handleGenerateDiagram = async () => {
+    if (!formData.organogramAbbreviations) {
+      toast({
+        variant: 'destructive',
+        title: 'Missing Information',
+        description: 'Please provide the organogram abbreviations first.',
+      });
+      return;
+    }
+    setLoadingStates(prev => ({...prev, diagram: true}));
+    toast({title: 'Generating Diagram', description: 'The AI is creating your diagram...'});
+    try {
+      const {mermaidSyntax} = await generateDiagram({
+        description: formData.organogramAbbreviations,
+      });
+
+      const { svg } = await mermaid.render('mermaid-graph', mermaidSyntax);
+
+      const dataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
+      setFormData(prev => ({
+        ...prev,
+        organogramImage: [dataUrl],
+      }));
+
+      toast({title: 'Success!', description: 'Organogram diagram has been generated.'});
+    } catch (error) {
+      console.error('Diagram Generation Error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not generate the diagram.',
+      });
+    } finally {
+      setLoadingStates(prev => ({...prev, diagram: false}));
     }
   };
 
@@ -369,7 +413,13 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                       <div><Label htmlFor="companyVision">Company Vision</Label><Textarea id="companyVision" value={formData.companyVision} onChange={handleInputChange} placeholder="Enter the company's vision statement..." className="min-h-[100px]" /><SuggestionPill field="companyVision"/></div>
                       <div><Label htmlFor="companyMission">Company Mission</Label><Textarea id="companyMission" value={formData.companyMission} onChange={handleInputChange} placeholder="Enter the company's mission statement..." className="min-h-[100px]" /><SuggestionPill field="companyMission"/></div>
                       <div><Label htmlFor="companyValues">Company Values</Label><Textarea id="companyValues" value={formData.companyValues} onChange={handleInputChange} placeholder="Enter the company's core values, separated by commas..." className="min-h-[100px]" /><SuggestionPill field="companyValues"/></div>
-                      <div><Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label><Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer" className="min-h-[120px]" /><SuggestionPill field="organogramAbbreviations"/></div>
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                           <Label htmlFor="organogramAbbreviations">Organogram Abbreviations</Label>
+                           <AiButton size="sm" variant="outline" onClick={handleGenerateDiagram} loading={loadingStates.diagram}>Generate Diagram</AiButton>
+                        </div>
+                        <Textarea id="organogramAbbreviations" value={formData.organogramAbbreviations} onChange={handleInputChange} placeholder="e.g. CEO - Chief Executive Officer" className="min-h-[120px]" /><SuggestionPill field="organogramAbbreviations"/>
+                      </div>
                     </div>
                 </div>
             )}
