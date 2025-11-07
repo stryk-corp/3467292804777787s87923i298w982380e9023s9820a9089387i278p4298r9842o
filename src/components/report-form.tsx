@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import mermaid from 'mermaid';
 
 import { generateCompanyProfile } from '@/ai/flows/generate-company-profile';
 import { generateReportSections } from '@/ai/flows/generate-report-sections';
@@ -18,7 +19,6 @@ import { provideAISuggestions } from '@/ai/flows/provide-ai-suggestions';
 import { generateSkillsChapter } from '@/ai/flows/generate-skills-chapter';
 import { generateChapterFive } from '@/ai/flows/generate-chapter-five';
 import { generateDiagram } from '@/ai/flows/generate-diagram-flow';
-import { generateImageFromMermaid } from '@/ai/flows/generate-image-from-mermaid';
 
 interface ReportFormProps {
   formData: ReportData;
@@ -47,6 +47,19 @@ type Suggestion = {
 }
 
 const TOTAL_STEPS = 6;
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  themeVariables: {
+    background: '#F9FAFB',
+    primaryColor: '#DBEAFE',
+    primaryBorderColor: '#BFDBFE',
+    lineColor: '#374151',
+    textColor: '#111827',
+    fontSize: '16px',
+  }
+});
 
 export default function ReportForm({ formData, setFormData }: ReportFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -222,7 +235,7 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     }
   };
   
-    const handleGenerateDiagram = async () => {
+  const handleGenerateDiagram = async () => {
     if (!formData.organogramAbbreviations) {
       toast({
         variant: 'destructive',
@@ -234,24 +247,30 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     setLoadingStates(prev => ({...prev, diagram: true}));
     toast({
       title: 'Generating Diagram...',
-      description: 'The AI is creating your diagram. This can take a moment.',
+      description: 'The AI is creating your diagram structure.',
     });
     try {
       // Step 1: Generate Mermaid syntax from the description
       const diagramResult = await generateDiagram({
         description: formData.organogramAbbreviations,
       });
+      const mermaidSyntax = diagramResult.mermaidSyntax;
 
-      // Step 2: Generate an image from the Mermaid syntax
-      const imageResult = await generateImageFromMermaid({
-        mermaidSyntax: diagramResult.mermaidSyntax,
-      });
+      // Step 2: Render Mermaid syntax to SVG
+      const { svg } = await mermaid.render('mermaid-graph', mermaidSyntax);
 
-      setFormData(prev => ({
-        ...prev,
-        organogramImage: [imageResult.imageUrl], // Replace existing image
-      }));
-      toast({title: 'Success!', description: 'Organogram diagram has been generated.'});
+      // Step 3: Create a data URL from the SVG
+      const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFormData(prev => ({
+            ...prev,
+            organogramImage: [e.target?.result as string],
+        }));
+        toast({title: 'Success!', description: 'Organogram diagram has been generated.'});
+      };
+      reader.readAsDataURL(svgBlob);
+
     } catch (error) {
       console.error('Diagram Generation Error:', error);
       toast({
