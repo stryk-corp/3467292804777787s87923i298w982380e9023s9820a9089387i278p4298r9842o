@@ -51,15 +51,8 @@ const generateImageFromMermaidFlow = ai.defineFlow(
   },
   async ({mermaidSyntax}) => {
     const {media} = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-image-preview',
-      prompt: [
-        {
-          text: `Generate an image from this mermaid syntax: \n\n ${mermaidSyntax}`,
-        },
-      ],
-      config: {
-        responseModalities: ['IMAGE'],
-      },
+      model: 'googleai/imagen-4.0-fast-generate-001',
+      prompt: `Generate an image from this mermaid syntax, rendering it as a clean, professional-looking diagram. The background should be off-white (#f9fafb), with dark gray lines and black text. Node boxes should have a light blue fill (#DBEAFE) with a darker blue border (#BFDBFE). Output a PNG image. Mermaid Syntax: \n\n ${mermaidSyntax}`,
     });
 
     const imageUrl = media?.url;
