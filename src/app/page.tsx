@@ -121,6 +121,10 @@ export default function Home() {
       const element = document.getElementById(sectionId) as HTMLElement;
       if (!element) continue;
 
+      if (i > 0) {
+        pdf.addPage();
+      }
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -137,15 +141,14 @@ export default function Home() {
       
       let position = 0;
       let heightLeft = scaledImgHeight;
+      let y = margin;
 
       // Special handling for the cover page to center it vertically
       if (sectionId === 'cover-page') {
-        const y = (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2;
-        pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
-      } else {
-        pdf.addImage(imgData, 'PNG', x, margin, contentWidth, scaledImgHeight);
+        y = (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2;
       }
       
+      pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
       heightLeft -= contentHeight;
 
       while (heightLeft > 0) {
@@ -154,10 +157,6 @@ export default function Home() {
         // The y position in addImage is the negative of the position on the source canvas
         pdf.addImage(imgData, 'PNG', x, -position + margin, contentWidth, scaledImgHeight);
         heightLeft -= contentHeight;
-      }
-
-      if (i < sections.length - 1) {
-        pdf.addPage();
       }
     }
 
