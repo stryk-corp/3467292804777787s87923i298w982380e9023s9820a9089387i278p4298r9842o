@@ -204,7 +204,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       // Create temporary stylesheet to hide everything except the preview during print
   const style = document.createElement('style');
   style.setAttribute('data-temp-print-style', 'true');
-  style.innerHTML = `@page { margin: 1.5in; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } /* Keep the preview content static so it respects @page margins */ #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+  style.innerHTML = `@page { margin: 1in; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } /* Keep the preview content static so it respects @page margins */ #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
       document.head.appendChild(style);
 
       // Trigger print
@@ -226,68 +226,145 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       <div className="absolute right-4 top-4 z-50">
         
       </div>
-      <Card id="preview-content" className={cn(
-        "w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg",
-        {
-          'text-left': formData.textAlign === 'left',
-          'text-center': formData.textAlign === 'center',
-          'text-justify': formData.textAlign === 'justify',
-        }
-        )}>
+      <Card
+        id="preview-content"
+        className={cn(
+          "w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg",
+          {
+            'text-left': previewData.textAlign === 'left',
+            'text-center': previewData.textAlign === 'center',
+            'text-justify': previewData.textAlign === 'justify',
+          }
+        )}
+      >
       <style jsx global>{`
-        #preview-content h1, #preview-content h2, #preview-content h3, #preview-content h4 {
-            font-weight: 700;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: hsl(var(--foreground));
-        }
-        #preview-content h1 { font-size: 1.8rem; text-align: center; border-bottom: 2px solid hsl(var(--border)); padding-bottom: 1rem; }
-        #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; }
-        #preview-content h3 { font-size: 1.1rem; font-weight: 600; }
-        #preview-content h4 { font-size: 1.0rem; font-weight: 600; }
+        #preview-content h1 { font-size: 1.8rem; text-align: center; border-bottom: 2px solid hsl(var(--border)); padding-bottom: 1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; color: hsl(var(--foreground));}
+        #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; text-align: center; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; color: hsl(var(--foreground));}
+        #preview-content h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: hsl(var(--foreground));}
+        #preview-content h4 { font-size: 1.0rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: hsl(var(--foreground));}
         #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
         #preview-content .prose ul { list-style-type: none; padding: 0; }
         #preview-content div > h3:first-child {
             margin-top: 0;
         }
-
-        #preview-content.text-center h2,
-        #preview-content.text-center h3,
-        #preview-content.text-center h4 { text-align: center; }
-
-        #preview-content.text-left h2,
-        #preview-content.text-left h3,
-        #preview-content.text-left h4 { text-align: left; }
-        
-        /* Keep Chapter titles centered */
+        #preview-content .text-left { text-align: left; }
+        #preview-content .text-left h2,
+        #preview-content .text-left h3 {
+            border-bottom: none;
+            text-align: left;
+        }
         #preview-content .text-left h2 {
            text-align: center;
+           border-bottom: 1px solid hsl(var(--border));
+           padding-bottom: 0.5rem;
         }
-
         .page-break {
           page-break-before: always;
         }
+        /* Print-specific tweaks to avoid PDF cropping and improve page breaks */
+        @page { margin: 1in; }
         @media print {
-          .image-selector-ui { display: none; }
-          body { background: white; color: black; }
-          #main-container { padding: 0; }
-          #form-container, #main-container > .mt-8 > .w-full.max-w-\[8\.5in\].mx-auto > div:not(#preview-content) { display: none; }
+          /* Remove shadows and ensure the preview respects page margins */
           #preview-content {
-            display: block !important;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            min-height: auto;
-            margin: 0;
-            padding: 1in;
-            box-shadow: none;
-            border: none;
+            box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            margin: 0 auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important; /* let content flow within page margins */
+            box-sizing: border-box !important;
           }
-          h1, h2, h3, h4, p, li { color: black !important; }
-          .keep-together { break-inside: avoid; page-break-inside: avoid; }
-          #preview-content h2, #preview-content h3, #preview-content h4 { break-after: avoid; page-break-after: avoid; }
-          #preview-content p, #preview-content li { orphans: 3; widows: 3; }
+
+          /* Avoid breaking images and keep grouped content together */
+          /* Prevent splitting of logical groups (headings + image + caption) */
+          .keep-together, .keep-together * {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+
+          /* Prevent splitting of the image grid items */
+          .grid, .group, .group * {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+
+          /* Unset enforced aspect ratio for print so boxes expand to content */
+          .aspect-video {
+            aspect-ratio: auto !important;
+            height: auto !important;
+            min-height: 0 !important;
+          }
+
+          /* Make each image group a block for print and cap its height so it fits a page */
+          .group {
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            break-after: avoid !important;
+            /* cap to roughly printable area to avoid unavoidable splits */
+            max-height: 7.5in !important;
+            overflow: visible !important;
+          }
+
+          /* Force grid to be single-column when printing so items stack vertically */
+          .grid {
+            display: block !important;
+          }
+
+          /* Cover page should not enforce large min-heights during print and must respect page margins */
+          #cover-page {
+            min-height: 0 !important;
+            height: auto !important;
+            display: block !important;
+            page-break-after: always !important;
+            -webkit-page-break-after: always !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+          }
+
+          /* Make Table of Contents more compact for printing so it fits on a single page */
+          #toc-page {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            page-break-after: always !important;
+            -webkit-page-break-after: always !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+
+          /* Reduce spacing and font-size inside the TOC and use two columns for compactness */
+          #toc-page h2 { font-size: 1.15rem !important; margin-bottom: 0.25rem !important; }
+          #toc-page p, #toc-page .prose, #toc-page .prose p { font-size: 11pt !important; line-height: 1.12 !important; margin-bottom: 0.08rem !important; }
+          #toc-page .prose { column-count: 2; column-gap: 1rem; }
+          #toc-page .prose strong { font-weight: 600 !important; }
+
+          /* TOC entry leader and page number styling */
+          #toc-page .toc-list { display: block; }
+          #toc-page .toc-entry { display:flex; align-items:center; gap:0.5rem; margin-bottom: 0.15rem; }
+          #toc-page .toc-entry[data-level="3"] .toc-label { padding-left: 0.75rem; }
+          #toc-page .toc-entry[data-level="4"] .toc-label { padding-left: 1.25rem; }
+          #toc-page .toc-label { flex: 0 1 auto; }
+          #toc-page .toc-leader { flex: 1 1 auto; border-bottom: 1px dotted currentColor; height: 0; margin: 0 0.5rem; }
+          #toc-page .toc-page { flex: 0 0 auto; min-width: 2.2rem; text-align: right; }
+
+          /* Make sure images don't get cropped: render full width and auto height */
+          #preview-content img {
+            max-width: 100% !important;
+            height: auto !important;
+            object-fit: contain !important;
+            display: block !important;
+          }
+
+          /* Hide interactive controls when printing (remove/add buttons) so they don't overlap/print artifacts */
+          .image-selector-ui {
+            display: none !important;
+          }
+
+          /* Ensure explicit page-break element maps to modern and legacy properties */
+          .page-break {
+            page-break-before: always;
+            break-before: page;
+          }
         }
       `}</style>
 
@@ -349,7 +426,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
       
       {/* List of Figures */}
-       <div id="lof-page" className="text-left page-break">
+       <div id="lof-page" className="page-break">
             <h2>LIST OF FIGURES</h2>
             <div className="prose prose-sm">
                 {figures.length > 0 ? (
@@ -381,7 +458,6 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             onCaptionChange={handleAttachmentCaptionChange}
             maxImages={3}
             figurePrefix="1.1"
-            textAlign={previewData.textAlign}
           />
         </div>
         <h3>1.4 BRIEF PROFILE OF PLACE OF ATTACHMENT</h3>
@@ -399,7 +475,6 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
             onCaptionChange={handleProfileCaptionChange}
             maxImages={3}
             figurePrefix="1.2"
-            textAlign={previewData.textAlign}
           />
         </div>
         <h3>1.5 SCOPE OF SPECIALIZATION</h3>
@@ -429,7 +504,6 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
               onCaptionChange={handleOrganogramCaptionChange}
               maxImages={1}
               figurePrefix="2.1"
-              textAlign={previewData.textAlign}
           />
         </div>
         {previewData.organogramAbbreviationsHtml ? (
@@ -461,13 +535,13 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <h4>4.1.2 Project Description</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_descHtml || {__html: "<p><Placeholder>Describe project 1 details in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} textAlign={previewData.textAlign} />
+          <ImageSelector images={previewData.project1_useCaseDiagram} onImagesChange={handleProject1UseCaseDiagramChange} caption={previewData.project1_useCaseCaption} onCaptionChange={handleProject1UseCaseCaptionChange} figurePrefix="4.1.1" maxImages={1} />
         </div>
         
         <h4>4.1.2.1 A Key Feature</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_welcomeScreenHtml || {__html: "<p><Placeholder>Describe a key feature or screen in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" textAlign={previewData.textAlign} />
+          <ImageSelector images={previewData.project1_welcomeScreenImages} onImagesChange={handleProject1WelcomeScreenImagesChange} caption={previewData.project1_welcomeScreenCaption} onCaptionChange={handleProject1WelcomeScreenCaptionChange} figurePrefix="4.1.2" />
         </div>
 
         <h4>4.1.2.2 Another Feature</h4>
@@ -476,19 +550,19 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <h4>4.1.2.3 Challenges and Solutions</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_validationHtml || {__html: "<p><Placeholder>Describe any challenges for this project in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" textAlign={previewData.textAlign} />
+          <ImageSelector images={previewData.project1_signInImages} onImagesChange={handleProject1SignInImagesChange} caption={previewData.project1_signInCaption} onCaptionChange={handleProject1SignInCaptionChange} figurePrefix="4.1.3" />
         </div>
 
         <h4>4.1.2.4 Another Part of the Project</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_signUpScreenHtml || {__html: "<p><Placeholder>Describe another part of the project in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" textAlign={previewData.textAlign} />
+          <ImageSelector images={previewData.project1_signUpImages} onImagesChange={handleProject1SignUpImagesChange} caption={previewData.project1_signUpCaption} onCaptionChange={handleProject1SignUpCaptionChange} figurePrefix="4.1.4" />
         </div>
         
         <h4>4.1.2.5 Final State/Main View</h4>
         <div className="keep-together">
           <div dangerouslySetInnerHTML={previewData.project1_homeScreenHtml || {__html: "<p><Placeholder>Describe the final state or main view of the project in Step 5.</Placeholder></p>"}}></div>
-          <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" textAlign={previewData.textAlign} />
+          <ImageSelector images={previewData.project1_homeScreenImages} onImagesChange={handleProject1HomeScreenImagesChange} caption={previewData.project1_homeScreenCaption} onCaptionChange={handleProject1HomeScreenCaptionChange} figurePrefix="4.1.5" />
         </div>
         
         <h4>4.1.3 Tools and Technologies Used</h4>
@@ -509,7 +583,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         <h4>4.2.1.3 Core Functionality</h4>
         <div className="keep-together">
             <div dangerouslySetInnerHTML={previewData.project2_coreHtml || {__html: "<p><Placeholder>Describe the project's core functionality in Step 5.</Placeholder></p>"}}></div>
-            <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" textAlign={previewData.textAlign} />
+            <ImageSelector images={previewData.project2_codeSnippetImages} onImagesChange={handleProject2CodeSnippetImagesChange} caption={previewData.project2_codeSnippetCaption} onCaptionChange={handleProject2CodeSnippetCaptionChange} figurePrefix="4.1.6" />
         </div>
         
         <h3>4.3 Tools and Technologies Used</h3>

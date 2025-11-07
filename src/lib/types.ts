@@ -1,5 +1,4 @@
 export interface ReportData {
-  textAlign: 'left' | 'center' | 'justify';
   fullName: string;
   regNumber: string;
   universityName: string;
@@ -35,6 +34,7 @@ export interface ReportData {
   attachmentCaption: string;
   profileImages: string[];
   profileCaption: string;
+  textAlign: 'left' | 'center' | 'justify';
 
   // Chapter 4
   projectsDescription: string;
@@ -53,7 +53,6 @@ export interface ReportData {
   project1_signUpScreen: string;
   project1_signUpImages: string[];
   project1_signUpCaption: string;
-also include the images while aligning
   project1_homeScreen: string;
   project1_homeScreenImages: string[];
   project1_homeScreenCaption: string;

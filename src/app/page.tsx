@@ -5,7 +5,7 @@ import ReportForm from '@/components/report-form';
 import ReportPreview from '@/components/report-preview';
 import type { ReportData } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, Download, Loader2, Printer, Settings } from 'lucide-react';
+import { Sparkles, Download, Loader2, Printer, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -13,7 +13,6 @@ import { ReportSettingsModal } from '@/components/report-settings-modal';
 
 export default function Home() {
   const [formData, setFormData] = useState<ReportData>({
-    textAlign: 'left',
     fullName: '',
     regNumber: '',
     universityName: '',
@@ -49,6 +48,7 @@ export default function Home() {
     attachmentCaption: 'Place of Attachment',
     profileImages: [],
     profileCaption: 'Company Office Environment',
+    textAlign: 'left',
 
     // Chapter 4 Data
     projectsDescription: "",
@@ -82,7 +82,7 @@ export default function Home() {
     project2_tools: ""
   });
   const [isDownloading, setIsDownloading] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleDownloadPdf = async () => {
     const reportContainer = document.getElementById('preview-content');
@@ -101,7 +101,6 @@ export default function Home() {
     const margin = 72; // 1 inch
     const contentWidth = pdfPageWidth - margin * 2;
     const contentHeight = pdfPageHeight - margin * 2;
-    const x = margin;
 
     const sections = [
       'cover-page',
@@ -136,27 +135,25 @@ export default function Home() {
       const imgData = canvas.toDataURL('image/png');
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
+
       const ratio = imgWidth / contentWidth;
       const scaledImgHeight = imgHeight / ratio;
       
       let position = 0;
       let heightLeft = scaledImgHeight;
-      let y = margin;
-
-      // Special handling for the cover page to center it vertically
-      if (sectionId === 'cover-page') {
-        y = (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2;
-      }
       
+      const x = margin;
+      const y = sectionId === 'cover-page' ? (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2 : margin;
+
       pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
-      heightLeft -= contentHeight;
+      heightLeft -= (pdfPageHeight - y); // Subtract used height on first page
 
       while (heightLeft > 0) {
-        position += contentHeight;
+        position += (pdfPageHeight - y); // Update position by the height used on previous page
         pdf.addPage();
         // The y position in addImage is the negative of the position on the source canvas
-        pdf.addImage(imgData, 'PNG', x, -position + margin, contentWidth, scaledImgHeight);
-        heightLeft -= contentHeight;
+        pdf.addImage(imgData, 'PNG', margin, -position + margin, contentWidth, scaledImgHeight);
+        heightLeft -= pdfPageHeight; // Subtract a full page height
       }
     }
 
@@ -164,28 +161,45 @@ export default function Home() {
     setIsDownloading(false);
   };
 
-
   const printPreview = () => {
-    window.print();
+    try {
+      const style = document.createElement('style');
+      style.setAttribute('data-temp-print-style', 'true');
+      style.innerHTML = `@page { margin: 1in; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+      document.head.appendChild(style);
+      window.print();
+      setTimeout(() => {
+        if (style && style.parentNode) style.parentNode.removeChild(style);
+      }, 1000);
+    } catch (err) {
+      window.print();
+    }
   };
 
   return (
-    <>
     <div id="main-container" className="flex flex-col items-center w-full min-h-screen bg-background p-4 sm:p-8">
+      <ReportSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        formData={formData}
+        setFormData={setFormData}
+      />
       <div id="form-container" className="w-full max-w-4xl">
         <Card className="bg-card/80 border-0 shadow-none">
           <CardHeader className="p-2 md:p-4 text-center">
             <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
               <CardTitle className="text-3xl font-bold text-foreground">SIWES AI Pro</CardTitle>
-               <Button variant="outline" onClick={() => setIsSettingsModalOpen(true)} className="ml-4">
-                <Settings className="h-5 w-5" />
-                <span className="ml-2 sr-only sm:not-sr-only">Settings</span>
-              </Button>
-              <Button variant="outline" onClick={printPreview} className="ml-2">
-                <Printer className="h-5 w-5" />
-                <span className="ml-2 sr-only sm:not-sr-only">Print</span>
-              </Button>
+              <div className="flex items-center gap-2 ml-4">
+                <Button variant="outline" onClick={() => setIsSettingsOpen(true)}>
+                  <SlidersHorizontal className="h-5 w-5" />
+                  <span className="ml-2 sr-only sm:not-sr-only">Settings</span>
+                </Button>
+                <Button variant="outline" onClick={printPreview}>
+                  <Printer className="h-5 w-5" />
+                  <span className="ml-2 sr-only sm:not-sr-only">Print</span>
+                </Button>
+              </div>
             </div>
             <CardDescription className="text-muted-foreground">
               Fill in your details, and let AI help you write the perfect report.
@@ -199,12 +213,5 @@ export default function Home() {
         <ReportPreview formData={formData} setFormData={setFormData} />
       </div>
     </div>
-    <ReportSettingsModal
-        isOpen={isSettingsModalOpen}
-        onClose={() => setIsSettingsModalOpen(false)}
-        formData={formData}
-        setFormData={setFormData}
-      />
-    </>
   );
 }
