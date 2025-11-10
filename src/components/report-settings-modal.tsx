@@ -48,6 +48,9 @@ export function ReportSettingsModal({
     setFormData(prev => ({ ...prev, lineHeight: value }));
   };
 
+  const fontSizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -103,11 +106,9 @@ export function ReportSettingsModal({
                   <SelectValue placeholder="Select size" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="10pt">10 pt</SelectItem>
-                  <SelectItem value="11pt">11 pt</SelectItem>
-                  <SelectItem value="12pt">12 pt</SelectItem>
-                  <SelectItem value="13pt">13 pt</SelectItem>
-                  <SelectItem value="14pt">14 pt</SelectItem>
+                  {fontSizes.map(size => (
+                    <SelectItem key={size} value={`${size}pt`}>{size} pt</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
