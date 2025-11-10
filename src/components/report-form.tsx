@@ -114,60 +114,38 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
 
 
   const runAutoGeneration = async () => {
-    // Generate Ack and Abstract
-    if (!loadingStates.sections) {
-      setLoadingStates(prev => ({...prev, sections: true}));
-      try {
-          const result = await generateReportSections(debouncedFormData);
-          setFormData(prev => ({
-              ...prev,
-              acknowledgementText: result.acknowledgementText,
-              abstractText: result.abstractText,
-          }));
-          toast({ title: "Success", description: "Acknowledgement and Abstract generated." });
-      } catch (error) {
-          console.error(error);
-          toast({ variant: "destructive", title: "Error", description: "Failed to auto-generate sections." });
-      } finally {
-          setLoadingStates(prev => ({...prev, sections: false}));
-      }
-    }
-    
-    // Generate Skills Chapter
-    if (!loadingStates.skills) {
-        setLoadingStates(prev => ({...prev, skills: true}));
-        try {
-            const result = await generateSkillsChapter(debouncedFormData);
-            setFormData(prev => ({
-                ...prev,
-                skillsChapterText: result.skillsChapterText,
-            }));
-            toast({ title: "Success", description: "Chapter 3 (Skills Learnt) generated." });
-        } catch (error) {
-            console.error(error);
-            toast({ variant: "destructive", title: "Error", description: "Failed to generate Chapter 3." });
-        } finally {
-            setLoadingStates(prev => ({...prev, skills: false}));
-        }
-    }
+    setLoadingStates(prev => ({ ...prev, sections: true, skills: true, chapterFive: true }));
+    try {
+      // Generate Ack and Abstract
+      const sectionsResult = await generateReportSections(debouncedFormData);
+      setFormData(prev => ({
+        ...prev,
+        acknowledgementText: sectionsResult.acknowledgementText,
+        abstractText: sectionsResult.abstractText,
+      }));
+      toast({ title: "Success", description: "Acknowledgement and Abstract generated." });
 
-     // Generate Chapter 5
-    if (!loadingStates.chapterFive) {
-      setLoadingStates(prev => ({...prev, chapterFive: true}));
-      try {
-          const result = await generateChapterFive(debouncedFormData);
-          setFormData(prev => ({
-              ...prev,
-              challengesText: result.challengesText,
-              conclusionText: result.conclusionText,
-          }));
-          toast({ title: "Success", description: "Chapter 5 (Challenges & Conclusion) generated." });
-      } catch (error) {
-          console.error(error);
-          toast({ variant: "destructive", title: "Error", description: "Failed to generate Chapter 5." });
-      } finally {
-          setLoadingStates(prev => ({...prev, chapterFive: false}));
-      }
+      // Generate Skills Chapter
+      const skillsResult = await generateSkillsChapter(debouncedFormData);
+      setFormData(prev => ({
+        ...prev,
+        skillsChapterText: skillsResult.skillsChapterText,
+      }));
+      toast({ title: "Success", description: "Chapter 3 (Skills Learnt) generated." });
+
+      // Generate Chapter 5
+      const chapterFiveResult = await generateChapterFive(debouncedFormData);
+      setFormData(prev => ({
+        ...prev,
+        challengesText: chapterFiveResult.challengesText,
+        conclusionText: chapterFiveResult.conclusionText,
+      }));
+      toast({ title: "Success", description: "Chapter 5 (Challenges & Conclusion) generated." });
+    } catch (error) {
+      console.error(error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to auto-generate some sections." });
+    } finally {
+      setLoadingStates(prev => ({ ...prev, sections: false, skills: false, chapterFive: false }));
     }
   };
 
@@ -311,32 +289,27 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
     }));
 
     try {
-      // We can run them in parallel
-      await Promise.all([
-        (async () => {
-          const sectionsResult = await generateReportSections(formData);
-          setFormData(prev => ({
-            ...prev,
-            acknowledgementText: sectionsResult.acknowledgementText,
-            abstractText: sectionsResult.abstractText,
-          }));
-        })(),
-        (async () => {
-          const skillsResult = await generateSkillsChapter(formData);
-          setFormData(prev => ({
-            ...prev,
-            skillsChapterText: skillsResult.skillsChapterText,
-          }));
-        })(),
-         (async () => {
-          const chapterFiveResult = await generateChapterFive(formData);
-          setFormData(prev => ({
-            ...prev,
-            challengesText: chapterFiveResult.challengesText,
-            conclusionText: chapterFiveResult.conclusionText,
-          }));
-        })(),
-      ]);
+      // Run them sequentially to avoid rate limiting
+      const sectionsResult = await generateReportSections(formData);
+      setFormData(prev => ({
+        ...prev,
+        acknowledgementText: sectionsResult.acknowledgementText,
+        abstractText: sectionsResult.abstractText,
+      }));
+
+      const skillsResult = await generateSkillsChapter(formData);
+      setFormData(prev => ({
+        ...prev,
+        skillsChapterText: skillsResult.skillsChapterText,
+      }));
+      
+      const chapterFiveResult = await generateChapterFive(formData);
+      setFormData(prev => ({
+        ...prev,
+        challengesText: chapterFiveResult.challengesText,
+        conclusionText: chapterFiveResult.conclusionText,
+      }));
+
       toast({ title: "Success!", description: "Report sections have been generated." });
     } catch (error) {
       console.error("Regeneration Error:", error);
