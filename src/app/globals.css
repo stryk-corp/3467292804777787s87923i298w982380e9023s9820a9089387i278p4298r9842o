@@ -95,9 +95,7 @@
 
   /* This is a general rule and will be overridden by the dynamic style tag */
   @page {
-    @bottom-center {
-      content: "Page " counter(page);
-    }
+    /* The page numbering content is now handled dynamically in page.tsx */
   }
 
   @page :first {

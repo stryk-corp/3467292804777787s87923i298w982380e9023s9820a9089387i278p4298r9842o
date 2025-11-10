@@ -131,16 +131,23 @@ export default function Home() {
           margin-right: ${formData.marginRight}; 
           margin-bottom: ${formData.marginBottom}; 
           margin-left: ${formData.marginLeft};
+
+          /* Reset all page number positions first */
+          @bottom-left { content: none; }
+          @bottom-center { content: none; }
+          @bottom-right { content: none; }
           
+          /* Set the selected page number position */
           @${formData.pageNumberPosition} {
             content: ${pageNumberContent};
           }
         } 
         
         @page :first {
-          @${formData.pageNumberPosition} {
-            content: "";
-          }
+          /* Ensure no page number on the first page */
+          @bottom-left { content: none; }
+          @bottom-center { content: none; }
+          @bottom-right { content: none; }
         }
         
         @media print { 
