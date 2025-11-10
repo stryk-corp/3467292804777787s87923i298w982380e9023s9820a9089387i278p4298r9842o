@@ -530,10 +530,6 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                            <Textarea id="abstractText" value={formData.abstractText} onChange={handleInputChange} placeholder="This will be generated automatically based on your inputs..." className="min-h-[150px]" />
                         </div>
                         <div>
-                           <Label htmlFor="skillsChapterText">Chapter 3: Skills Learnt</Label>
-                           <Textarea id="skillsChapterText" value={formData.skillsChapterText} onChange={handleInputChange} placeholder="This will be generated automatically based on your inputs..." className="min-h-[150px]" />
-                        </div>
-                        <div>
                             <Label htmlFor="challengesText">Challenges Encountered & Solutions</Label>
                             <Textarea id="challengesText" value={formData.challengesText} onChange={handleInputChange} placeholder="Describe the technical challenges you faced and how you solved them..." className="min-h-[150px]" />
                             <SuggestionPill field="challengesText" />
