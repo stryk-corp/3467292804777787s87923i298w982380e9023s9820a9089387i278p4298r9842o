@@ -272,6 +272,16 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         .page-break {
           page-break-before: always;
         }
+        
+        /* TOC entry leader and page number styling (Web & Print) */
+        #toc-page .toc-list { display: block; }
+        #toc-page .toc-entry { display:flex; align-items:center; gap:0.5rem; margin-bottom: 0.15rem; }
+        #toc-page .toc-entry[data-level="3"] .toc-label { padding-left: 0.75rem; }
+        #toc-page .toc-entry[data-level="4"] .toc-label { padding-left: 1.25rem; }
+        #toc-page .toc-label { flex: 0 1 auto; }
+        #toc-page .toc-leader { flex: 1 1 auto; border-bottom: 1px dotted currentColor; height: 0; margin: 0 0.5rem; }
+        #toc-page .toc-page { flex: 0 0 auto; min-width: 2.2rem; text-align: right; }
+
         /* Print-specific tweaks to avoid PDF cropping and improve page breaks */
         @media print {
           /* Remove shadows and ensure the preview respects page margins */
@@ -347,16 +357,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
           #toc-page p, #toc-page .prose, #toc-page .prose p { font-size: 11pt !important; line-height: 1.12 !important; margin-bottom: 0.08rem !important; }
           #toc-page .prose { column-count: 2; column-gap: 1rem; }
           #toc-page .prose strong { font-weight: 600 !important; }
-
-          /* TOC entry leader and page number styling */
-          #toc-page .toc-list { display: block; }
-          #toc-page .toc-entry { display:flex; align-items:center; gap:0.5rem; margin-bottom: 0.15rem; }
-          #toc-page .toc-entry[data-level="3"] .toc-label { padding-left: 0.75rem; }
-          #toc-page .toc-entry[data-level="4"] .toc-label { padding-left: 1.25rem; }
-          #toc-page .toc-label { flex: 0 1 auto; }
-          #toc-page .toc-leader { flex: 1 1 auto; border-bottom: 1px dotted currentColor; height: 0; margin: 0 0.5rem; }
-          #toc-page .toc-page { flex: 0 0 auto; min-width: 2.2rem; text-align: right; }
-
+          
           /* Make sure images don't get cropped: render full width and auto height */
           #preview-content img {
             max-width: 100% !important;
