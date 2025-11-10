@@ -114,11 +114,15 @@
   }
 
   .editable-caption {
-    display: none;
+    display: none !important;
   }
 
   .printable-caption {
-    display: inline;
+    display: inline !important;
+  }
+
+  .add-image-container {
+    display: none !important;
   }
 
   /* Keep whole blocks together */

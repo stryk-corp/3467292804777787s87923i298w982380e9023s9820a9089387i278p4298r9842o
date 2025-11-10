@@ -102,7 +102,7 @@ export function ImageSelector({
             </div>
             ))}
             {images.length < maxImages && (
-            <div className="text-center">
+            <div className="add-image-container text-center">
                 <button
                     onClick={handleAddClick}
                     className="w-full aspect-video border-2 border-dashed rounded-lg flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
@@ -134,5 +134,3 @@ export function ImageSelector({
     </div>
   );
 }
-
-    
