@@ -99,27 +99,32 @@ export default function Home() {
   const printPreview = () => {
     try {
       const styleId = 'dynamic-print-style';
-      // Remove any existing dynamic style element to avoid duplicates
       const existingStyle = document.getElementById(styleId);
       if (existingStyle) {
         existingStyle.remove();
       }
-
+  
       const style = document.createElement('style');
       style.id = styleId;
-      
+  
       let pageCounterStyle = 'decimal';
-      if (formData.pageNumberFormat.includes('roman_lower')) {
-        pageCounterStyle = 'lower-roman';
-      } else if (formData.pageNumberFormat.includes('roman_upper')) {
-        pageCounterStyle = 'upper-roman';
-      }
-
-      const pageNumberContent = formData.pageNumberFormat
-        .replace('{page}', `counter(page, ${pageCounterStyle})`)
-        .replace('{page_roman_lower}', `counter(page, ${pageCounterStyle})`)
-        .replace('{page_roman_upper}', `counter(page, ${pageCounterStyle})`);
+      let pageNumberFormat = formData.pageNumberFormat;
       
+      if (pageNumberFormat.includes('{page_roman_lower}')) {
+        pageCounterStyle = 'lower-roman';
+        pageNumberFormat = pageNumberFormat.replace('{page_roman_lower}', '{page}');
+      } else if (pageNumberFormat.includes('{page_roman_upper}')) {
+        pageCounterStyle = 'upper-roman';
+        pageNumberFormat = pageNumberFormat.replace('{page_roman_upper}', '{page}');
+      }
+      
+      const parts = pageNumberFormat.split('{page}');
+      const prefix = parts[0] ? `"${parts[0]}"` : '';
+      const suffix = parts[1] ? `"${parts[1]}"` : '';
+      const counter = `counter(page, ${pageCounterStyle})`;
+      
+      const pageNumberContent = [prefix, counter, suffix].filter(Boolean).join(' ');
+
       style.innerHTML = `
         @page { 
           margin-top: ${formData.marginTop}; 
@@ -128,7 +133,7 @@ export default function Home() {
           margin-left: ${formData.marginLeft};
           
           @${formData.pageNumberPosition} {
-            content: "${pageNumberContent}";
+            content: ${pageNumberContent};
           }
         } 
         
@@ -152,7 +157,7 @@ export default function Home() {
           } 
         }`;
       document.head.appendChild(style);
-
+  
       window.print();
     } catch (err) {
       // Fallback for any unexpected errors
