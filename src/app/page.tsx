@@ -5,10 +5,8 @@ import ReportForm from '@/components/report-form';
 import ReportPreview from '@/components/report-preview';
 import type { ReportData } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Sparkles, Download, Loader2, Printer, SlidersHorizontal } from 'lucide-react';
+import { Sparkles, Printer, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import { ReportSettingsModal } from '@/components/report-settings-modal';
 import { FontSettingsModal } from '@/components/font-settings-modal';
 import { MarginSettingsModal } from '@/components/margin-settings-modal';
@@ -90,110 +88,9 @@ export default function Home() {
     project2_codeSnippetCaption: "Code Snippet for Project 2",
     project2_tools: ""
   });
-  const [isDownloading, setIsDownloading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFontSettingsOpen, setIsFontSettingsOpen] = useState(false);
   const [isMarginSettingsOpen, setIsMarginSettingsOpen] = useState(false);
-
-  const handleDownloadPdf = async () => {
-    const reportContainer = document.getElementById('preview-content');
-    if (!reportContainer) return;
-
-    setIsDownloading(true);
-
-    const pdf = new jsPDF({
-      orientation: 'p',
-      unit: 'pt',
-      format: 'a4',
-    });
-    
-    const { marginTop, marginRight, marginBottom, marginLeft } = formData;
-    const ptToInch = 72;
-    const marginTopValue = parseFloat(marginTop) * ptToInch;
-    const marginRightValue = parseFloat(marginRight) * ptToInch;
-    const marginBottomValue = parseFloat(marginBottom) * ptToInch;
-    const marginLeftValue = parseFloat(marginLeft) * ptToInch;
-
-    const pdfPageWidth = pdf.internal.pageSize.getWidth();
-    const pdfPageHeight = pdf.internal.pageSize.getHeight();
-    const contentWidth = pdfPageWidth - marginLeftValue - marginRightValue;
-    const contentHeight = pdfPageHeight - marginTopValue - marginBottomValue;
-
-    const sections = [
-      'cover-page',
-      'acknowledgement-page',
-      'abstract-page',
-      'toc-page',
-      'lof-page',
-      'chapter-1-page',
-      'chapter-2-page',
-      'chapter-3-page',
-      'chapter-4-page',
-      'chapter-5-page',
-    ];
-
-    for (let i = 0; i < sections.length; i++) {
-      const sectionId = sections[i];
-      const element = document.getElementById(sectionId) as HTMLElement;
-      if (!element) continue;
-
-      if (i > 0) {
-        pdf.addPage();
-      }
-
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-
-      const ratio = imgWidth / contentWidth;
-      const scaledImgHeight = imgHeight / ratio;
-      
-      let position = 0;
-      let heightLeft = scaledImgHeight;
-      
-      const x = marginLeftValue;
-      const y = sectionId === 'cover-page' ? (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2 : marginTopValue;
-
-      pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
-      heightLeft -= (pdfPageHeight - y); // Subtract used height on first page
-
-      while (heightLeft > 0) {
-        position += (pdfPageHeight - y); // Update position by the height used on previous page
-        pdf.addPage();
-        // The y position in addImage is the negative of the position on the source canvas
-        pdf.addImage(imgData, 'PNG', marginLeftValue, -position + marginTopValue, contentWidth, scaledImgHeight);
-        heightLeft -= pdfPageHeight; // Subtract a full page height
-      }
-    }
-
-    // Add page numbers
-    const pageCount = pdf.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      pdf.setPage(i);
-      // Don't number the cover page
-      if (i > 1) {
-        pdf.setFontSize(10);
-        const pageNumText = `Page ${i}`;
-        const textWidth = pdf.getStringUnitWidth(pageNumText) * pdf.getFontSize() / pdf.internal.scaleFactor;
-        pdf.text(
-          pageNumText,
-          pdfPageWidth / 2 - textWidth / 2,
-          pdfPageHeight - marginBottomValue + 20 // Position below the bottom margin
-        );
-      }
-    }
-
-    pdf.save('SIWES-Report.pdf');
-    setIsDownloading(false);
-  };
 
   const printPreview = () => {
     try {
@@ -244,13 +141,9 @@ export default function Home() {
                   <SlidersHorizontal className="h-5 w-5" />
                   <span className="ml-2 sr-only sm:not-sr-only">Settings</span>
                 </Button>
-                <Button variant="outline" onClick={printPreview}>
+                <Button variant="default" onClick={printPreview}>
                   <Printer className="h-5 w-5" />
                   <span className="ml-2 sr-only sm:not-sr-only">Print</span>
-                </Button>
-                 <Button variant="default" onClick={handleDownloadPdf} disabled={isDownloading}>
-                  {isDownloading ? <Loader2 className="animate-spin" /> : <Download />}
-                  <span className="ml-2 sr-only sm:not-sr-only">Download PDF</span>
                 </Button>
               </div>
             </div>
