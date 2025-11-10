@@ -49,6 +49,9 @@ export default function Home() {
     profileImages: [],
     profileCaption: 'Company Office Environment',
     textAlign: 'left',
+    fontFamily: 'Inter',
+    fontSize: '12pt',
+    lineHeight: '1.5',
 
     // Chapter 4 Data
     projectsDescription: "",

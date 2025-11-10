@@ -220,6 +220,12 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     }
   };
 
+  const fontStyles: React.CSSProperties = {
+    fontFamily: `"${previewData.fontFamily}", sans-serif`,
+    fontSize: previewData.fontSize,
+    lineHeight: previewData.lineHeight,
+  };
+
 
   return (
     <div className="relative">
@@ -228,6 +234,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       </div>
       <Card
         id="preview-content"
+        style={fontStyles}
         className={cn(
           "w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg",
           {
@@ -242,7 +249,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         #preview-content h2 { font-size: 1.4rem; border-bottom: 1px solid hsl(var(--border)); padding-bottom: 0.5rem; text-align: center; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; color: hsl(var(--foreground));}
         #preview-content h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: hsl(var(--foreground));}
         #preview-content h4 { font-size: 1.0rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: hsl(var(--foreground));}
-        #preview-content p, #preview-content li { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; }
+        #preview-content p, #preview-content li { line-height: inherit; margin-bottom: 1rem; }
         #preview-content .prose ul { list-style-type: none; padding: 0; }
         #preview-content div > h3:first-child {
             margin-top: 0;

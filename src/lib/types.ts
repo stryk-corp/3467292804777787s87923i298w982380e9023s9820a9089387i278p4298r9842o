@@ -35,6 +35,9 @@ export interface ReportData {
   profileImages: string[];
   profileCaption: string;
   textAlign: 'left' | 'center' | 'justify';
+  fontFamily: string;
+  fontSize: string;
+  lineHeight: string;
 
   // Chapter 4
   projectsDescription: string;
