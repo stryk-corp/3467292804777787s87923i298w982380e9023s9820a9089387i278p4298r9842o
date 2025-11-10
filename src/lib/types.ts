@@ -42,6 +42,8 @@ export interface ReportData {
   marginRight: string;
   marginBottom: string;
   marginLeft: string;
+  pageNumberPosition: 'bottom-center' | 'bottom-left' | 'bottom-right';
+  pageNumberFormat: 'Page {page}' | '{page}';
 
   // Chapter 4
   projectsDescription: string;

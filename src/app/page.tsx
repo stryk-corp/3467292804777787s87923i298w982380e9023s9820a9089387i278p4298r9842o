@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ReportSettingsModal } from '@/components/report-settings-modal';
 import { FontSettingsModal } from '@/components/font-settings-modal';
 import { MarginSettingsModal } from '@/components/margin-settings-modal';
+import { PageNumberSettingsModal } from '@/components/page-number-settings-modal';
 
 export default function Home() {
   const [formData, setFormData] = useState<ReportData>({
@@ -56,6 +57,8 @@ export default function Home() {
     marginRight: '1in',
     marginBottom: '1in',
     marginLeft: '1in',
+    pageNumberPosition: 'bottom-center',
+    pageNumberFormat: 'Page {page}',
 
     // Chapter 4 Data
     projectsDescription: "",
@@ -91,6 +94,7 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isFontSettingsOpen, setIsFontSettingsOpen] = useState(false);
   const [isMarginSettingsOpen, setIsMarginSettingsOpen] = useState(false);
+  const [isPageNumberSettingsOpen, setIsPageNumberSettingsOpen] = useState(false);
 
   const printPreview = () => {
     try {
@@ -103,9 +107,40 @@ export default function Home() {
 
       const style = document.createElement('style');
       style.id = styleId;
-      // The CSS rules for page numbers are now in globals.css.
-      // This style block is now only for dynamic margins.
-      style.innerHTML = `@page { margin-top: ${formData.marginTop}; margin-right: ${formData.marginRight}; margin-bottom: ${formData.marginBottom}; margin-left: ${formData.marginLeft}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+      
+      const pageNumberContent = formData.pageNumberFormat.replace('{page}', 'counter(page)');
+      
+      style.innerHTML = `
+        @page { 
+          margin-top: ${formData.marginTop}; 
+          margin-right: ${formData.marginRight}; 
+          margin-bottom: ${formData.marginBottom}; 
+          margin-left: ${formData.marginLeft};
+          
+          @${formData.pageNumberPosition} {
+            content: "${pageNumberContent}";
+          }
+        } 
+        
+        @page :first {
+          @${formData.pageNumberPosition} {
+            content: "";
+          }
+        }
+        
+        @media print { 
+          body * { 
+            visibility: hidden !important; 
+          } 
+          #preview-content, #preview-content * { 
+            visibility: visible !important; 
+          } 
+          #preview-content { 
+            position: static !important; 
+            margin: 0 !important; 
+            width: auto !important; 
+          } 
+        }`;
       document.head.appendChild(style);
 
       window.print();
@@ -124,6 +159,7 @@ export default function Home() {
         setFormData={setFormData}
         onFontSettingsClick={() => setIsFontSettingsOpen(true)}
         onMarginSettingsClick={() => setIsMarginSettingsOpen(true)}
+        onPageNumberSettingsClick={() => setIsPageNumberSettingsOpen(true)}
       />
       <FontSettingsModal
         isOpen={isFontSettingsOpen}
@@ -134,6 +170,12 @@ export default function Home() {
       <MarginSettingsModal
         isOpen={isMarginSettingsOpen}
         onClose={() => setIsMarginSettingsOpen(false)}
+        formData={formData}
+        setFormData={setFormData}
+      />
+      <PageNumberSettingsModal
+        isOpen={isPageNumberSettingsOpen}
+        onClose={() => setIsPageNumberSettingsOpen(false)}
         formData={formData}
         setFormData={setFormData}
       />

@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Button } from './ui/button';
-import { FileText, Ruler } from 'lucide-react';
+import { FileText, Ruler, Hash } from 'lucide-react';
 
 interface ReportSettingsModalProps {
   isOpen: boolean;
@@ -23,6 +23,7 @@ interface ReportSettingsModalProps {
   setFormData: Dispatch<SetStateAction<ReportData>>;
   onFontSettingsClick: () => void;
   onMarginSettingsClick: () => void;
+  onPageNumberSettingsClick: () => void;
 }
 
 export function ReportSettingsModal({
@@ -32,6 +33,7 @@ export function ReportSettingsModal({
   setFormData,
   onFontSettingsClick,
   onMarginSettingsClick,
+  onPageNumberSettingsClick,
 }: ReportSettingsModalProps) {
   const handleAlignmentChange = (value: 'left' | 'center' | 'justify') => {
     setFormData(prev => ({ ...prev, textAlign: value }));
@@ -69,7 +71,7 @@ export function ReportSettingsModal({
             </RadioGroup>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 pt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
              <Button variant="outline" onClick={onFontSettingsClick}>
                 <FileText className="w-4 h-4 mr-2" />
                 Typography Settings
@@ -77,6 +79,10 @@ export function ReportSettingsModal({
              <Button variant="outline" onClick={onMarginSettingsClick}>
                 <Ruler className="w-4 h-4 mr-2" />
                 Margin Settings
+             </Button>
+             <Button variant="outline" onClick={onPageNumberSettingsClick} className="sm:col-span-2">
+                <Hash className="w-4 h-4 mr-2" />
+                Page Numbering Settings
              </Button>
           </div>
 

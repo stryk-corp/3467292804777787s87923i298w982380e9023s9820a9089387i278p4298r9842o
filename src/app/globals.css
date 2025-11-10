@@ -87,45 +87,29 @@
 }
 
 @media print {
+  body {
+    background: white;
+    color: black;
+    counter-reset: page;
+  }
+
+  /* This is a general rule and will be overridden by the dynamic style tag */
   @page {
-    /* Default page styling with counter */
     @bottom-center {
       content: "Page " counter(page);
     }
   }
 
   @page :first {
-    /* Style for the first page (cover) */
     @bottom-center {
       content: ""; /* No page number */
     }
   }
 
-  body {
-    background: white;
-    color: black;
-    counter-reset: page; /* Initialize the main page counter */
-  }
-
   /* We start incrementing the counter *after* the cover page */
   #cover-page {
     page-break-after: always;
-    counter-increment: none; /* Do not increment on the cover page */
   }
-
-  /* All other major sections will increment the counter */
-  #acknowledgement-page,
-  #abstract-page,
-  #toc-page,
-  #lof-page,
-  #chapter-1-page,
-  #chapter-2-page,
-  #chapter-3-page,
-  #chapter-4-page,
-  #chapter-5-page {
-    counter-increment: page;
-  }
-
 
   #main-container {
     padding: 0;
