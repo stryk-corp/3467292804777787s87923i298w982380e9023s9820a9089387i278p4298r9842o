@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ReportSettingsModal } from '@/components/report-settings-modal';
+import { FontSettingsModal } from '@/components/font-settings-modal';
+import { MarginSettingsModal } from '@/components/margin-settings-modal';
 
 export default function Home() {
   const [formData, setFormData] = useState<ReportData>({
@@ -90,6 +92,8 @@ export default function Home() {
   });
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isFontSettingsOpen, setIsFontSettingsOpen] = useState(false);
+  const [isMarginSettingsOpen, setIsMarginSettingsOpen] = useState(false);
 
   const handleDownloadPdf = async () => {
     const reportContainer = document.getElementById('preview-content');
@@ -196,7 +200,22 @@ export default function Home() {
         onClose={() => setIsSettingsOpen(false)}
         formData={formData}
         setFormData={setFormData}
+        onFontSettingsClick={() => setIsFontSettingsOpen(true)}
+        onMarginSettingsClick={() => setIsMarginSettingsOpen(true)}
       />
+      <FontSettingsModal
+        isOpen={isFontSettingsOpen}
+        onClose={() => setIsFontSettingsOpen(false)}
+        formData={formData}
+        setFormData={setFormData}
+      />
+      <MarginSettingsModal
+        isOpen={isMarginSettingsOpen}
+        onClose={() => setIsMarginSettingsOpen(false)}
+        formData={formData}
+        setFormData={setFormData}
+      />
+
       <div id="form-container" className="w-full max-w-4xl">
         <Card className="bg-card/80 border-0 shadow-none">
           <CardHeader className="p-2 md:p-4 text-center">

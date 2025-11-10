@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Dispatch, SetStateAction } from 'react';
@@ -11,21 +10,19 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+  RadioGroup, RadioGroupItem
+} from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { Button } from './ui/button';
+import { FileText, Ruler } from 'lucide-react';
 
 interface ReportSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   formData: ReportData;
   setFormData: Dispatch<SetStateAction<ReportData>>;
+  onFontSettingsClick: () => void;
+  onMarginSettingsClick: () => void;
 }
 
 export function ReportSettingsModal({
@@ -33,33 +30,12 @@ export function ReportSettingsModal({
   onClose,
   formData,
   setFormData,
+  onFontSettingsClick,
+  onMarginSettingsClick,
 }: ReportSettingsModalProps) {
   const handleAlignmentChange = (value: 'left' | 'center' | 'justify') => {
     setFormData(prev => ({ ...prev, textAlign: value }));
   };
-
-  const handleFontFamilyChange = (value: string) => {
-    setFormData(prev => ({ ...prev, fontFamily: value }));
-  };
-
-  const handleFontSizeChange = (value: string) => {
-    setFormData(prev => ({ ...prev, fontSize: value }));
-  };
-
-  const handleLineHeightChange = (value: string) => {
-    setFormData(prev => ({ ...prev, lineHeight: value }));
-  };
-  
-  const handleMarginInputChange = (side: 'top' | 'bottom' | 'left' | 'right', value: string) => {
-    const key = `margin${side.charAt(0).toUpperCase() + side.slice(1)}` as keyof ReportData;
-    setFormData(prev => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
-  const fontSizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
-
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -93,70 +69,15 @@ export function ReportSettingsModal({
             </RadioGroup>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="font-family">Font Family</Label>
-            <Select value={formData.fontFamily} onValueChange={handleFontFamilyChange}>
-              <SelectTrigger id="font-family">
-                <SelectValue placeholder="Select font family" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Inter">Inter (Default)</SelectItem>
-                <SelectItem value="Times New Roman">Times New Roman</SelectItem>
-                <SelectItem value="Arial">Arial</SelectItem>
-                <SelectItem value="Verdana">Verdana</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="font-size">Font Size</Label>
-              <Select value={formData.fontSize} onValueChange={handleFontSizeChange}>
-                <SelectTrigger id="font-size">
-                  <SelectValue placeholder="Select size" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontSizes.map(size => (
-                    <SelectItem key={size} value={`${size}pt`}>{size} pt</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="line-height">Line Spacing</Label>
-              <Select value={formData.lineHeight} onValueChange={handleLineHeightChange}>
-                <SelectTrigger id="line-height">
-                  <SelectValue placeholder="Select spacing" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">Single</SelectItem>
-                  <SelectItem value="1.5">1.5</SelectItem>
-                  <SelectItem value="2">Double</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-           <div className="space-y-3">
-            <Label>Page Margins</Label>
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="margin-top" className="text-xs text-muted-foreground">Top</Label>
-                    <Input id="margin-top" value={formData.marginTop} onChange={(e) => handleMarginInputChange('top', e.target.value)} placeholder="e.g., 1in" />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="margin-bottom" className="text-xs text-muted-foreground">Bottom</Label>
-                    <Input id="margin-bottom" value={formData.marginBottom} onChange={(e) => handleMarginInputChange('bottom', e.target.value)} placeholder="e.g., 1in" />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="margin-left" className="text-xs text-muted-foreground">Left</Label>
-                    <Input id="margin-left" value={formData.marginLeft} onChange={(e) => handleMarginInputChange('left', e.target.value)} placeholder="e.g., 1in" />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="margin-right" className="text-xs text-muted-foreground">Right</Label>
-                    <Input id="margin-right" value={formData.marginRight} onChange={(e) => handleMarginInputChange('right', e.target.value)} placeholder="e.g., 1in" />
-                </div>
-            </div>
+          <div className="grid grid-cols-2 gap-4 pt-4">
+             <Button variant="outline" onClick={onFontSettingsClick}>
+                <FileText className="w-4 h-4 mr-2" />
+                Typography Settings
+             </Button>
+             <Button variant="outline" onClick={onMarginSettingsClick}>
+                <Ruler className="w-4 h-4 mr-2" />
+                Margin Settings
+             </Button>
           </div>
 
         </div>
