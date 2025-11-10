@@ -94,15 +94,23 @@ export default function Home() {
 
   const printPreview = () => {
     try {
+      const styleId = 'dynamic-print-style';
+      // Remove any existing dynamic style element to avoid duplicates
+      const existingStyle = document.getElementById(styleId);
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+
       const style = document.createElement('style');
-      style.setAttribute('data-temp-print-style', 'true');
-      style.innerHTML = `@page { counter-increment: page; @bottom-center { content: "Page " counter(page); } margin-top: ${formData.marginTop}; margin-right: ${formData.marginRight}; margin-bottom: ${formData.marginBottom}; margin-left: ${formData.marginLeft}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+      style.id = styleId;
+      // The CSS rules for page numbers are now in globals.css.
+      // This style block is now only for dynamic margins.
+      style.innerHTML = `@page { margin-top: ${formData.marginTop}; margin-right: ${formData.marginRight}; margin-bottom: ${formData.marginBottom}; margin-left: ${formData.marginLeft}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
       document.head.appendChild(style);
+
       window.print();
-      setTimeout(() => {
-        if (style && style.parentNode) style.parentNode.removeChild(style);
-      }, 1000);
     } catch (err) {
+      // Fallback for any unexpected errors
       window.print();
     }
   };
