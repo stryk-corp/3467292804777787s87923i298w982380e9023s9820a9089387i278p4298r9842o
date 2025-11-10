@@ -42,8 +42,18 @@ type Suggestion = {
     organogramAbbreviations?: string;
     project1_intro?: string;
     project1_desc?: string;
+    project1_welcomeScreen?: string;
+    project1_signInScreen?: string;
+    project1_validation?: string;
+    project1_signUpScreen?: string;
+    project1_homeScreen?: string;
+    project1_tools?: string;
     project2_intro?: string;
     project2_desc?: string;
+    project2_structure?: string;
+    project2_ui?: string;
+    project2_core?: string;
+    project2_tools?: string;
 }
 
 const TOTAL_STEPS = 6;
@@ -474,11 +484,17 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                         <Textarea id="project1_desc" value={formData.project1_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
                         <SuggestionPill field="project1_desc"/>
                         <Textarea id="project1_welcomeScreen" value={formData.project1_welcomeScreen} onChange={handleInputChange} placeholder="Describe a key feature or screen..."/>
+                        <SuggestionPill field="project1_welcomeScreen"/>
                         <Textarea id="project1_signInScreen" value={formData.project1_signInScreen} onChange={handleInputChange} placeholder="Describe another feature or screen..."/>
+                        <SuggestionPill field="project1_signInScreen"/>
                         <Textarea id="project1_validation" value={formData.project1_validation} onChange={handleInputChange} placeholder="Explain any challenges and solutions for this project..."/>
+                        <SuggestionPill field="project1_validation"/>
                         <Textarea id="project1_signUpScreen" value={formData.project1_signUpScreen} onChange={handleInputChange} placeholder="Describe another part of the project..."/>
+                        <SuggestionPill field="project1_signUpScreen"/>
                         <Textarea id="project1_homeScreen" value={formData.project1_homeScreen} onChange={handleInputChange} placeholder="Describe the final state or main view of the project..."/>
+                        <SuggestionPill field="project1_homeScreen"/>
                         <Textarea id="project1_tools" value={formData.project1_tools} onChange={handleInputChange} placeholder="List the tools and technologies used for this project..."/>
+                        <SuggestionPill field="project1_tools"/>
                     </div>
                     <div className="space-y-4 border-l-2 border-primary/20 pl-4 pt-4">
                         <h3 className="text-lg font-semibold">Project 2</h3>
@@ -487,9 +503,13 @@ export default function ReportForm({ formData, setFormData }: ReportFormProps) {
                         <Textarea id="project2_desc" value={formData.project2_desc} onChange={handleInputChange} placeholder="Describe the project's features and architecture..."/>
                         <SuggestionPill field="project2_desc"/>
                         <Textarea id="project2_structure" value={formData.project2_structure} onChange={handleInputChange} placeholder="Describe the project's structure..." />
+                        <SuggestionPill field="project2_structure"/>
                         <Textarea id="project2_ui" value={formData.project2_ui} onChange={handleInputChange} placeholder="Describe the User Interface design and key components..." />
+                        <SuggestionPill field="project2_ui"/>
                         <Textarea id="project2_core" value={formData.project2_core} onChange={handleInputChange} placeholder="Describe the core logic and functionality of the project..." />
+                        <SuggestionPill field="project2_core"/>
                         <Textarea id="project2_tools" value={formData.project2_tools} onChange={handleInputChange} placeholder="List the tools and technologies used for this project..." />
+                        <SuggestionPill field="project2_tools"/>
                     </div>
                 </div>
             )}

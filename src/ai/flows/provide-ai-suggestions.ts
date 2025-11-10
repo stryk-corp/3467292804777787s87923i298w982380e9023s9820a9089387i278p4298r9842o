@@ -45,8 +45,18 @@ const ProvideAISuggestionsOutputSchema = z.object({
   organogramAbbreviations: z.string().optional().describe("Suggested abbreviations for a standard corporate organogram."),
   project1_intro: z.string().optional().describe("A suggested introduction for Project 1."),
   project1_desc: z.string().optional().describe("A suggested description for Project 1."),
+  project1_welcomeScreen: z.string().optional().describe("A suggested description for the welcome screen of Project 1."),
+  project1_signInScreen: z.string().optional().describe("A suggested description for the sign-in screen of Project 1."),
+  project1_validation: z.string().optional().describe("A suggested description for the validation logic of Project 1."),
+  project1_signUpScreen: z.string().optional().describe("A suggested description for the sign-up screen of Project 1."),
+  project1_homeScreen: z.string().optional().describe("A suggested description for the home screen of Project 1."),
+  project1_tools: z.string().optional().describe("A suggested list of tools and technologies for Project 1."),
   project2_intro: z.string().optional().describe("A suggested introduction for Project 2."),
   project2_desc: z.string().optional().describe("A suggested description for Project 2."),
+  project2_structure: z.string().optional().describe("A suggested description for the structure of Project 2."),
+  project2_ui: z.string().optional().describe("A suggested description for the UI of Project 2."),
+  project2_core: z.string().optional().describe("A suggested description for the core logic of Project 2."),
+  project2_tools: z.string().optional().describe("A suggested list of tools and technologies for Project 2."),
 });
 export type ProvideAISuggestionsOutput = z.infer<typeof ProvideAISuggestionsOutputSchema>;
 
@@ -71,7 +81,7 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   - Projects Description: {{{projectsDescription}}}
 
   Based on this context, provide helpful and relevant suggestions for any of the following fields that the user has not yet filled out. Be creative, professional, and realistic.
-  If the user has provided a "Projects Description", use it to generate detailed and distinct suggestions for 'project1_intro', 'project1_desc', 'project2_intro', and 'project2_desc'.
+  If the user has provided a "Projects Description", use it to generate detailed and distinct suggestions for all project-related fields.
   If the user has provided a "Place of Attachment", use it to suggest a 'companyVision', 'companyMission', and 'companyValues'.
 
   - courseCode
@@ -90,8 +100,18 @@ const provideAISuggestionsPrompt = ai.definePrompt({
   - organogramAbbreviations
   - project1_intro
   - project1_desc
+  - project1_welcomeScreen
+  - project1_signInScreen
+  - project1_validation
+  - project1_signUpScreen
+  - project1_homeScreen
+  - project1_tools
   - project2_intro
   - project2_desc
+  - project2_structure
+  - project2_ui
+  - project2_core
+  - project2_tools
 
   Return the suggestions in JSON format. Only provide suggestions for fields that are likely to be relevant based on the input. Do not suggest a value for a field if the user has already provided one.
   `,
