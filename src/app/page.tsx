@@ -52,7 +52,10 @@ export default function Home() {
     fontFamily: 'Inter',
     fontSize: '12pt',
     lineHeight: '1.5',
-    margin: '1in',
+    marginTop: '1in',
+    marginRight: '1in',
+    marginBottom: '1in',
+    marginLeft: '1in',
 
     // Chapter 4 Data
     projectsDescription: "",
@@ -100,12 +103,17 @@ export default function Home() {
       format: 'a4',
     });
     
-    const marginValue = parseFloat(formData.margin) * 72; // Convert inches to points
+    const { marginTop, marginRight, marginBottom, marginLeft } = formData;
+    const ptToInch = 72;
+    const marginTopValue = parseFloat(marginTop) * ptToInch;
+    const marginRightValue = parseFloat(marginRight) * ptToInch;
+    const marginBottomValue = parseFloat(marginBottom) * ptToInch;
+    const marginLeftValue = parseFloat(marginLeft) * ptToInch;
 
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
-    const contentWidth = pdfPageWidth - marginValue * 2;
-    const contentHeight = pdfPageHeight - marginValue * 2;
+    const contentWidth = pdfPageWidth - marginLeftValue - marginRightValue;
+    const contentHeight = pdfPageHeight - marginTopValue - marginBottomValue;
 
     const sections = [
       'cover-page',
@@ -147,8 +155,8 @@ export default function Home() {
       let position = 0;
       let heightLeft = scaledImgHeight;
       
-      const x = marginValue;
-      const y = sectionId === 'cover-page' ? (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2 : marginValue;
+      const x = marginLeftValue;
+      const y = sectionId === 'cover-page' ? (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2 : marginTopValue;
 
       pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
       heightLeft -= (pdfPageHeight - y); // Subtract used height on first page
@@ -157,7 +165,7 @@ export default function Home() {
         position += (pdfPageHeight - y); // Update position by the height used on previous page
         pdf.addPage();
         // The y position in addImage is the negative of the position on the source canvas
-        pdf.addImage(imgData, 'PNG', marginValue, -position + marginValue, contentWidth, scaledImgHeight);
+        pdf.addImage(imgData, 'PNG', marginLeftValue, -position + marginTopValue, contentWidth, scaledImgHeight);
         heightLeft -= pdfPageHeight; // Subtract a full page height
       }
     }
@@ -170,7 +178,7 @@ export default function Home() {
     try {
       const style = document.createElement('style');
       style.setAttribute('data-temp-print-style', 'true');
-      style.innerHTML = `@page { margin: ${formData.margin}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+      style.innerHTML = `@page { margin-top: ${formData.marginTop}; margin-right: ${formData.marginRight}; margin-bottom: ${formData.marginBottom}; margin-left: ${formData.marginLeft}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
       document.head.appendChild(style);
       window.print();
       setTimeout(() => {

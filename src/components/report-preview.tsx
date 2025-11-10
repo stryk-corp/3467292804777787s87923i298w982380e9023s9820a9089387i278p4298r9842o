@@ -224,7 +224,10 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     fontFamily: `"${previewData.fontFamily}", sans-serif`,
     fontSize: previewData.fontSize,
     lineHeight: previewData.lineHeight,
-    padding: previewData.margin,
+    paddingTop: previewData.marginTop,
+    paddingRight: previewData.marginRight,
+    paddingBottom: previewData.marginBottom,
+    paddingLeft: previewData.marginLeft,
   };
 
 
