@@ -604,12 +604,11 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
       {/* Chapter 5 */}
       <div id="chapter-5-page" className="page-break">
         <h2>CHAPTER 5: CHALLENGES ENCOUNTERED AND CONCLUSION</h2>
-        <h3>5.1 Challenges Encountered and Solutions</h3>
-         {previewData.challengesHtml ? (
-             <div dangerouslySetInnerHTML={previewData.challengesHtml} className="prose"></div>
-         ) : (
-             <p><Placeholder>Describe the challenges you faced in Step 6.</Placeholder></p>
-         )}
+        {previewData.challengesHtml ? (
+            <div dangerouslySetInnerHTML={previewData.challengesHtml}></div>
+        ) : (
+            <p><Placeholder>Describe the challenges you faced in Step 6.</Placeholder></p>
+        )}
         <h3>5.2 Conclusion</h3>
         {previewData.conclusionHtml ? (
             <div dangerouslySetInnerHTML={previewData.conclusionHtml}></div>

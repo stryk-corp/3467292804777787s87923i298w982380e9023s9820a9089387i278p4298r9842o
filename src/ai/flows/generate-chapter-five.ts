@@ -58,7 +58,7 @@ const chapterFivePrompt = ai.definePrompt({
     - Projects Worked On: {{{projectsDescription}}}
 
     **Instructions for "Challenges Encountered and Solutions":**
-    - This section must be very long and detailed.
+    - This section must be very long and detailed, with a heading "### 5.1 Challenges Encountered and Solutions".
     - Brainstorm and elaborate on a wide range of realistic challenges a student might face during an internship in **{{{fieldOfStudy}}}**.
     - For each challenge, provide a detailed description, explain its impact on your work, and most importantly, describe the specific steps you took to overcome it.
     - Examples of challenge categories to expand upon in extreme detail:
