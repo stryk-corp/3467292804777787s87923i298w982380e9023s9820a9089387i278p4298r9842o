@@ -87,9 +87,16 @@
 }
 
 @media print {
+  @page {
+    @bottom-center {
+      content: "Page " counter(page);
+    }
+  }
+
   body {
     background: white;
     color: black;
+    counter-reset: page;
   }
   #main-container {
     padding: 0;

@@ -174,6 +174,23 @@ export default function Home() {
       }
     }
 
+    // Add page numbers
+    const pageCount = pdf.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      pdf.setPage(i);
+      // Don't number the cover page
+      if (i > 1) {
+        pdf.setFontSize(10);
+        const pageNumText = `Page ${i}`;
+        const textWidth = pdf.getStringUnitWidth(pageNumText) * pdf.getFontSize() / pdf.internal.scaleFactor;
+        pdf.text(
+          pageNumText,
+          pdfPageWidth / 2 - textWidth / 2,
+          pdfPageHeight - marginBottomValue + 20 // Position below the bottom margin
+        );
+      }
+    }
+
     pdf.save('SIWES-Report.pdf');
     setIsDownloading(false);
   };
@@ -182,7 +199,7 @@ export default function Home() {
     try {
       const style = document.createElement('style');
       style.setAttribute('data-temp-print-style', 'true');
-      style.innerHTML = `@page { margin-top: ${formData.marginTop}; margin-right: ${formData.marginRight}; margin-bottom: ${formData.marginBottom}; margin-left: ${formData.marginLeft}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+      style.innerHTML = `@page { counter-increment: page; @bottom-center { content: "Page " counter(page); } margin-top: ${formData.marginTop}; margin-right: ${formData.marginRight}; margin-bottom: ${formData.marginBottom}; margin-left: ${formData.marginLeft}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
       document.head.appendChild(style);
       window.print();
       setTimeout(() => {
@@ -230,6 +247,10 @@ export default function Home() {
                 <Button variant="outline" onClick={printPreview}>
                   <Printer className="h-5 w-5" />
                   <span className="ml-2 sr-only sm:not-sr-only">Print</span>
+                </Button>
+                 <Button variant="default" onClick={handleDownloadPdf} disabled={isDownloading}>
+                  {isDownloading ? <Loader2 className="animate-spin" /> : <Download />}
+                  <span className="ml-2 sr-only sm:not-sr-only">Download PDF</span>
                 </Button>
               </div>
             </div>
