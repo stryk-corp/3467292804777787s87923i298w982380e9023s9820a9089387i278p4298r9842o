@@ -43,7 +43,13 @@ export interface ReportData {
   marginBottom: string;
   marginLeft: string;
   pageNumberPosition: 'bottom-center' | 'bottom-left' | 'bottom-right';
-  pageNumberFormat: 'Page {page}' | '{page}';
+  pageNumberFormat:
+    | 'Page {page}'
+    | '{page}'
+    | 'Page {page_roman_lower}'
+    | '{page_roman_lower}'
+    | 'Page {page_roman_upper}'
+    | '{page_roman_upper}';
 
   // Chapter 4
   projectsDescription: string;

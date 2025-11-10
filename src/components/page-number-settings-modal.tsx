@@ -72,6 +72,10 @@ export function PageNumberSettingsModal({
               <SelectContent>
                 <SelectItem value="Page {page}">Page 1</SelectItem>
                 <SelectItem value="{page}">1</SelectItem>
+                <SelectItem value="Page {page_roman_lower}">Page i</SelectItem>
+                <SelectItem value="{page_roman_lower}">i</SelectItem>
+                <SelectItem value="Page {page_roman_upper}">Page I</SelectItem>
+                <SelectItem value="{page_roman_upper}">I</SelectItem>
               </SelectContent>
             </Select>
           </div>

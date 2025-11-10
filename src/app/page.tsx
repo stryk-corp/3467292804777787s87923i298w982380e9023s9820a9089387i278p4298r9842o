@@ -108,7 +108,17 @@ export default function Home() {
       const style = document.createElement('style');
       style.id = styleId;
       
-      const pageNumberContent = formData.pageNumberFormat.replace('{page}', 'counter(page)');
+      let pageCounterStyle = 'decimal';
+      if (formData.pageNumberFormat.includes('roman_lower')) {
+        pageCounterStyle = 'lower-roman';
+      } else if (formData.pageNumberFormat.includes('roman_upper')) {
+        pageCounterStyle = 'upper-roman';
+      }
+
+      const pageNumberContent = formData.pageNumberFormat
+        .replace('{page}', `counter(page, ${pageCounterStyle})`)
+        .replace('{page_roman_lower}', `counter(page, ${pageCounterStyle})`)
+        .replace('{page_roman_upper}', `counter(page, ${pageCounterStyle})`);
       
       style.innerHTML = `
         @page { 
