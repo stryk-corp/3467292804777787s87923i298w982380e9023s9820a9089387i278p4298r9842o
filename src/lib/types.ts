@@ -38,6 +38,7 @@ export interface ReportData {
   fontFamily: string;
   fontSize: string;
   lineHeight: string;
+  margin: string;
 
   // Chapter 4
   projectsDescription: string;

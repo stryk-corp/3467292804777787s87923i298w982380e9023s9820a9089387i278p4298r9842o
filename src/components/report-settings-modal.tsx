@@ -47,6 +47,10 @@ export function ReportSettingsModal({
   const handleLineHeightChange = (value: string) => {
     setFormData(prev => ({ ...prev, lineHeight: value }));
   };
+  
+  const handleMarginChange = (value: string) => {
+    setFormData(prev => ({ ...prev, margin: value }));
+  };
 
   const fontSizes = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
 
@@ -126,6 +130,22 @@ export function ReportSettingsModal({
               </Select>
             </div>
           </div>
+          
+           <div className="space-y-2">
+            <Label htmlFor="margin">Page Margin</Label>
+            <Select value={formData.margin} onValueChange={handleMarginChange}>
+              <SelectTrigger id="margin">
+                <SelectValue placeholder="Select margin" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0.5in">0.5 inches</SelectItem>
+                <SelectItem value="0.75in">0.75 inches</SelectItem>
+                <SelectItem value="1in">1.0 inches (Default)</SelectItem>
+                <SelectItem value="1.25in">1.25 inches</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
         </div>
       </DialogContent>
     </Dialog>

@@ -224,6 +224,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
     fontFamily: `"${previewData.fontFamily}", sans-serif`,
     fontSize: previewData.fontSize,
     lineHeight: previewData.lineHeight,
+    padding: previewData.margin,
   };
 
 
@@ -236,7 +237,7 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
         id="preview-content"
         style={fontStyles}
         className={cn(
-          "w-full max-w-[8.5in] min-h-[11in] mx-auto p-8 sm:p-12 md:p-16 text-foreground shadow-lg",
+          "w-full max-w-[8.5in] min-h-[11in] mx-auto text-foreground shadow-lg",
           {
             'text-left': previewData.textAlign === 'left',
             'text-center': previewData.textAlign === 'center',
@@ -269,7 +270,6 @@ export default function ReportPreview({ formData, setFormData }: ReportPreviewPr
           page-break-before: always;
         }
         /* Print-specific tweaks to avoid PDF cropping and improve page breaks */
-        @page { margin: 1in; }
         @media print {
           /* Remove shadows and ensure the preview respects page margins */
           #preview-content {

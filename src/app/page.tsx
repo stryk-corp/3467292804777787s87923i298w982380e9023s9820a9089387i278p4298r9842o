@@ -52,6 +52,7 @@ export default function Home() {
     fontFamily: 'Inter',
     fontSize: '12pt',
     lineHeight: '1.5',
+    margin: '1in',
 
     // Chapter 4 Data
     projectsDescription: "",
@@ -98,12 +99,13 @@ export default function Home() {
       unit: 'pt',
       format: 'a4',
     });
+    
+    const marginValue = parseFloat(formData.margin) * 72; // Convert inches to points
 
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 72; // 1 inch
-    const contentWidth = pdfPageWidth - margin * 2;
-    const contentHeight = pdfPageHeight - margin * 2;
+    const contentWidth = pdfPageWidth - marginValue * 2;
+    const contentHeight = pdfPageHeight - marginValue * 2;
 
     const sections = [
       'cover-page',
@@ -145,8 +147,8 @@ export default function Home() {
       let position = 0;
       let heightLeft = scaledImgHeight;
       
-      const x = margin;
-      const y = sectionId === 'cover-page' ? (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2 : margin;
+      const x = marginValue;
+      const y = sectionId === 'cover-page' ? (pdfPageHeight - Math.min(scaledImgHeight, contentHeight)) / 2 : marginValue;
 
       pdf.addImage(imgData, 'PNG', x, y, contentWidth, scaledImgHeight);
       heightLeft -= (pdfPageHeight - y); // Subtract used height on first page
@@ -155,7 +157,7 @@ export default function Home() {
         position += (pdfPageHeight - y); // Update position by the height used on previous page
         pdf.addPage();
         // The y position in addImage is the negative of the position on the source canvas
-        pdf.addImage(imgData, 'PNG', margin, -position + margin, contentWidth, scaledImgHeight);
+        pdf.addImage(imgData, 'PNG', marginValue, -position + marginValue, contentWidth, scaledImgHeight);
         heightLeft -= pdfPageHeight; // Subtract a full page height
       }
     }
@@ -168,7 +170,7 @@ export default function Home() {
     try {
       const style = document.createElement('style');
       style.setAttribute('data-temp-print-style', 'true');
-      style.innerHTML = `@page { margin: 1in; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
+      style.innerHTML = `@page { margin: ${formData.margin}; } @media print { body * { visibility: hidden !important; } #preview-content, #preview-content * { visibility: visible !important; } #preview-content { position: static !important; margin: 0 !important; width: auto !important; } }`;
       document.head.appendChild(style);
       window.print();
       setTimeout(() => {
